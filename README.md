@@ -37,3 +37,5 @@ git push --set-upstream origin feature/AmazingFeature
 ```
 5. Go to [pull request](https://github.com/WDS-MHX/HSV_Web/pulls) and create pull request to staging branch. It must be looklike in picture bellow.
 ![pull-request](imgs/pull-request.png)
+### Ví dụ khi bạn muốn tải code để giải quyết issue của bạn
+![sample](imgs/push-new-code-for-your-issue.png)
