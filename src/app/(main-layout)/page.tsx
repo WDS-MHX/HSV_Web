@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className='grid grid-cols-4 gap-4'>
       <div className='w-full col-span-3'>
-        <div className='border-b-2'>
+        <div className='border-b-2 pb-6'>
           <PostReview
             img={picturePlaceHolder}
             categorized='uncategorized'
@@ -17,7 +17,7 @@ export default function Home() {
           ></PostReview>
         </div>
         <div className='flex flex-col mt-6'>
-          <p className='text-slate-600 font-semibold text-[1.125rem] leading-7 text-justify'>
+          <p className='text-slate-600 pl-4 font-semibold text-[1.125rem] leading-7 text-justify'>
             Sinh viên 5 tốt
           </p>
           <PostReview
@@ -44,29 +44,42 @@ export default function Home() {
             date='26/05/2023'
             comment={1}
           ></PostReview>
-          <div className='flex justify-center items-center w-full mt-4'>
+          <div className='flex justify-center items-center w-full'>
             <button className='flex items-center bg-sky-800 text-white px-4 py-2 rounded-lg font-medium text-sm leading-6'>
               Xem thêm ...
             </button>
           </div>
         </div>
       </div>
-      <div className='w-full border-t-4 border-sky-600'>
-        <p className='text-sky-600 text-xl font-semibold text-justify leading-7 mb-4'>
-          Bài đăng gần đây
-        </p>
-        <MostRecent
-          img={picturePlaceHolder}
-          content='UIT FACE| Sinh viên năm nhất UIT tham gia Đại hội Đại biểu sinh viên Việt Nam TP.HCM lần thứ VII, nhiệm kỳ 2023 - 2028'
-        ></MostRecent>
-        <MostRecent
-          img={picturePlaceHolder}
-          content='UIT FACE| Sinh viên năm nhất UIT tham gia Đại hội Đại biểu sinh viên Việt Nam TP.HCM lần thứ VII, nhiệm kỳ 2023 - 2028'
-        ></MostRecent>
-        <MostRecent
-          img={picturePlaceHolder}
-          content='UIT FACE| Sinh viên năm nhất UIT tham gia Đại hội Đại biểu sinh viên Việt Nam TP.HCM lần thứ VII, nhiệm kỳ 2023 - 2028'
-        ></MostRecent>
+      <div className='flex flex-col'>
+        <div className='flex items-center py-[0.625rem]'>
+          <div className='border-2 rounded-md mr-2 py-2 px-3 w-full'>
+            <input
+              className='border-none w-full focus:outline-none bg-white text-black text-sm font-normal leading-5'
+              placeholder='Search'
+            ></input>
+          </div>
+          <button className='bg-sky-900 px-4 py-2 rounded-lg'>
+            <p className='font-medium text-sm leading-6 text-white'>Tìm</p>
+          </button>
+        </div>
+        <div className='w-full border-t-4 border-sky-600'>
+          <p className='text-sky-600 text-xl font-semibold text-justify leading-7 mb-4'>
+            Bài đăng gần đây
+          </p>
+          <MostRecent
+            img={picturePlaceHolder}
+            content='UIT FACE| Sinh viên năm nhất UIT tham gia Đại hội Đại biểu sinh viên Việt Nam TP.HCM lần thứ VII, nhiệm kỳ 2023 - 2028'
+          ></MostRecent>
+          <MostRecent
+            img={picturePlaceHolder}
+            content='UIT FACE| Sinh viên năm nhất UIT tham gia Đại hội Đại biểu sinh viên Việt Nam TP.HCM lần thứ VII, nhiệm kỳ 2023 - 2028'
+          ></MostRecent>
+          <MostRecent
+            img={picturePlaceHolder}
+            content='UIT FACE| Sinh viên năm nhất UIT tham gia Đại hội Đại biểu sinh viên Việt Nam TP.HCM lần thứ VII, nhiệm kỳ 2023 - 2028'
+          ></MostRecent>
+        </div>
       </div>
     </div>
   )
