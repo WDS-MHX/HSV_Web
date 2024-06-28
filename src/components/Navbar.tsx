@@ -2,67 +2,95 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-
 import { GoHomeFill } from 'react-icons/go'
-import { FaSearch } from 'react-icons/fa'
+import { FaUser } from 'react-icons/fa'
+import { useState } from 'react'
+
+import { PATH_NAME } from '@/configs/pathName'
 
 const Navbar = () => {
   const pathname = usePathname()
 
+  const [isLoggin, setIsLoggin] = useState(false);
+
   return (
-    <nav className='rounded-md bg-sky-600 px-6 mt-1.5'>
+    <nav className='rounded-md bg-primary px-6 mt-1.5'>
       <div className='max-w-screen-xl flex flex-wrap items-center justify-between mx-auto'>
         <div className='flex md:order-2'>
-          <button type='button' className='text-white text-lg'>
-            <FaSearch />
-          </button>
+          {isLoggin ? (
+            <button type='button' className='text-white text-lg'>
+              <FaUser />
+            </button>
+          ) : (
+            <Link
+              href={PATH_NAME.DANG_NHAP}
+              className='block text-white p-4 rounded-md transition-colors duration-300 hover:bg-sky-700 text-sm font-medium'
+            >
+              Đăng nhập
+            </Link>
+          )}
         </div>
         <div className='items-center justify-center w-full md:flex md:w-auto' id='navbar-search'>
           <ul className='text-sm flex flex-col md:p-0 mt-4 font-medium md:flex-row md:mt-0 md:border-0 items-center justify-center'>
             <li>
-              <Link href='/' className='text-2xl block text-white pr-3 border-r-[1px] border-white'>
+              <Link
+                href={PATH_NAME.HOME}
+                className='text-2xl block text-white pr-3 border-r-[1px] border-white'
+              >
                 <GoHomeFill />
               </Link>
             </li>
-            <li className={pathname == '/gioi-thieu' ? 'bg-sky-700 text-sky-200 rounded-md' : ''}>
+            <li
+              className={
+                pathname == PATH_NAME.GIOI_THIEU ? 'bg-sky-700 text-secondary rounded-md' : ''
+              }
+            >
               <Link
-                href='/gioi-thieu'
+                href={PATH_NAME.GIOI_THIEU}
                 className='block text-white p-4 rounded-md transition-colors duration-300 hover:bg-sky-700'
               >
                 Giới thiệu
               </Link>
             </li>
             <li
-              className={pathname == '/sinh-vien-5-tot' ? 'bg-sky-700 text-sky-200 rounded-md' : ''}
+              className={pathname == PATH_NAME.SVNT ? 'bg-sky-700 text-secondary rounded-md' : ''}
             >
               <Link
-                href='/sinh-vien-5-tot'
+                href={PATH_NAME.SVNT}
                 className='block text-white p-4 rounded-md transition-colors duration-300 hover:bg-sky-700'
               >
                 Sinh viên 5 tốt
               </Link>
             </li>
             <li
-              className={pathname == '/cau-chuyen-dep' ? 'bg-sky-700 text-sky-200 rounded-md' : ''}
+              className={
+                pathname == PATH_NAME.CAU_CHUYEN_DEP ? 'bg-sky-700 text-secondary rounded-md' : ''
+              }
             >
               <Link
-                href='/cau-chuyen-dep'
+                href={PATH_NAME.CAU_CHUYEN_DEP}
                 className='block text-white p-4 rounded-md transition-colors duration-300 hover:bg-sky-700'
               >
                 Câu chuyện đẹp
               </Link>
             </li>
-            <li className={pathname == '/tinh-nguyen' ? 'bg-sky-700 text-sky-200 rounded-md' : ''}>
+            <li
+              className={
+                pathname == PATH_NAME.TINH_NGUYEN ? 'bg-sky-700 text-secondary rounded-md' : ''
+              }
+            >
               <Link
-                href='tinh-nguyen'
+                href={PATH_NAME.TINH_NGUYEN}
                 className='block text-white p-4 rounded-md transition-colors duration-300 hover:bg-sky-700'
               >
                 Tình nguyện
               </Link>
             </li>
-            <li className={pathname == '/nckh' ? 'bg-sky-700 text-sky-200 rounded-md' : ''}>
+            <li
+              className={pathname == PATH_NAME.NCKH ? 'bg-sky-700 text-secondary rounded-md' : ''}
+            >
               <Link
-                href='nckh'
+                href={PATH_NAME.NCKH}
                 className='block text-white p-4 rounded-md transition-colors duration-300 hover:bg-sky-700'
               >
                 NCKH
@@ -70,19 +98,23 @@ const Navbar = () => {
             </li>
             <li
               className={
-                pathname == '/ho-tro-sinh-vien' ? 'bg-sky-700 text-sky-200 rounded-md' : ''
+                pathname == PATH_NAME.HO_TRO_SINH_VIEN ? 'bg-sky-700 text-secondary rounded-md' : ''
               }
             >
               <Link
-                href='ho-tro-sinh-vien'
+                href={PATH_NAME.HO_TRO_SINH_VIEN}
                 className='block text-white p-4 rounded-md transition-colors duration-300 hover:bg-sky-700'
               >
                 Hỗ trợ sinh viên
               </Link>
             </li>
-            <li className={pathname == '/xay-dung-hoi' ? 'bg-sky-700 text-sky-200 rounded-md' : ''}>
+            <li
+              className={
+                pathname == PATH_NAME.XAY_DUNG_HOI ? 'bg-sky-700 text-secondary rounded-md' : ''
+              }
+            >
               <Link
-                href='xay-dung-hoi'
+                href={PATH_NAME.XAY_DUNG_HOI}
                 className='block text-white p-4 rounded-md transition-colors duration-300 hover:bg-sky-700'
               >
                 Xây dựng hội
@@ -90,11 +122,11 @@ const Navbar = () => {
             </li>
             <li
               className={
-                pathname == '/he-thong-van-ban' ? 'bg-sky-700 text-sky-200 rounded-md' : ''
+                pathname == PATH_NAME.HE_THONG_VAN_BAN ? 'bg-sky-700 text-secondary rounded-md' : ''
               }
             >
               <Link
-                href='he-thong-van-ban'
+                href={PATH_NAME.HE_THONG_VAN_BAN}
                 className='block text-white p-4 rounded-md transition-colors duration-300 hover:bg-sky-700'
               >
                 Hệ thống văn bản
