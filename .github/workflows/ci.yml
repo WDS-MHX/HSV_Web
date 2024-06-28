@@ -13,7 +13,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
       - name: Install husky
         run: npm install --save-dev husky
       - name: Install dependencies
@@ -22,3 +22,5 @@ jobs:
         run: npm run lint
       - name: Formatting check
         run: npm run format
+      - name: Build nextjs
+        run: npm run build
