@@ -4,42 +4,48 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { GoHomeFill } from 'react-icons/go'
 import { FaUser } from 'react-icons/fa'
-import { useState } from 'react'
+import { FaBars, FaTimes } from 'react-icons/fa'
+import { useState, useEffect } from 'react'
 
 import { PATH_NAME } from '@/configs/pathName'
 
 const Navbar = () => {
   const pathname = usePathname()
 
-  const [isLoggin, setIsLoggin] = useState(false);
+  const [isLoggin, setIsLoggin] = useState<boolean>(false)
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+  }
+
+  useEffect(() => {
+    setIsMenuOpen(false)
+  }, [pathname])
 
   return (
-    <nav className='rounded-md bg-primary px-6 mt-1.5'>
-      <div className='max-w-screen-xl flex flex-wrap items-center justify-between mx-auto'>
-        <div className='flex md:order-2'>
-          {isLoggin ? (
-            <button type='button' className='text-white text-lg'>
-              <FaUser />
-            </button>
-          ) : (
-            <Link
-              href={PATH_NAME.DANG_NHAP}
-              className='block text-white p-4 rounded-md transition-colors duration-300 hover:bg-sky-700 text-sm font-medium'
-            >
-              Đăng nhập
-            </Link>
-          )}
+    <nav className='rounded-md bg-sky-600 px-6 mt-1.5'>
+      <div className='max-w-screen-xl flex flex-wrap items-center justify-between mx-auto md:w-auto w-full'>
+        <div className='flex items-center'>
+          <Link
+            href={PATH_NAME.HOME}
+            className='text-2xl block text-white pr-3 border-r-[1px] border-white'
+          >
+            <GoHomeFill />
+          </Link>
         </div>
-        <div className='items-center justify-center w-full md:flex md:w-auto' id='navbar-search'>
-          <ul className='text-sm flex flex-col md:p-0 mt-4 font-medium md:flex-row md:mt-0 md:border-0 items-center justify-center'>
-            <li>
-              <Link
-                href={PATH_NAME.HOME}
-                className='text-2xl block text-white pr-3 border-r-[1px] border-white'
-              >
-                <GoHomeFill />
-              </Link>
-            </li>
+
+        <div className='flex md:hidden'>
+          <button
+            onClick={toggleMenu}
+            className='text-white p-4 rounded-md transition-colors duration-300 hover:bg-sky-700'
+          >
+            {isMenuOpen ? <FaTimes /> : <FaBars />}
+          </button>
+        </div>
+
+        <div className={`${isMenuOpen ? 'block' : 'hidden'} w-full md:block md:w-auto`}>
+          <ul className='text-sm flex flex-col md:p-0 mt-4 font-medium md:flex-row md:mt-0 md:border-0 md:items-center justify-center'>
             <li
               className={
                 pathname == PATH_NAME.GIOI_THIEU ? 'bg-sky-700 text-secondary rounded-md' : ''
@@ -131,6 +137,20 @@ const Navbar = () => {
               >
                 Hệ thống văn bản
               </Link>
+            </li>
+            <li>
+              {isLoggin ? (
+                <button type='button' className='text-white text-lg'>
+                  <FaUser />
+                </button>
+              ) : (
+                <Link
+                  href={PATH_NAME.DANG_NHAP}
+                  className='block text-white p-4 rounded-md transition-colors duration-300 hover:bg-sky-700 text-sm font-medium'
+                >
+                  Đăng nhập
+                </Link>
+              )}
             </li>
           </ul>
         </div>
