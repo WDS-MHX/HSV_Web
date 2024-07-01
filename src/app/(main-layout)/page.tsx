@@ -4,8 +4,19 @@ import { picturePlaceHolder } from '../../../public'
 import { MostRecent } from '@/components'
 export default function Home() {
   return (
-    <div className='grid grid-cols-4 gap-4'>
-      <div className='w-full col-span-3'>
+    <div className='grid lg:grid-cols-4 gap-4 md:grid-cols-1'>
+      <div className='w-full lg:col-span-3 md:col-span-1'>
+        <div className='flex items-center py-[0.625rem] lg:hidden mx-[3.438rem] my-4'>
+          <div className='border-2 rounded-md mr-2 py-2 px-3 w-full'>
+            <input
+              className='border-none w-full focus:outline-none bg-white text-black text-sm font-normal leading-5'
+              placeholder='Search'
+            ></input>
+          </div>
+          <button className='bg-sky-900 w-[5.625rem] px-4 py-2 rounded-lg'>
+            <p className='font-medium text-sm leading-6 text-white'>Tìm</p>
+          </button>
+        </div>
         <div className='border-b-2 pb-6'>
           <PostReview
             img={picturePlaceHolder}
@@ -51,7 +62,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className='flex flex-col'>
+      <div className='flex flex-col md:hidden lg:block'>
         <div className='flex items-center py-[0.625rem]'>
           <div className='border-2 rounded-md mr-2 py-2 px-3 w-full'>
             <input

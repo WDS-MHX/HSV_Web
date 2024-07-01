@@ -14,18 +14,20 @@ interface postReviewType {
 const PostReview = ({ img, categorized, title, content, date, comment }: postReviewType) => {
   return (
     <div className='flex gap-2 p-4'>
-      <div className='h-[25.875rem] max-h-[25.875rem]'>
-        {!!img && <Image id='imgPost' src={img} alt='' className=' h-full'></Image>}
+      <div className='lg:h-[25.875rem] lg:max-h-[25.875rem] md:basis-8/12 md:h-auto'>
+        {!!img && (
+          <Image id='imgPost' src={img} alt='' className='w-full object-contain h-full'></Image>
+        )}
       </div>
-      <div className='flex w-3/6 h-auto flex-col justify-between'>
+      <div className='flex lg:w-3/6 md:basis-1/2 h-auto flex-col justify-between'>
         <div className='flex flex-col'>
           <div className='flex w-fit mb-2 items-center justify-center rounded-full bg-categorized px-2 text-center align-middle'>
             <p className='text-center text-[0.75rem] font-semibold text-white'>{categorized}</p>
           </div>
-          <div className='text-wrap text-slate-800 font-semibold text-2xl leading-8 text-justify'>
+          <div className='text-wrap text-slate-800 font-semibold lg:text-2xl md:text-xl lg:leading-8 md:leading-7 md:tracking-neg-05 text-justify'>
             {title}
           </div>
-          <div className=' mt-2 post_content w-full text-justify text-sm text-slate-900 leading-6 font-normal'>
+          <div className='md:hidden lg:block mt-2 post_content w-full text-justify text-sm text-slate-900 leading-6 font-normal'>
             <p>{content}</p>
           </div>
           <div className='flex mt-2'>
