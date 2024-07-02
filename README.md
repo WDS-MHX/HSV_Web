@@ -20,9 +20,12 @@ Project gồm 2 branches, bao gồm `main` (production) và `dev` (dev/test).
 
 3. Chạy các lệnh sau để setup và build được framework trên máy local
 
-## Contribute 
-Để đóng góp vào các quy trình mới, các bạn hãy thực hiện theo hướng dẫn 
+## Contribute
+
+Để đóng góp vào các quy trình mới, các bạn hãy thực hiện theo hướng dẫn
+
 ### Tạo các file với đúng biểu mẫu
+
 - Trước khi tạo và push project, đảm bảo rằng project đã chạy và build thành công theo hướng dẫn tại phần [Setup](README.md#setup-local-dev)
 - Đảm bảo rằng các tài liệu bạn tạo đúng với chuẩn đươc hướng dẫn tại [Hướng dẫn soạn tài liệu](source/huong-dan.md)
 
@@ -51,7 +54,10 @@ git commit -m 'feat: Add some AmazingFeature'
 ```bash
 git push --set-upstream origin feature/AmazingFeature
 ```
+
 5. Go to [pull request](https://github.com/WDS-MHX/HSV_Web/pulls) and create pull request to staging branch. It must be looklike in picture bellow.
-![pull-request](imgs/pull-request.png)
+   ![pull-request](imgs/pull-request.png)
+
 ### Ví dụ khi bạn muốn tải code để giải quyết issue của bạn
+
 ![sample](imgs/push-new-code-for-your-issue.png)

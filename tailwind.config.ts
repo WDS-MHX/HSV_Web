@@ -7,6 +7,13 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    screens: {
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
+      '2xl': '1536px',
+    },
     extend: {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
@@ -17,6 +24,10 @@ const config: Config = {
         secondary: '#64748B',
         background: '#F1F5F9',
         title: '#0C4A6E',
+        categorized: '#0EA5E9',
+      },
+      letterSpacing: {
+        'neg-05': '-0.5%',
       },
     },
   },

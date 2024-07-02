@@ -15,7 +15,7 @@ const Footer = () => {
           height={94}
           className='object-contain max-md:mx-auto'
         />
-        <ul className='flex flex-col gap-6 text-primaty text-sm max-md:mt-5'>
+        <ul className='flex flex-col gap-6 text-primary text-sm max-md:mt-5'>
           <li className='flex items-center gap-7'>
             <TbCircleLetterC color='[#0F172A]' size={24} />
             <p>Hội Sinh viên Việt Nam Trường Đại học Công Nghệ Thông Tin, ĐHQG-HCM</p>
