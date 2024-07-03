@@ -41,7 +41,7 @@ const Navbar = () => {
     <>
       {isMenuOpen && <div className='fixed inset-0 bg-black opacity-30 z-40'></div>}
       <nav ref={navbarRef} className='rounded-md bg-sky-600 px-4 mt-1.5 z-50 flex'>
-        <div className='max-w-screen-xl flex flex-wrap items-center lg:justify-start justify-between mx-auto w-full'>
+        <div className='max-w-screen-xl flex flex-wrap items-center lg:justify-evenly justify-between mx-auto w-full'>
           <Link
             href={PATH_NAME.HOME}
             className='text-2xl block text-white pr-3 border-r-[1px] border-white mr-1'

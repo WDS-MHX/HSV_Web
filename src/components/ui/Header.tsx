@@ -7,10 +7,13 @@ const Header = () => {
       <div className='relative w-full'>
         <Image
           src='/assets/images/header_banner.png'
-          layout='responsive'
+          style={{
+            width: '100%',
+            height: 'auto',
+          }}
           width={1200}
           height={400}
-          objectFit='contain'
+          object-fit='contain'
           alt='header_banner'
         />
       </div>
