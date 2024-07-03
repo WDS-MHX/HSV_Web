@@ -10,6 +10,8 @@ interface searchData {
   date: Date
 }
 
+const searchValue: string = 'Đại hội'
+
 const data: searchData[] = [
   {
     id: '1',
@@ -93,7 +95,7 @@ const data: searchData[] = [
 const timkiem = () => {
   return (
     <div className='py-2 flex'>
-      <ResultPage />
+      <ResultPage searchValue={searchValue} />
     </div>
   )
 }
