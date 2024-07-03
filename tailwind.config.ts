@@ -20,6 +20,10 @@ const config: Config = {
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       colors: {
+        primary: '#0F172A',
+        secondary: '#64748B',
+        background: '#F1F5F9',
+        title: '#0C4A6E',
         categorized: '#0EA5E9',
       },
       letterSpacing: {
@@ -27,6 +31,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/forms')],
 }
 export default config
