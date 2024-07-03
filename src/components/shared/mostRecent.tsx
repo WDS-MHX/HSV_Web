@@ -1,9 +1,9 @@
 import React from 'react'
-import Image from 'next/image'
+import Image, { StaticImageData } from 'next/image'
 import { GrLinkNext } from 'react-icons/gr'
 
 interface mostRecentType {
-  img?: string
+  img?: string | StaticImageData
   content?: string
 }
 
