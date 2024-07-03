@@ -1,11 +1,13 @@
-import React from 'react'
+import { Header, Footer } from '@/components/ui'
 
-const layout = ({ children }: { children: React.ReactNode }) => {
+function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      <div className='content'>{children}</div>
+    <div className='flex flex-col items-center min-h-screen'>
+      <Header />
+      <div className='max-w-6xl w-full'>{children}</div>
+      <Footer />
     </div>
   )
 }
 
-export default layout
+export default Layout

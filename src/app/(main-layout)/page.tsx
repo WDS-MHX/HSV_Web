@@ -7,13 +7,13 @@ export default function Home() {
     <div className='grid lg:grid-cols-4 gap-4 md:grid-cols-1'>
       <div className='w-full lg:col-span-3 md:col-span-1'>
         <div className='flex items-center py-[0.625rem] lg:hidden mx-[3.438rem] my-4'>
-          <div className='border-2 rounded-md mr-2 py-2 px-3 w-full'>
+          <div className='border-2 rounded-md mr-2 p-0.5 w-full'>
             <input
               className='border-none w-full focus:outline-none bg-white text-black text-sm font-normal leading-5'
               placeholder='Search'
             ></input>
           </div>
-          <button className='bg-sky-900 w-[5.625rem] px-4 py-2 rounded-lg'>
+          <button className='w-[5.625rem] button-primary'>
             <p className='font-medium text-sm leading-6 text-white'>Tìm</p>
           </button>
         </div>
@@ -62,15 +62,15 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className='flex flex-col md:hidden lg:block'>
+      <div className='flex flex-col lg:block max-lg:hidden'>
         <div className='flex items-center py-[0.625rem]'>
-          <div className='border-2 rounded-md mr-2 py-2 px-3 w-full'>
+          <div className='border-2 rounded-md mr-2 p-0.5 w-full'>
             <input
               className='border-none w-full focus:outline-none bg-white text-black text-sm font-normal leading-5'
               placeholder='Search'
             ></input>
           </div>
-          <button className='bg-sky-900 px-4 py-2 rounded-lg'>
+          <button className='button-primary'>
             <p className='font-medium text-sm leading-6 text-white'>Tìm</p>
           </button>
         </div>

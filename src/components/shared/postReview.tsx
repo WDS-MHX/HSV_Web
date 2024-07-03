@@ -1,9 +1,9 @@
 import React from 'react'
-import Image from 'next/image'
+import Image, { StaticImageData } from 'next/image'
 import { GrLinkNext } from 'react-icons/gr'
 
 interface postReviewType {
-  img?: string
+  img?: string | StaticImageData
   categorized?: string
   title?: string
   content?: string
