@@ -13,10 +13,21 @@ interface postReviewType {
 
 const PostReview = ({ img, categorized, title, content, date, comment }: postReviewType) => {
   return (
-    <div className='flex gap-2 p-4'>
-      <div className='lg:h-[25.875rem] lg:max-h-[25.875rem] md:basis-8/12 md:h-auto'>
+    <div className='flex gap-2 p-4 md:flex-row flex-col'>
+      <div className='md:basis-8/12 md:h-auto w-full'>
         {!!img && (
-          <Image id='imgPost' src={img} alt='' className='w-full object-contain h-full'></Image>
+          <Image
+            id='imgPost'
+            src={img}
+            alt=''
+            width={500}
+            height={500}
+            object-fit='contain'
+            style={{
+              width: '100%',
+              height: 'auto',
+            }}
+          />
         )}
       </div>
       <div className='flex lg:w-3/6 md:basis-1/2 h-auto flex-col justify-between'>
@@ -24,10 +35,10 @@ const PostReview = ({ img, categorized, title, content, date, comment }: postRev
           <div className='flex w-fit mb-2 items-center justify-center rounded-full bg-categorized px-2 text-center align-middle'>
             <p className='text-center text-[0.75rem] font-semibold text-white'>{categorized}</p>
           </div>
-          <div className='text-wrap text-slate-800 font-semibold lg:text-2xl md:text-xl lg:leading-8 md:leading-7 md:tracking-neg-05 text-justify'>
+          <div className='text-wrap text-slate-800 font-semibold lg:text-2xl md:text-xl text-[1.125rem] lg:leading-8 md:leading-7 md:tracking-neg-05 text-justify'>
             {title}
           </div>
-          <div className='md:hidden lg:block mt-2 post_content w-full text-justify text-sm text-slate-900 leading-6 font-normal'>
+          <div className='hidden mt-2 post_content w-full text-justify text-sm text-slate-900 leading-6 font-normal'>
             <p>{content}</p>
           </div>
           <div className='flex mt-2'>

@@ -6,6 +6,7 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --bg-categorized: #0ea5e9;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -30,6 +31,29 @@ body {
   padding-left: 1rem;
   padding-right: 1rem;
   border-radius: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  line-height: 1.5rem;
+  color: #ffffff;
+}
+
+.category {
+  display: flex;
+  width: fit-content;
+  margin-bottom: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  text-align: center;
+  vertical-align: middle;
+  background-color: var(--bg-categorized);
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
 }
 
 .content {
@@ -37,13 +61,14 @@ body {
 }
 
 .post_content {
-  word-break: break-all;
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-break: break-word;
+  @media (min-width: 1024px) {
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+  }
 }
 
 @layer utilities {

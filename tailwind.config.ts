@@ -23,7 +23,7 @@ const config: Config = {
         primary: '#0F172A',
         secondary: '#64748B',
         background: '#F1F5F9',
-        title: '#0C4A6E',
+        title: '#1E293B',
         categorized: '#0EA5E9',
       },
       letterSpacing: {

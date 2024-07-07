@@ -1,40 +1,116 @@
-import React from 'react'
+'use client'
+
+import { useState, useEffect } from 'react'
+import { StaticImageData } from 'next/image'
+
+import PostReview from './postReview'
+import Pagination from './Pagination'
+
+interface searchData {
+  id: string
+  categorized: string
+  title: string
+  content: string
+  img?: string | StaticImageData
+  comment: number
+  date: string
+}
 
 interface ResultPageType {
   searchValue: string
+  searchResults: Array<searchData>
 }
 
-const ResultPage = ({ searchValue }: ResultPageType) => {
+const ResultPage = ({ searchValue, searchResults }: ResultPageType) => {
+  const [isLatest, setisLatest] = useState(true)
+  const [currentOffset, setCurrentOffset] = useState(0)
+  const [newSearchValue, setNewSearchValue] = useState(searchValue)
+  const itemsPerPage = 5
+
+  const handleItemOffsetChange = (newOffset: number) => {
+    setCurrentOffset(newOffset)
+  }
+
+  const handleChange = (e: { target: { value: string } }) => {
+    setNewSearchValue(e.target.value)
+  }
+
+  const currentItems = searchResults.slice(currentOffset, currentOffset + itemsPerPage)
+
+  function shortenText(text: string, wordLimit: number): string {
+    const words: string[] = text.split(' ')
+    if (words.length > wordLimit) {
+      return words.slice(0, wordLimit).join(' ') + ' ...'
+    }
+    return text
+  }
+
   return (
     <div className='flex gap-4 w-full'>
       {/* Category Bar */}
-      <div className='rounded-md px-4 py-2 bg-background w-[11.25rem] h-fit flex-shrink-0'>
+      <div className='rounded-md px-4 py-2 bg-background w-[11.25rem] h-fit flex-shrink-0 sticky top-12 max-lg:hidden'>
         <div className='text-sky-900 font-semibold text-lg'>Category</div>
         <div className='py-2 text-secondary text-sm font-medium'>
           <ul className='mt-12'>
             <li className='flex gap-2'>
-              <input type='checkbox' className='rounded border-[#E5E7EB] border mb-4' />
-              <p>Sinh viên 5 tốt</p>
+              <input
+                type='checkbox'
+                id='checkbox-1'
+                className='rounded border-[#E5E7EB] border mb-4 cursor-pointer'
+              />
+              <label className='cursor-pointer' htmlFor='checkbox-1'>
+                Sinh viên 5 tốt
+              </label>
             </li>
             <li className='flex gap-2'>
-              <input type='checkbox' className='rounded border-[#E5E7EB] border mb-4' />
-              <p>Câu chuyện đẹp</p>
+              <input
+                type='checkbox'
+                id='checkbox-2'
+                className='rounded border-[#E5E7EB] border mb-4 cursor-pointer'
+              />
+              <label className='cursor-pointer' htmlFor='checkbox-2'>
+                Câu chuyện đẹp
+              </label>
             </li>
             <li className='flex gap-2'>
-              <input type='checkbox' className='rounded border-[#E5E7EB] border mb-4' />
-              <p>Tình nguyện</p>
+              <input
+                type='checkbox'
+                id='checkbox-3'
+                className='rounded border-[#E5E7EB] border mb-4 cursor-pointer'
+              />
+              <label className='cursor-pointer' htmlFor='checkbox-3'>
+                Tình nguyện
+              </label>
             </li>
             <li className='flex gap-2'>
-              <input type='checkbox' className='rounded border-[#E5E7EB] border mb-4' />
-              <p>NCKH</p>
+              <input
+                type='checkbox'
+                id='checkbox-4'
+                className='rounded border-[#E5E7EB] border mb-4 cursor-pointer'
+              />
+              <label className='cursor-pointer' htmlFor='checkbox-4'>
+                NCKH
+              </label>
             </li>
             <li className='flex gap-2'>
-              <input type='checkbox' className='rounded border-[#E5E7EB] border mb-4' />
-              <p>Hỗ trợ sinh viên</p>
+              <input
+                type='checkbox'
+                id='checkbox-5'
+                className='rounded border-[#E5E7EB] border mb-4 cursor-pointer'
+              />
+              <label className='cursor-pointer' htmlFor='checkbox-5'>
+                Hỗ trợ sinh viên
+              </label>
             </li>
             <li className='flex gap-2'>
-              <input type='checkbox' className='rounded border-[#E5E7EB] border mb-4' />
-              <p>Xây dựng hội</p>
+              <input
+                type='checkbox'
+                id='checkbox-6'
+                className='rounded border-[#E5E7EB] border mb-4 cursor-pointer'
+              />
+              <label className='cursor-pointer' htmlFor='checkbox-6'>
+                Xây dựng hội
+              </label>
             </li>
           </ul>
         </div>
@@ -47,12 +123,55 @@ const ResultPage = ({ searchValue }: ResultPageType) => {
             <input
               className='border-none w-full focus:outline-none bg-white text-black text-sm font-normal leading-5'
               placeholder='Search'
-              value='Đại hội'
+              value={newSearchValue}
+              onChange={handleChange}
             />
           </div>
-          <button className='button-primary'>
-            <p className='font-medium text-sm leading-6 text-white'>Tìm</p>
-          </button>
+          <button className='button-primary'>Tìm</button>
+        </div>
+
+        <div className='mt-4 px-4 py-2'>
+          <div className='flex justify-between'>
+            <div className='flex gap-2 items-center'>
+              <p className='text-secondary text-xs font-medium'>Sắp xếp theo: </p>
+              <button
+                onClick={() => setisLatest(true)}
+                className={`text-sm ${isLatest ? 'font-medium text-primary' : 'font-normal text-secondary'}`}
+              >
+                Mới nhất
+              </button>
+              <p className='text-primary'>|</p>
+              <button
+                onClick={() => setisLatest(false)}
+                className={`text-sm ${!isLatest ? 'font-medium text-primary' : 'font-normal text-secondary'}`}
+              >
+                Liên quan
+              </button>
+            </div>
+
+            <div className='flex gap-1 text-[#0C4A6E]'>
+              <p className='font-semibold'>{searchResults?.length}</p>
+              <p>kết quả</p>
+            </div>
+          </div>
+
+          {currentItems?.map((searchResult, index) => (
+            <PostReview
+              key={index}
+              img={searchResult.img}
+              categorized={searchResult.categorized}
+              title={searchResult.title}
+              content={shortenText(searchResult.content, 30)}
+              date={searchResult.date}
+              comment={searchResult.comment}
+            />
+          ))}
+
+          <Pagination
+            itemsPerPage={itemsPerPage}
+            setItemOffset={handleItemOffsetChange}
+            notilength={searchResults.length}
+          />
         </div>
       </div>
     </div>
