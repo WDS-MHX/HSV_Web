@@ -1,7 +1,9 @@
-import React from 'react'
-
-const hethongvanban = () => {
-  return <div>He thong van ban</div>
+import Image from 'next/image'
+import { DocumentsTable } from './components'
+export default function hethongvanban() {
+  return (
+    <div className='my-4'>
+      <DocumentsTable></DocumentsTable>
+    </div>
+  )
 }
-
-export default hethongvanban

@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className='grid lg:grid-cols-4 gap-4 md:grid-cols-1'>
       <div className='w-full lg:col-span-3 md:col-span-1'>
-        <div className='flex items-center py-[0.625rem] lg:hidden mx-[3.438rem] my-4'>
+        <div className='flex items-center py-[0.625rem] lg:hidden md:mx-[3.438rem] mx-4 my-4'>
           <div className='border-2 rounded-md mr-2 p-0.5 w-full'>
             <input
               className='border-none w-full focus:outline-none bg-white text-black text-sm font-normal leading-5'
