@@ -27,7 +27,7 @@ function PaginationButtons({
         }
         onPageChange={handlePageClick}
         pageRangeDisplayed={3}
-        marginPagesDisplayed={0}
+        marginPagesDisplayed={1}
         breakLabel='...'
         pageCount={pageCount}
         nextLabel={

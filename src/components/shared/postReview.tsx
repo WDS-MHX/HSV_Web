@@ -1,9 +1,6 @@
 import React from 'react'
 import Image, { StaticImageData } from 'next/image'
 import { GrLinkNext } from 'react-icons/gr'
-import { comment } from 'postcss'
-import { title } from 'process'
-import { string, date, number } from 'zod'
 
 interface postReviewType {
   img?: string | StaticImageData

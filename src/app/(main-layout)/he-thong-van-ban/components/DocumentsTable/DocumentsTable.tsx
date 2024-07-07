@@ -56,7 +56,7 @@ export default function DocumentsTable() {
       }),
       columnHelper.accessor((row) => `${row.title}`, {
         id: 'title',
-        header: 'title',
+        header: 'Title',
         filterFn: 'includesString',
         size: 440,
         maxSize: 540,
