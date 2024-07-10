@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { StaticImageData } from 'next/image'
 
+import SelectOption from './SelectOption'
 import PostReview from './postReview'
 import Pagination from './Pagination'
 
@@ -22,9 +23,9 @@ interface ResultPageType {
 }
 
 const ResultPage = ({ searchValue, searchResults }: ResultPageType) => {
-  const [isLatest, setisLatest] = useState(true)
-  const [currentOffset, setCurrentOffset] = useState(0)
-  const [newSearchValue, setNewSearchValue] = useState(searchValue)
+  const [isLatest, setisLatest] = useState<boolean>(true)
+  const [currentOffset, setCurrentOffset] = useState<number>(0)
+  const [newSearchValue, setNewSearchValue] = useState<string>(searchValue)
   const itemsPerPage = 5
 
   const handleItemOffsetChange = (newOffset: number) => {
@@ -118,20 +119,22 @@ const ResultPage = ({ searchValue, searchResults }: ResultPageType) => {
 
       {/* Main Container */}
       <div className='flex-grow'>
-        <div className='flex gap-6 bg-background px-8 py-2 rounded-md'>
-          <div className='border-2 rounded-md p-0.5 w-full'>
+        <div className='flex gap-6 max-lg:gap-2 bg-background px-8 py-2 rounded-md'>
+          <SelectOption className='max-md:hidden' />
+          <div className='border-[1px] border-slate-300 rounded-md lg:ml-2 md:mx-2 mx-0 w-full'>
             <input
-              className='border-none w-full focus:outline-none bg-white text-black text-sm font-normal leading-5'
+              className='border-none rounded-md mr-2 py-2.5 px-3 w-full focus:outline-none bg-white text-black text-sm font-normal leading-5'
               placeholder='Search'
               value={newSearchValue}
               onChange={handleChange}
             />
           </div>
-          <button className='button-primary'>Tìm</button>
+          <button className='max-md:px-8 button-primary'>Tìm</button>
         </div>
+        <SelectOption className='md:hidden w-full px-8' />
 
         <div className='mt-4 px-4 py-2'>
-          <div className='flex justify-between'>
+          <div className='md:flex justify-between'>
             <div className='flex gap-2 items-center'>
               <p className='text-secondary text-xs font-medium'>Sắp xếp theo: </p>
               <button

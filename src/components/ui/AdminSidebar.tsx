@@ -9,7 +9,7 @@ const AdminSidebar = () => {
   const pathname = usePathname()
 
   return (
-    <div className='flex flex-col h-[100vh] bg-[#E0F2FE] py-8 px-4 w-60 sticky top-0 flex-shrink-0'>
+    <div className='flex h-[100vh] flex-col bg-[#E0F2FE] py-8 px-4 w-60 justify-between sticky top-0 max-lg:hidden'>
       <div>
         <p className='text-title items-center justify-center flex w-full font-semibold text-xl'>
           Admin
@@ -44,10 +44,10 @@ const AdminSidebar = () => {
             </Link>
           </li>
         </ul>
-        <p className='mt-[25rem] py-2.5 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondary hover:text-primary'>
-          Đăng xuất
-        </p>
       </div>
+      <p className=' py-2.5 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondary hover:text-primary'>
+        Đăng xuất
+      </p>
     </div>
   )
 }
