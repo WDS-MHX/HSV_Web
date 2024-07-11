@@ -119,7 +119,7 @@ const ResultPage = ({ searchValue, searchResults }: ResultPageType) => {
 
       {/* Main Container */}
       <div className='flex-grow'>
-        <div className='flex gap-6 max-lg:gap-2 bg-background px-8 py-2 rounded-md'>
+        <div className='flex gap-6 max-lg:gap-2 max-lg:bg-white lg:bg-background px-8 py-2 rounded-md'>
           <SelectOption className='max-md:hidden' />
           <div className='border-[1px] border-slate-300 rounded-md lg:ml-2 md:mx-2 mx-0 w-full'>
             <input
@@ -129,7 +129,7 @@ const ResultPage = ({ searchValue, searchResults }: ResultPageType) => {
               onChange={handleChange}
             />
           </div>
-          <button className='max-md:px-8 button-primary'>Tìm</button>
+          <button className='max-lg:px-8 button-primary'>Tìm</button>
         </div>
         <SelectOption className='md:hidden w-full px-8' />
 
