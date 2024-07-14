@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'feature/**'
+      - 'fixbug/**'
 jobs:
   build:
     runs-on: ubuntu-latest
