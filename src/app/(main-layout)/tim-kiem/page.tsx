@@ -98,7 +98,7 @@ const data: searchData[] = [
 const timkiem = () => {
   return (
     <div className='py-2 flex'>
-      <ResultPage searchValue={searchValue} searchResults={data} />
+      <ResultPage isAdmin={false} searchValue={searchValue} searchResults={data} />
     </div>
   )
 }
