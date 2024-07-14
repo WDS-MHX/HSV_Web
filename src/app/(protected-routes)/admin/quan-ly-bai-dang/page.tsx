@@ -1,7 +1,8 @@
-import { ResultPage } from '@/components/shared'
-import { picturePlaceHolder } from '../../../../public'
+'use client'
+
 import { StaticImageData } from 'next/image'
-import content_img from '/assets/images/content_img.png'
+import { ResultPage } from '@/components/shared'
+import { useState, useEffect } from 'react'
 
 interface searchData {
   id: string
@@ -13,7 +14,7 @@ interface searchData {
   date: string
 }
 
-const searchValue: string = 'Đại hội'
+const searchValue: string = ''
 
 const data: searchData[] = [
   {
@@ -95,12 +96,38 @@ const data: searchData[] = [
   },
 ]
 
-const timkiem = () => {
+const Quanlybaidang = () => {
+  const [isPost, setIsPost] = useState<boolean>(true)
+
+  const handleIsOpen = () => {
+    setIsPost(true)
+  }
+
+  const handleNotIsOpen = () => {
+    setIsPost(false)
+  }
+
   return (
-    <div className='py-2 flex'>
-      <ResultPage searchValue={searchValue} searchResults={data} />
+    <div className='w-full bg-[#E0F2FE] lg:pt-8 px-2 pb-4 h-fit'>
+      <div className='bg-white rounded-xl py-4 px-6 max-md:px-1 mb-4'>
+        <div className='p-[0.525rem] flex'>
+          <div
+            className={`cursor-pointer duration-300 transition-colors ${isPost ? 'text-primary font-semibold bg-[#E0F2FE]' : 'text-[#334155] bg-white'} px-3 py-3 rounded-md`}
+            onClick={handleIsOpen}
+          >
+            Đã đăng
+          </div>
+          <div
+            className={`cursor-pointer duration-300 transition-colors ${!isPost ? 'text-primary font-semibold bg-[#E0F2FE]' : 'text-[#334155] bg-white'} px-3 py-3 rounded-md`}
+            onClick={handleNotIsOpen}
+          >
+            Chưa đăng
+          </div>
+        </div>
+        <ResultPage searchValue={searchValue} searchResults={data} />
+      </div>
     </div>
   )
 }
 
-export default timkiem
+export default Quanlybaidang

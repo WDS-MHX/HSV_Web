@@ -14,9 +14,20 @@ interface postReviewType {
 const PostReview = ({ img, categorized, title, content, date, comment }: postReviewType) => {
   return (
     <div className='flex gap-2 p-4 md:flex-row flex-col'>
-      <div className='lg:h-[25.875rem] lg:max-h-[25.875rem] md:basis-8/12 md:h-auto w-full'>
+      <div className='md:basis-8/12 md:h-auto w-full'>
         {!!img && (
-          <Image id='imgPost' src={img} alt='' className='w-full object-contain h-full'></Image>
+          <Image
+            id='imgPost'
+            src={img}
+            alt=''
+            width={500}
+            height={500}
+            object-fit='contain'
+            style={{
+              width: '100%',
+              height: 'auto',
+            }}
+          />
         )}
       </div>
       <div className='flex lg:w-3/6 md:basis-1/2 h-auto flex-col justify-between'>

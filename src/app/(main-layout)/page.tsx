@@ -13,9 +13,7 @@ export default function Home() {
               placeholder='Search'
             ></input>
           </div>
-          <button className='w-[5.625rem] button-primary'>
-            <p className='font-medium text-sm leading-6 text-white'>Tìm</p>
-          </button>
+          <button className='w-[5.625rem] button-primary'>Tìm</button>
         </div>
         <div className='border-b-2 pb-6'>
           <PostReview
@@ -70,9 +68,7 @@ export default function Home() {
               placeholder='Search'
             ></input>
           </div>
-          <button className='button-primary'>
-            <p className='font-medium text-sm leading-6 text-white'>Tìm</p>
-          </button>
+          <button className='button-primary'>Tìm</button>
         </div>
         <div className='w-full border-t-4 border-sky-600'>
           <p className='text-sky-600 text-xl font-semibold text-justify leading-7 mb-4'>

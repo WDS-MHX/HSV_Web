@@ -18,8 +18,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang='vn'>
-      <body className={inter.className}>
+    <html lang='vi'>
+      <body className={inter.className} suppressHydrationWarning={true}>
         <Providers>{children}</Providers>
       </body>
     </html>
