@@ -3,8 +3,6 @@
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import 'react-quill/dist/quill.snow.css'
-import 'quill-image-resize-module-react'
-import 'quill-image-drop-module'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
@@ -32,12 +30,7 @@ const Editor: React.FC = () => {
         ['clean'],
       ],
       imageResize: {
-        displayStyles: {
-          backgroundColor: 'black',
-          border: 'none',
-          color: 'white',
-        },
-        modules: ['Resize', 'DisplaySize', 'Toolbar'],
+        modules: ['Resize', 'DisplaySize'],
       },
       imageDrop: true,
     },
