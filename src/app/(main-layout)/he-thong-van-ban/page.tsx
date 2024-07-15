@@ -1,9 +1,9 @@
-import Image from 'next/image'
-import { DocumentsTable } from './components'
+import DocumentsTable from '@/components/shared/DocumentsTable'
+import { documents } from './data'
 export default function hethongvanban() {
   return (
     <div className='my-4'>
-      <DocumentsTable></DocumentsTable>
+      <DocumentsTable documents={documents} isAdmin={false}></DocumentsTable>
     </div>
   )
 }

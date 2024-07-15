@@ -120,10 +120,8 @@ const ResultPage = ({ searchValue, searchResults, isAdmin }: ResultPageType) => 
 
       {/* Main Container */}
       <div className='flex-grow'>
-        <div
-          className={`flex gap-6 max-lg:gap-2 max-lg:bg-white lg:bg-background ${isAdmin ? 'lg:px-8' : 'px-8'} max-md:px-4 py-2 rounded-md`}
-        >
-          <SelectOption className='max-md:hidden' />
+        <div className='flex gap-6 max-lg:gap-2 max-lg:bg-white lg:bg-background px-8 py-2 rounded-md'>
+          <SelectOption className='lg:hidden max-md:hidden' />
           <div className='border-[1px] border-slate-300 rounded-md lg:ml-2 md:mx-2 mx-0 w-full'>
             <input
               className='border-none rounded-md mr-2 py-2.5 px-3 w-full focus:outline-none bg-white text-black text-sm font-normal leading-5'
@@ -134,7 +132,7 @@ const ResultPage = ({ searchValue, searchResults, isAdmin }: ResultPageType) => 
           </div>
           <button className='max-lg:px-8 button-primary'>Tìm</button>
         </div>
-        <SelectOption className={`md:hidden w-full ${isAdmin ? 'lg:px-8' : 'px-8'} max-md:px-4`} />
+        <SelectOption className='lg:hidden md:hidden w-full px-8' />
 
         <div className='mt-4 px-4 py-2'>
           <div className='md:flex justify-between'>
