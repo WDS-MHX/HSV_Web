@@ -20,9 +20,10 @@ interface searchData {
 interface ResultPageType {
   searchValue: string
   searchResults: Array<searchData>
+  isAdmin: boolean
 }
 
-const ResultPage = ({ searchValue, searchResults }: ResultPageType) => {
+const ResultPage = ({ searchValue, searchResults, isAdmin }: ResultPageType) => {
   const [isLatest, setisLatest] = useState<boolean>(true)
   const [currentOffset, setCurrentOffset] = useState<number>(0)
   const [newSearchValue, setNewSearchValue] = useState<string>(searchValue)
