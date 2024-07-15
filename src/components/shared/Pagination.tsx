@@ -5,21 +5,29 @@ import ReactPaginate from 'react-paginate'
 
 import { IoChevronForwardOutline } from 'react-icons/io5'
 import { IoChevronBackOutline } from 'react-icons/io5'
+import documentType from '@/models/document'
+import { Table } from '@tanstack/react-table'
 
 interface PaginationType {
   itemsPerPage: number
-  setItemOffset: (offset: number) => void
+  setItemOffset?: (offset: number) => void | undefined
   notilength: number
+  table?: Table<documentType> | undefined
 }
 
-function Pagination({ itemsPerPage, setItemOffset, notilength }: PaginationType) {
+function Pagination({ itemsPerPage, setItemOffset, notilength, table }: PaginationType) {
   let pageCount = Math.ceil(notilength / itemsPerPage)
 
   const handlePageClick = (event: { selected: number }) => {
-    const newOffset = (event.selected * itemsPerPage) % notilength
-    setItemOffset(newOffset)
+    if (table) {
+      table.setPageIndex(event.selected)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else if (setItemOffset) {
+      const newOffset = (event.selected * itemsPerPage) % notilength
+      setItemOffset(newOffset)
 
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
   }
 
   return (
