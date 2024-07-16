@@ -17,7 +17,8 @@ const AdminSidebar = () => {
         <ul className='mt-16'>
           <li
             className={
-              pathname == PATH_NAME.QUAN_LY_BAI_DANG
+              pathname == PATH_NAME.QUAN_LY_BAI_DANG ||
+              (pathname.startsWith(PATH_NAME.QUAN_LY_BAI_DANG) && pathname !== '/')
                 ? 'bg-white text-primary rounded-md'
                 : 'text-secondary'
             }
@@ -31,7 +32,8 @@ const AdminSidebar = () => {
           </li>
           <li
             className={
-              pathname == PATH_NAME.QUAN_LY_TAI_LIEU
+              pathname == PATH_NAME.QUAN_LY_TAI_LIEU ||
+              (pathname.startsWith(PATH_NAME.QUAN_LY_TAI_LIEU) && pathname !== '/')
                 ? 'bg-white text-primary rounded-md'
                 : 'text-secondary'
             }
