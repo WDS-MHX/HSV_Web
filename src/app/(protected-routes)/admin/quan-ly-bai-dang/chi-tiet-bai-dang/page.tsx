@@ -1,25 +1,17 @@
 'use client'
 
 import { GrLinkPrevious } from 'react-icons/gr'
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 
 import dynamic from 'next/dynamic'
-import generateFroalaConfig from '@/configs/froala.config'
-import 'froala-editor/js/plugins.pkgd.min.js'
-import 'froala-editor/css/froala_editor.pkgd.min.css'
-import 'froala-editor/css/themes/gray.min.css'
-import '@/styles/froala-custom.css'
-
 import React from 'react'
 
-const FroalaEditorComponent = dynamic(() => import('@/components/shared/FroalaEditorComponent'), {
+const Editor = dynamic(() => import('./component/Editor'), {
   ssr: false,
 })
 
 const ChiTietBaiDang = () => {
   const [isPost, setIsPost] = useState<boolean>(true)
-  const froalaConfig = useMemo(() => generateFroalaConfig(), [])
-  const [content, setContent] = useState<string>('')
 
   return (
     <div className='w-full bg-[#E0F2FE] lg:pt-8 px-2 pb-4 h-full'>
@@ -41,12 +33,7 @@ const ChiTietBaiDang = () => {
           </div>
         </div>
         <div className='h-auto'>
-          <FroalaEditorComponent
-            tag='textarea'
-            config={froalaConfig}
-            model={content}
-            onModelChange={(e: string) => setContent(e)}
-          />
+          <Editor />
         </div>
       </div>
     </div>
