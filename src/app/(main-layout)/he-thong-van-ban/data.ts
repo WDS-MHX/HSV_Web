@@ -1,10 +1,3 @@
-import { it, only } from 'node:test'
-import { type, release } from 'os'
-import { printer } from 'prettier/doc.js'
-import { title, versions } from 'process'
-import { text } from 'stream/consumers'
-import { unknown } from 'zod'
-
 export const documents = [
   {
     id: 1,
