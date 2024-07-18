@@ -1,0 +1,22 @@
+/* src/styles/froala-custom.css */
+
+.fr-wrapper {
+  background-color: #f9f9f9 !important; /* Thay đổi màu nền */
+}
+
+.fr-toolbar {
+  border: 1px solid #ddd !important; /* Thêm viền cho thanh công cụ */
+  border-radius: 4px !important; /* Bo góc thanh công cụ */
+}
+
+.fr-toolbar .fr-command {
+  color: #555 !important; /* Thay đổi màu biểu tượng thanh công cụ */
+}
+
+.fr-toolbar .fr-command:hover {
+  background-color: #eee !important; /* Thay đổi màu nền khi di chuột qua biểu tượng */
+}
+
+.fr-box.fr-basic .fr-insert-helper.fr-visible {
+  display: none;
+}
