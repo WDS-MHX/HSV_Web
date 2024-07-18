@@ -3,7 +3,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 // import { ToastContainer } from 'react-toastify'
 // import { cn } from '@/lib/utils'
-// import { jura } from '@/styles/fonts'
 
 const queryClient = new QueryClient({
   defaultOptions: {
