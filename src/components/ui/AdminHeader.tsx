@@ -18,26 +18,28 @@ const AdminHeader = () => {
           <p className='text-title font-semibold text-xl'>Admin</p>
           <ul className='flex gap-2.5'>
             <li
-              className={`
-                py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md ${
-                  pathname == PATH_NAME.QUAN_LY_BAI_DANG
-                    ? 'bg-white text-primary'
-                    : 'text-secondary'
-                }
-              `}
+              className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
+              ${
+                pathname == PATH_NAME.QUAN_LY_BAI_DANG ||
+                (pathname.startsWith(PATH_NAME.QUAN_LY_BAI_DANG) && pathname !== '/')
+                  ? 'bg-white text-primary rounded-md'
+                  : 'text-secondary'
+              }
+            `}
             >
               <Link href={PATH_NAME.QUAN_LY_BAI_DANG} className='cursor-pointer'>
                 Quản lý bài đăng
               </Link>
             </li>
             <li
-              className={`
-                py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md ${
-                  pathname == PATH_NAME.QUAN_LY_TAI_LIEU
-                    ? 'bg-white text-primary'
-                    : 'text-secondary'
-                }
-              `}
+              className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
+              ${
+                pathname == PATH_NAME.QUAN_LY_TAI_LIEU ||
+                (pathname.startsWith(PATH_NAME.QUAN_LY_TAI_LIEU) && pathname !== '/')
+                  ? 'bg-white text-primary rounded-md'
+                  : 'text-secondary'
+              }
+            `}
             >
               <Link href={PATH_NAME.QUAN_LY_TAI_LIEU} className='cursor-pointer'>
                 Quản lý tài liệu
@@ -75,22 +77,28 @@ const AdminHeader = () => {
           <p className='text-title font-semibold text-xl mx-auto'>Admin</p>
           <ul className='flex flex-col gap-2.5'>
             <li
-              className={`
-              py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md ${
-                pathname == PATH_NAME.QUAN_LY_BAI_DANG ? 'bg-white text-primary' : 'text-secondary'
-              }
-            `}
+              className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
+                ${
+                  pathname == PATH_NAME.QUAN_LY_BAI_DANG ||
+                  (pathname.startsWith(PATH_NAME.QUAN_LY_BAI_DANG) && pathname !== '/')
+                    ? 'bg-white text-primary rounded-md'
+                    : 'text-secondary'
+                }
+              `}
             >
               <Link href={PATH_NAME.QUAN_LY_BAI_DANG} className='cursor-pointer'>
                 Quản lý bài đăng
               </Link>
             </li>
             <li
-              className={`
-              py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md ${
-                pathname == PATH_NAME.QUAN_LY_TAI_LIEU ? 'bg-white text-primary' : 'text-secondary'
-              }
-            `}
+              className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
+                ${
+                  pathname == PATH_NAME.QUAN_LY_TAI_LIEU ||
+                  (pathname.startsWith(PATH_NAME.QUAN_LY_TAI_LIEU) && pathname !== '/')
+                    ? 'bg-white text-primary rounded-md'
+                    : 'text-secondary'
+                }
+              `}
             >
               <Link href={PATH_NAME.QUAN_LY_TAI_LIEU} className='cursor-pointer'>
                 Quản lý tài liệu

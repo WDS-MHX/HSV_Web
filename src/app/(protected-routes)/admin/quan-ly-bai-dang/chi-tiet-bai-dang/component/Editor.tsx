@@ -3,9 +3,6 @@
 import { useState, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import generateFroalaConfig from '@/configs/froala.config'
-import 'froala-editor/js/plugins.pkgd.min.js'
-import 'froala-editor/css/froala_editor.pkgd.min.css'
-import 'froala-editor/css/themes/gray.min.css'
 import '@/styles/froala-custom.css'
 
 // Load Froala Editor dynamically
