@@ -6,7 +6,7 @@ import { StaticImageData } from 'next/image'
 import SelectOption from './SelectOption'
 import PostReview from './postReview'
 import Pagination from './Pagination'
-
+import { shortenText } from '@/helpers'
 interface searchData {
   id: string
   categorized: string
@@ -38,14 +38,6 @@ const ResultPage = ({ searchValue, searchResults, isAdmin }: ResultPageType) => 
   }
 
   const currentItems = searchResults.slice(currentOffset, currentOffset + itemsPerPage)
-
-  function shortenText(text: string, wordLimit: number): string {
-    const words: string[] = text.split(' ')
-    if (words.length > wordLimit) {
-      return words.slice(0, wordLimit).join(' ') + ' ...'
-    }
-    return text
-  }
 
   return (
     <div className='flex gap-4 w-full'>
@@ -171,9 +163,10 @@ const ResultPage = ({ searchValue, searchResults, isAdmin }: ResultPageType) => 
                 img={imageSrc}
                 categorized={searchResult.categorized}
                 title={searchResult.title}
-                content={shortenText(searchResult.content, 30)}
+                content={shortenText(searchResult.content, 20)}
                 date={searchResult.date}
                 comment={searchResult.comment}
+                isSearchPage={true}
               />
             )
           })}
