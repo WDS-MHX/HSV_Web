@@ -12,7 +12,7 @@ interface searchData {
   categorized: string
   title: string
   content: string
-  img?: Array<string>
+  img?: Array<string> | undefined
   comment: number
   date: string
 }
