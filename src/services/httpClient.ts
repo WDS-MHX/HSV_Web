@@ -37,38 +37,6 @@ class HttpClient {
     const response = await this.instance.delete<T>(this.getUrl(endpoint), config)
     return response.data
   }
-
-  setAuthHeader(token: string) {
-    this.instance.defaults.headers.common['Authorization'] = `Bearer ${token}`
-  }
-
-  removeAuthHeader() {
-    delete this.instance.defaults.headers.common['Authorization']
-  }
-
-  createAuthRefreshInterceptor(
-    onSuccess?: (accessToken: string) => void,
-    onError?: (error: any) => void,
-  ) {
-    _createAuthRefreshInterceptor(
-      this.instance,
-      async (failedRequest) => {
-        try {
-          const { accessToken } = await authApi.refreshToken()
-          failedRequest.response.config.headers['Authorization'] = 'Bearer ' + accessToken
-          onSuccess?.(accessToken)
-          return Promise.resolve()
-        } catch (error) {
-          onError?.(error)
-          return Promise.reject(error)
-        }
-      },
-      {
-        pauseInstanceWhileRefreshing: true,
-        statusCodes: [401],
-      },
-    )
-  }
 }
 
 export function handleError(error: any, onError?: (error: AxiosResponse) => void) {

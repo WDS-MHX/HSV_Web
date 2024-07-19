@@ -2,24 +2,24 @@ import Admin from '@/models/admin'
 import { handleError, httpClient } from '@/services'
 
 class AuthApi {
-  async signIn(email: string, password: string) {
-    const res = await httpClient.post<{ access_token: string; admin_id: string }>('/auth/sign-in', {
+  async logIn(email: string, password: string) {
+    const res = await httpClient.post<{ _id: string; role: string }>('/auth/login', {
       email,
       password,
     })
-    return { accessToken: res.access_token, adminId: res.admin_id }
+    return { adminId: res._id, role: res.role }
   }
 
-  async refreshToken() {
-    const res = await httpClient.get<{ access_token: string }>('/auth/refresh-token', {
+  async newAccessToken() {
+    const res = await httpClient.get<{ access_token: string }>('/auth/new-access-token', {
       skipAuthRefresh: true,
     })
     return { accessToken: res.access_token }
   }
 
-  async forgotPassword(email: string) {
+  async forgotPassword() {
     try {
-      const res = await httpClient.post<{ message: string }>('/auth/forgot-password', { email })
+      const res = await httpClient.get<{ message: string }>('/auth/otp-code')
       return res
     } catch (error) {
       if ((error as any).response.status === 500) {
@@ -31,12 +31,12 @@ class AuthApi {
     }
   }
 
-  async resetPassword(email: string, code: string, new_password: string) {
+  async resetPassword(email: string, otpCode: string, newPassword: string) {
     try {
       const res = await httpClient.post<{ message: string }>('/auth/reset-password', {
         email,
-        code,
-        new_password,
+        otpCode,
+        newPassword,
       })
       return res
     } catch (error) {
@@ -46,9 +46,9 @@ class AuthApi {
     }
   }
 
-  async signOut() {
+  async logOut() {
     try {
-      const res = await httpClient.delete<{ admin: Admin }>('/auth/sign-out')
+      const res = await httpClient.get<{ admin: Admin }>('/auth/logout')
       return res.admin
     } catch (error) {
       handleError(error, (res) => {
