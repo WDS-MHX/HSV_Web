@@ -18,10 +18,6 @@ interface blockAccountDto {
   isBlocked: boolean
 }
 
-interface uploadAvatartDto {
-  file: File
-}
-
 class AdminApi {
   async createAdmin(data: createAdminDto) {
     try {
@@ -47,11 +43,10 @@ class AdminApi {
 
   async blockAccount(_id: string, isBlocked: boolean) {
     try {
-      const res = await httpClient.post<blockAccountDto>(`/admin/block-account`, {
+      await httpClient.post<blockAccountDto>(`/admin/block-account`, {
         _id,
         isBlocked,
       })
-      return res
     } catch (error) {
       handleError(error, (res) => {
         throw new res.data.message()
@@ -59,22 +54,20 @@ class AdminApi {
     }
   }
 
-  async uploadAvatar(file: File) {
-    let avatar = new FormData()
-    avatar.append('avatar', file)
-    try {
-      const res = await httpClient.post<uploadAvatartDto>(`/admin/upload-avatar`, avatar)
-      return res
-    } catch (error) {
-      handleError(error, (res) => {
-        throw new res.data.message()
-      })
-    }
-  }
-
-  async getAdmin(adminId: string) {
+  async getAdminById(adminId: string) {
     try {
       const res = await httpClient.get<Admin>(`/admin/info/${adminId}`)
+      return res
+    } catch (error) {
+      handleError(error, (res) => {
+        throw new res.data.message()
+      })
+    }
+  }
+
+  async getAllAdmin() {
+    try {
+      const res = await httpClient.get<Admin[]>(`/admin/admins`)
       return res
     } catch (error) {
       handleError(error, (res) => {
