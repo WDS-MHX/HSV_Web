@@ -11,7 +11,11 @@ class AuthApi {
   }
 
   async newAccessToken() {
-    await httpClient.get<{ access_token: string }>('/auth/new-access-token')
+    try {
+      await httpClient.get<{ access_token: string }>('/auth/new-access-token')
+    } catch (error) {
+      throw error
+    }
   }
 
   async forgotPassword() {

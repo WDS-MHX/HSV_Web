@@ -1,13 +1,16 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { FaBars } from 'react-icons/fa'
+import { authApi } from '@/apis'
 
-import { ADMIN_PATH_NAME } from '@/configs'
+import { ADMIN_PATH_NAME, PATH_NAME } from '@/configs'
 
 const AdminHeader = () => {
+  const router = useRouter()
+
   const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
@@ -47,7 +50,13 @@ const AdminHeader = () => {
             </li>
           </ul>
         </div>
-        <p className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondary hover:text-primary'>
+        <p
+          className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondary hover:text-primary'
+          onClick={() => {
+            authApi.logOut()
+            router.push(PATH_NAME.HOME)
+          }}
+        >
           Đăng xuất
         </p>
       </div>

@@ -1,12 +1,14 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
-import { ADMIN_PATH_NAME } from '@/configs'
+import { authApi } from '@/apis'
+import { ADMIN_PATH_NAME, PATH_NAME } from '@/configs'
 
 const AdminSidebar = () => {
   const pathname = usePathname()
+  const router = useRouter()
 
   return (
     <div className='flex h-[100vh] flex-col bg-[#E0F2FE] py-8 px-4 w-60 justify-between sticky top-0 max-lg:hidden'>
@@ -47,7 +49,13 @@ const AdminSidebar = () => {
           </li>
         </ul>
       </div>
-      <p className=' py-2.5 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondary hover:text-primary'>
+      <p
+        className=' py-2.5 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondary hover:text-primary'
+        onClick={() => {
+          authApi.logOut()
+          router.push(PATH_NAME.HOME)
+        }}
+      >
         Đăng xuất
       </p>
     </div>
