@@ -3,8 +3,7 @@ name: Continuous Integration
 on:
   push:
     branches:
-      - 'feature/**'
-      - 'fixbug/**'
+      - dev
 jobs:
   build:
     runs-on: ubuntu-latest
