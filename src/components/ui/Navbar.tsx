@@ -7,7 +7,7 @@ import { FaUser } from 'react-icons/fa'
 import { FaBars, FaTimes } from 'react-icons/fa'
 import { useState, useEffect, useRef } from 'react'
 
-import { PATH_NAME } from '@/configs/pathName'
+import { PATH_NAME, AUTH_PATH_NAME } from '@/configs'
 
 const Navbar = () => {
   const pathname = usePathname()
@@ -207,7 +207,7 @@ const Navbar = () => {
                   </button>
                 ) : (
                   <Link
-                    href={PATH_NAME.DANG_NHAP}
+                    href={AUTH_PATH_NAME.DANG_NHAP}
                     className='block text-white py-4 px-[0.8rem] rounded-md transition-colors duration-300 hover:bg-sky-700 text-sm font-medium'
                   >
                     Đăng nhập

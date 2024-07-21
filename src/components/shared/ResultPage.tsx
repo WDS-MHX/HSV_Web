@@ -12,7 +12,7 @@ interface searchData {
   categorized: string
   title: string
   content: string
-  img?: string | StaticImageData
+  img?: Array<string>
   comment: number
   date: string
 }
@@ -159,18 +159,24 @@ const ResultPage = ({ searchValue, searchResults, isAdmin }: ResultPageType) => 
             </div>
           </div>
 
-          {currentItems?.map((searchResult, index) => (
-            <PostReview
-              key={index}
-              img={searchResult.img}
-              categorized={searchResult.categorized}
-              title={searchResult.title}
-              content={shortenText(searchResult.content, 30)}
-              date={searchResult.date}
-              comment={searchResult.comment}
-            />
-          ))}
+          {currentItems?.map((searchResult, index) => {
+            const imageSrc: string =
+              searchResult.img && searchResult.img.length > 0
+                ? searchResult.img[0]
+                : '/assets/images/picture-placeholder.png'
 
+            return (
+              <PostReview
+                key={index}
+                img={imageSrc}
+                categorized={searchResult.categorized}
+                title={searchResult.title}
+                content={shortenText(searchResult.content, 30)}
+                date={searchResult.date}
+                comment={searchResult.comment}
+              />
+            )
+          })}
           <Pagination
             itemsPerPage={itemsPerPage}
             setItemOffset={handleItemOffsetChange}
