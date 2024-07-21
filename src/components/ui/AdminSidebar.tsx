@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-import { PATH_NAME } from '@/configs/pathName'
+import { ADMIN_PATH_NAME } from '@/configs'
 
 const AdminSidebar = () => {
   const pathname = usePathname()
@@ -17,14 +17,14 @@ const AdminSidebar = () => {
         <ul className='mt-16'>
           <li
             className={
-              pathname == PATH_NAME.QUAN_LY_BAI_DANG ||
-              (pathname.startsWith(PATH_NAME.QUAN_LY_BAI_DANG) && pathname !== '/')
+              pathname == ADMIN_PATH_NAME.QUAN_LY_BAI_DANG ||
+              (pathname.startsWith(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG) && pathname !== '/')
                 ? 'bg-white text-primary rounded-md'
                 : 'text-secondary'
             }
           >
             <Link
-              href={PATH_NAME.QUAN_LY_BAI_DANG}
+              href={ADMIN_PATH_NAME.QUAN_LY_BAI_DANG}
               className='block py-2.5 px-4 cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-slate-100'
             >
               Quản lý bài đăng
@@ -32,14 +32,14 @@ const AdminSidebar = () => {
           </li>
           <li
             className={
-              pathname == PATH_NAME.QUAN_LY_TAI_LIEU ||
-              (pathname.startsWith(PATH_NAME.QUAN_LY_TAI_LIEU) && pathname !== '/')
+              pathname == ADMIN_PATH_NAME.QUAN_LY_TAI_LIEU ||
+              (pathname.startsWith(ADMIN_PATH_NAME.QUAN_LY_TAI_LIEU) && pathname !== '/')
                 ? 'bg-white text-primary rounded-md'
                 : 'text-secondary'
             }
           >
             <Link
-              href={PATH_NAME.QUAN_LY_TAI_LIEU}
+              href={ADMIN_PATH_NAME.QUAN_LY_TAI_LIEU}
               className='mt-1.5 block py-2.5 px-4 cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-slate-100'
             >
               Quản lý tài liệu

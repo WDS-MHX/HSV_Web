@@ -11,16 +11,12 @@ class AuthApi {
   }
 
   async newAccessToken() {
-    const res = await httpClient.get<{ access_token: string }>('/auth/new-access-token', {
-      skipAuthRefresh: true,
-    })
-    return { accessToken: res.access_token }
+    await httpClient.get<{ access_token: string }>('/auth/new-access-token')
   }
 
   async forgotPassword() {
     try {
-      const res = await httpClient.get<{ message: string }>('/auth/otp-code')
-      return res
+      await httpClient.get<{ message: string }>('/auth/otp-code')
     } catch (error) {
       if ((error as any).response.status === 500) {
         console.log('Email không tồn tại')
@@ -33,12 +29,11 @@ class AuthApi {
 
   async resetPassword(email: string, otpCode: string, newPassword: string) {
     try {
-      const res = await httpClient.post<{ message: string }>('/auth/reset-password', {
+      await httpClient.post<{ message: string }>('/auth/reset-password', {
         email,
         otpCode,
         newPassword,
       })
-      return res
     } catch (error) {
       handleError(error, (res) => {
         throw new res.data.message()
@@ -48,8 +43,7 @@ class AuthApi {
 
   async logOut() {
     try {
-      const res = await httpClient.get<{ admin: Admin }>('/auth/logout')
-      return res.admin
+      await httpClient.get<{ admin: Admin }>('/auth/logout')
     } catch (error) {
       handleError(error, (res) => {
         throw new res.data.message()
