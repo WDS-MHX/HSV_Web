@@ -174,6 +174,7 @@ const ResultPage = ({ searchValue, searchResults, isAdmin }: ResultPageType) => 
                 content={shortenText(searchResult.content, 30)}
                 date={searchResult.date}
                 comment={searchResult.comment}
+                isSearchPage={true}
               />
             )
           })}

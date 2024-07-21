@@ -84,6 +84,30 @@ body {
   height: auto;
 }
 
+.imgpost {
+  width: 100%;
+  height: 11.523rem;
+  object-fit: cover;
+  @media (min-width: 740px) {
+    height: 12.438rem;
+  }
+
+  @media (min-width: 1024px) {
+    height: 21.25rem;
+  }
+}
+.imgsearch {
+  width: 100%;
+  height: 11.523rem;
+  object-fit: cover;
+  @media (min-width: 740px) {
+    height: 8.411rem;
+  }
+
+  @media (min-width: 1024px) {
+    height: 15rem;
+  }
+}
 @layer utilities {
   .text-balance {
     text-wrap: balance;

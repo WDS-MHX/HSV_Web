@@ -2,6 +2,30 @@ import Image from 'next/image'
 import { PostReview } from '@/components'
 import { picturePlaceHolder } from '../../../public'
 import { MostRecent } from '@/components'
+import { shortenText } from '@/helpers'
+const data = [
+  {
+    id: '1',
+    categorized: 'Xây dựng hội',
+    title:
+      'UIT FACE| Sinh viên năm nhất UIT tham gia Đại hội Đại biểu sinh viên Việt Nam TP.HCM lần thứ VII, nhiệm kỳ 2023 - 2028',
+    content:
+      'Tại Đại hội Đại biểu Hội Sinh viên Việt Nam trường Đại học Công nghệ Thông tin, ĐHQG-HCM lần thứ VI, nhiệm kỳ 2023 – 2025 diễn ra vào ngày 26 tháng 5 năm 2023 đã hiệp thương bầu ra đoàn đại biểu tham dự Đại hội Đại biểu Hội Sinh viên Việt Nam Thành phố Hồ Chí Minh lần thứ VII, nhiệm kỳ 2023 – 2028 (bao gồm 08 đại biểu chính thức và 03 đại biểu dự khuyết, khuyết 1 đại biểu theo cơ cấu là Sinh viên năm nhất)',
+    img: '/assets/images/content_img.svg',
+    comment: 1,
+    date: '21/02/2023',
+  },
+  {
+    id: '1',
+    categorized: 'Xây dựng hội',
+    title: 'TUYÊN DƯƠNG SINH VIÊN 5 TỐT NĂM HỌC 2022 - 2023',
+    content:
+      '“Sinh viên 5 tốt” là danh hiệu cao quý của sinh viên Việt Nam, minh chứng cho sự nỗ lực, cố gắng của mỗi cá nhân trong quá trình rèn luyện, hoàn thiện bản thân ở năm tiêu chí: Học tập tốt - Đạo đức tốt - Tình nguyện tốt - Hội nhập tốt - Thể lực tốt.',
+    img: '/assets/images/content_img.svg',
+    comment: 1,
+    date: '21/02/2023',
+  },
+]
 export default function Home() {
   return (
     <div className='grid lg:grid-cols-4 gap-4 md:grid-cols-1'>
@@ -19,8 +43,8 @@ export default function Home() {
           <PostReview
             img={picturePlaceHolder}
             categorized='uncategorized'
-            title='UIT FACE| Sinh viên năm nhất UIT tham gia Đại hội Đại biểu sinh viên Việt Nam TP.HCM lần thứ VII, nhiệm kỳ 2023 - 2028'
-            content='Tại Đại hội Đại biểu Hội Sinh viên Việt Nam trường Đại học Công nghệ Thông tin, ĐHQG-HCM lần thứ VI, nhiệm kỳ 2023 – 2025 diễn ra Tại Đại hội Đại biểu Hội Sinh viên Việt Nam trường Đại học Công nghệ Thông tin, ĐHQG-HCM lần thứ VI, nhiệm kỳ 2023 – 2025 diễn ra'
+            title={data[0].title}
+            content={shortenText(data[0].content, 30)}
             date='26/05/2023'
             comment={1}
           ></PostReview>
@@ -33,7 +57,7 @@ export default function Home() {
             img={picturePlaceHolder}
             categorized='Sinh viên 5 tốt'
             title='TUYÊN DƯƠNG SINH VIÊN 5 TỐT NĂM HỌC 2022 - 2023'
-            content='“Sinh viên 5 tốt” là danh hiệu cao quý của sinh viên Việt Nam, minh chứng cho sự nỗ lực, cố gắng của mỗi cá nhân trong quá trình rèn luyện, hoàn thiện bản thân ở năm tiêu chí: Học tập tốt - Đạo đức tốt - Tình nguyện tốt - Hội nhập tốt - Thể lực tốt.'
+            content={shortenText(data[1].content, 50)}
             date='26/05/2023'
             comment={1}
           ></PostReview>
@@ -41,7 +65,7 @@ export default function Home() {
             img={picturePlaceHolder}
             categorized='Sinh viên 5 tốt'
             title='TUYÊN DƯƠNG SINH VIÊN 5 TỐT NĂM HỌC 2022 - 2023'
-            content='“Sinh viên 5 tốt” là danh hiệu cao quý của sinh viên Việt Nam, minh chứng cho sự nỗ lực, cố gắng của mỗi cá nhân trong quá trình rèn luyện, hoàn thiện bản thân ở năm tiêu chí: Học tập tốt - Đạo đức tốt - Tình nguyện tốt - Hội nhập tốt - Thể lực tốt.'
+            content={shortenText(data[1].content, 50)}
             date='26/05/2023'
             comment={1}
           ></PostReview>
@@ -49,7 +73,7 @@ export default function Home() {
             img={picturePlaceHolder}
             categorized='Sinh viên 5 tốt'
             title='TUYÊN DƯƠNG SINH VIÊN 5 TỐT NĂM HỌC 2022 - 2023'
-            content='“Sinh viên 5 tốt” là danh hiệu cao quý của sinh viên Việt Nam, minh chứng cho sự nỗ lực, cố gắng của mỗi cá nhân trong quá trình rèn luyện, hoàn thiện bản thân ở năm tiêu chí: Học tập tốt - Đạo đức tốt - Tình nguyện tốt - Hội nhập tốt - Thể lực tốt.'
+            content={shortenText(data[1].content, 50)}
             date='26/05/2023'
             comment={1}
           ></PostReview>
