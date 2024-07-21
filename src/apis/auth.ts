@@ -18,9 +18,9 @@ class AuthApi {
     }
   }
 
-  async forgotPassword() {
+  async forgotPassword(email: string) {
     try {
-      await httpClient.get<{ message: string }>('/auth/otp-code')
+      await httpClient.get<{ message: string }>(`/auth/otp-code?email=${email}`)
     } catch (error) {
       if ((error as any).response.status === 500) {
         console.log('Email không tồn tại')

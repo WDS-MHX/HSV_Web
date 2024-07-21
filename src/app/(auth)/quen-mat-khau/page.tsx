@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
@@ -8,33 +9,31 @@ import Image from 'next/image'
 
 import daihoiLogo from '@/../public/daihoiLogo.svg'
 import { authApi } from '@/apis'
-import { ADMIN_PATH_NAME, AUTH_PATH_NAME } from '@/configs'
+import { AUTH_PATH_NAME } from '@/configs'
 
-interface ILoginFormInputs {
+interface IForgotPasswordFormInputs {
   email: string
-  password: string
 }
 
-export default function AdminLogin() {
+export default function ForgetPassword() {
   const router = useRouter()
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ILoginFormInputs>()
+  } = useForm<IForgotPasswordFormInputs>()
 
   const mutation = useMutation({
-    mutationFn: ({ email, password }: ILoginFormInputs) => authApi.logIn(email, password),
-    onSuccess: (data) => {
-      console.log('Login successful:', data)
-      router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
+    mutationFn: ({ email }: IForgotPasswordFormInputs) => authApi.forgotPassword(email),
+    onSuccess: () => {
+      router.push(AUTH_PATH_NAME.RESET_MAU_KHAU)
     },
     onError: (error) => {
-      console.error('Login failed:', error)
+      console.error('Send OTP failed!:', error)
     },
   })
 
-  const onSubmit = (data: ILoginFormInputs) => {
+  const onSubmit = (data: IForgotPasswordFormInputs) => {
     mutation.mutate(data)
   }
 
@@ -42,7 +41,7 @@ export default function AdminLogin() {
     <div className='h-screen w-screen items-center flex'>
       <div className='bg-white w-full md:max-w-[470px] px-8 py-16 m-auto'>
         <Image src={daihoiLogo} alt='' height={100} className='m-auto' />
-        <h1 className='text-sky-600 font-semibold text-xl text-center mt-4'>Chào mừng !</h1>
+        <h1 className='text-sky-600 font-semibold text-xl text-center mt-4'>Xác minh email</h1>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className='container text-black block md:px-4 py-2 space-y-4 m-auto'
@@ -62,35 +61,21 @@ export default function AdminLogin() {
             />
             {errors.email && <p className='text-red-600'>{errors.email.message}</p>}
           </div>
-          <div className='space-y-1'>
-            <label htmlFor='password' className='block'>
-              Mật khẩu
-            </label>
-            <input
-              type='password'
-              {...register('password', {
-                required: 'Password is required',
-              })}
-              className='w-full rounded-md border border-[#CBD5E1]'
-              placeholder='Mật khẩu'
-            />
-            {errors.password && <p className='text-red-600'>{errors.password.message}</p>}
-          </div>
           <div className='py-2'>
             <button
               type='submit'
               className='w-full bg-sky-600 hover:bg-sky-600/80 text-white p-3 rounded-md'
               disabled={mutation.status === 'pending'}
             >
-              {mutation.status === 'pending' ? 'Đang đăng nhập...' : 'Đăng nhập'}
+              {mutation.status === 'pending' ? 'Đang gửi...' : 'Gửi OTP'}
             </button>
           </div>
         </form>
         <Link
-          href={AUTH_PATH_NAME.QUEN_MAT_KHAU}
+          href={AUTH_PATH_NAME.DANG_NHAP}
           className='flex mt-4 justify-center items-center w-full hover:underline text-secondary text-sm'
         >
-          Quên mật khẩu
+          Đăng nhập
         </Link>
       </div>
     </div>

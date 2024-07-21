@@ -28,7 +28,9 @@ export default async function middleware(request: NextRequest) {
     ) {
       return NextResponse.next()
     } else {
-      return NextResponse.redirect(new URL(PATH_NAME.HOME, request.url))
+      if (mainPathWithoutQuery.startsWith(AUTH_PATH_NAME.DANG_NHAP)) {
+        return NextResponse.next()
+      } else return NextResponse.redirect(new URL(AUTH_PATH_NAME.DANG_NHAP, request.url))
     }
   }
 
@@ -50,7 +52,7 @@ export default async function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.redirect(new URL(PATH_NAME.HOME, request.url))
+  return NextResponse.redirect(new URL(AUTH_PATH_NAME.DANG_NHAP, request.url))
 }
 
 export const config = {
