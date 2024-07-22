@@ -14,14 +14,24 @@ interface PaginationType {
   setItemOffset?: (offset: number) => void | undefined
   notilength: number
   table?: Table<documentType> | Table<Admin> | undefined
+  setPreviousPage?: (offset: number) => void
 }
 
-function Pagination({ itemsPerPage, setItemOffset, notilength, table }: PaginationType) {
+function Pagination({
+  itemsPerPage,
+  setItemOffset,
+  notilength,
+  table,
+  setPreviousPage,
+}: PaginationType) {
   let pageCount = Math.ceil(notilength / itemsPerPage)
-
   const handlePageClick = (event: { selected: number }) => {
+    console.log('PAGESELECT', event.selected)
     if (table) {
       table.setPageIndex(event.selected)
+      if (setPreviousPage) {
+        setPreviousPage(event.selected)
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } else if (setItemOffset) {
       const newOffset = (event.selected * itemsPerPage) % notilength

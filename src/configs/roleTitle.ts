@@ -1,5 +1,6 @@
-export const ROLE_TITLE = {
-  ADMIN: 'MAIN',
+export enum ROLE_TITLE {
+  MAIN = 'MAIN',
+  ASSISTANT = 'ASSISTANT',
 }
 
 export default ROLE_TITLE

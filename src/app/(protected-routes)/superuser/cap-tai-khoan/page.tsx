@@ -1,6 +1,5 @@
 'use client'
-import React from 'react'
-import { listAdmin } from './data'
+import React, { useState } from 'react'
 import ListAdminTable from '@/components/shared/ListAdminTable'
 import { Button } from '@/components/shared/button'
 import {
@@ -13,11 +12,15 @@ import {
   DialogFooter,
 } from '@/components/shared/dialog'
 import { X } from 'lucide-react'
-import { z } from 'zod'
+import { infer, object, string, z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form } from '@/components/shared/form'
 import FormGroup from '@/components/shared/form-group'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Admin } from '@/models'
+import { adminApi } from '@/apis'
+import { toast } from 'react-toastify'
 const formSchema = z.object({
   name: z.string().min(1, 'Vui long nhap ho va ten'),
   phoneNumber: z
@@ -36,6 +39,23 @@ const formSchema = z.object({
 })
 
 const CapTaiKhoan = () => {
+  const queryClient = useQueryClient()
+  const [openDialog, setOpenDialog] = useState(false)
+  const {
+    data: listAdmin,
+    isSuccess,
+    refetch: reloadListAdmin,
+  } = useQuery({
+    queryKey: ['admins'],
+    queryFn: () => adminApi.getAllAdmin(),
+    refetchInterval: (query) => {
+      const currentStatus = query.state?.data
+      if (currentStatus) {
+        return false
+      }
+      return 300000 // 5 minutes
+    },
+  })
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,6 +65,29 @@ const CapTaiKhoan = () => {
       password: '',
     },
   })
+  const createAdminMutation = useMutation({
+    mutationFn: adminApi.createAdmin,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['createAdmin'] })
+      console.log('success')
+      setOpenDialog(false)
+      toast.success('Thêm admin thành công!')
+      reloadListAdmin()
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+  })
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log('VAOONSUBMIT')
+    const data = {
+      name: values.name,
+      phoneNumber: values.phoneNumber,
+      email: values.email,
+      password: values.password,
+    }
+    createAdminMutation.mutate(data)
+  }
   return (
     <div className='w-full bg-[#E0F2FE] pt-8 px-2 pb-4 h-fit'>
       <div className='bg-white rounded-xl py-4 px-6 max-md:px-1 mb-4'>
@@ -52,7 +95,7 @@ const CapTaiKhoan = () => {
           Danh sách tài khoản ADMIN
         </p>
         <div className='w-full flex items-center md:justify-end justify-center'>
-          <Dialog>
+          <Dialog open={openDialog} onOpenChange={() => setOpenDialog(!openDialog)}>
             <DialogTrigger asChild>
               <Button className='bg-sky-600 px-4 py-2 text-white hover:bg-sky-800'>
                 Cấp tài khoản mới
@@ -66,7 +109,7 @@ const CapTaiKhoan = () => {
                 </DialogClose>
               </DialogHeader>
               <Form {...form}>
-                <form>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
                   <FormGroup
                     control={form.control}
                     label='Tên'
@@ -85,7 +128,7 @@ const CapTaiKhoan = () => {
                   <FormGroup
                     control={form.control}
                     label='Email'
-                    name='Email'
+                    name='email'
                     type='email'
                     placeholder='Email'
                     inputClassName='mb-4'
@@ -97,17 +140,22 @@ const CapTaiKhoan = () => {
                     placeholder='Mật khẩu'
                     type='password'
                   />
+                  <DialogFooter className='mt-4'>
+                    <Button
+                      type='submit'
+                      className='bg-sky-600 px-4 py-2 text-white hover:bg-sky-800'
+                    >
+                      Tạo tài khoản
+                    </Button>
+                  </DialogFooter>
                 </form>
               </Form>
-              <DialogFooter>
-                <Button className='bg-sky-600 px-4 py-2 text-white hover:bg-sky-800'>
-                  Tạo tài khoản
-                </Button>
-              </DialogFooter>
             </DialogContent>
           </Dialog>
         </div>
-        <ListAdminTable listAdmin={listAdmin}></ListAdminTable>
+        {!!listAdmin && (
+          <ListAdminTable listAdmin={listAdmin} reloadListAdmin={reloadListAdmin}></ListAdminTable>
+        )}
       </div>
     </div>
   )

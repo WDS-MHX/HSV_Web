@@ -12,6 +12,7 @@ interface FormGroupProps {
   type?: HTMLInputTypeAttribute
   autoFocus?: boolean
   inputClassName?: string
+  disabled?: boolean
 }
 
 export default function FormGroup({
@@ -22,6 +23,7 @@ export default function FormGroup({
   type,
   autoFocus,
   inputClassName,
+  disabled,
 }: FormGroupProps) {
   return (
     <FormField
@@ -36,6 +38,7 @@ export default function FormGroup({
               type={type}
               className={cn(inputClassName)}
               autoFocus={autoFocus}
+              disabled={disabled}
               {...field}
             />
           </FormControl>

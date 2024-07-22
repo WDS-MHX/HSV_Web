@@ -20,40 +20,72 @@ import {
 import { Form } from './form'
 import FormGroup from './form-group'
 import { Button } from './button'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Pagination from './Pagination'
 import { Admin } from '@/models'
-import { z } from 'zod'
+import { infer, map, object, string, z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { X } from 'lucide-react'
+import { useQueryClient, useMutation } from '@tanstack/react-query'
+import { adminApi } from '@/apis'
+import { log, table } from 'console'
+import { headers } from 'next/headers'
+import { type } from 'os'
+import { toast } from 'react-toastify'
 const formSchema = z.object({
   name: z.string().min(1, 'Vui long nhap ho va ten'),
   phoneNumber: z
     .string()
     .min(1, 'Vui lòng nhập số điện thoại của bạn')
     .regex(/(84|0[3|5|7|8|9])+([0-9]{8})\b/g, 'Số điện thoại không hợp lệ'),
-  email: z.string().min(1, 'Vui long nhap email cua ban').email('Email khong hop le'),
-  password: z
-    .string()
-    .min(1, 'Vui lòng nhập mật khẩu của bạn')
-    .min(8, 'Mật khẩu phải có ít nhất 8 ký tự')
-    .regex(
-      /(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/,
-      'Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường và 1 số',
-    ),
 })
 
-export default function ListAdminTable({ listAdmin }: { listAdmin: Admin[] }) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: '',
-      phoneNumber: '',
-      email: '',
-      password: '',
+export default function ListAdminTable({
+  listAdmin,
+  reloadListAdmin,
+}: {
+  listAdmin: Admin[]
+  reloadListAdmin: any
+}) {
+  const queryClient = useQueryClient()
+  const [openDialog, setOpenDialog] = useState(false)
+  let [previousPage, setPreviousPage] = useState<number>(0)
+  let [checkId, setCheckId] = useState<string>()
+  let [checkUpdate, setCheckUpdate] = useState(false)
+  const updateAdminMutation = useMutation({
+    mutationFn: adminApi.updateAdmin,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['updateAdmin'] })
+      console.log('success')
+      setOpenDialog(false)
+      reloadListAdmin()
+      setCheckUpdate(true)
+      toast.success('Cập nhật thành công!')
+      console.log('PREVIOUSPAGE', previousPage)
+    },
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
+  useEffect(() => {
+    if (checkUpdate) {
+      tableInstance.setPageIndex(previousPage)
+      setCheckUpdate(false)
+    }
+  }, [checkUpdate])
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log('VAOONSUBMITTABLE')
+    const data = {
+      name: values.name,
+      phoneNumber: values.phoneNumber,
+    }
+    updateAdminMutation.mutate(data)
+  }
+  function openDialogFunc(_id: string) {
+    setCheckId(_id)
+    setOpenDialog(!openDialog)
+  }
   const [columnFilters, setColumnFilters] = useState<any>([])
   const columnHelper = createColumnHelper<Admin>()
   const datalength = listAdmin.length
@@ -93,67 +125,78 @@ export default function ListAdminTable({ listAdmin }: { listAdmin: Admin[] }) {
         header: '',
         minSize: 77,
         maxSize: 77,
-        cell: (info) => (
-          <div className='w-full flex items-center justify-center'>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button className='bg-slate-100 px-4 py-2 text-black hover:bg-slate-200 md:text-sm text-xs'>
-                  Cập nhật
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader className='flex flex-row items-center justify-between'>
-                  <DialogTitle className='text-3xl'>Cập nhật tài khoản</DialogTitle>
-                  <DialogClose>
-                    <X className='h-6 w-6 mb-2' />
-                  </DialogClose>
-                </DialogHeader>
-                <Form {...form}>
-                  <form>
-                    <FormGroup
-                      control={form.control}
-                      label='Tên'
-                      name='name'
-                      placeholder='Họ và tên'
-                      autoFocus
-                      inputClassName='mb-4'
-                    />
-                    <FormGroup
-                      control={form.control}
-                      label='Số điện thoại'
-                      name='phoneNumber'
-                      placeholder='Số điện thoại'
-                      inputClassName='mb-4'
-                    />
-                    <FormGroup
-                      control={form.control}
-                      label='Email'
-                      name='Email'
-                      type='email'
-                      placeholder='Email'
-                      inputClassName='mb-4'
-                    />
-                    <FormGroup
-                      control={form.control}
-                      label='Mật khẩu'
-                      name='password'
-                      placeholder='Mật khẩu'
-                      type='password'
-                    />
-                  </form>
-                </Form>
-                <DialogFooter>
-                  <Button className='bg-sky-600 px-4 py-2 text-white hover:bg-sky-800'>
+        cell: (info) => {
+          // eslint-disable-next-line
+          let form = useForm<z.infer<typeof formSchema>>({
+            resolver: zodResolver(formSchema),
+            defaultValues: {
+              name: info.cell.row.original.name,
+              phoneNumber: info.cell.row.original.phoneNumber,
+              // email: info.cell.row.original.email,
+            },
+          })
+          return (
+            <div className='w-full flex items-center justify-center'>
+              <Dialog
+                open={checkId === info.cell.row.original._id && openDialog}
+                onOpenChange={() => openDialogFunc(info.cell.row.original._id)}
+              >
+                <DialogTrigger asChild>
+                  <Button className='bg-slate-100 px-4 py-2 text-black hover:bg-slate-200 md:text-sm text-xs'>
                     Cập nhật
                   </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
-        ),
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader className='flex flex-row items-center justify-between'>
+                    <DialogTitle className='text-3xl'>Cập nhật tài khoản</DialogTitle>
+                    <DialogClose>
+                      <X className='h-6 w-6 mb-2' />
+                    </DialogClose>
+                  </DialogHeader>
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)}>
+                      <FormGroup
+                        control={form.control}
+                        label='Tên'
+                        name='name'
+                        placeholder='Họ và tên'
+                        autoFocus
+                        inputClassName='mb-4'
+                      />
+                      <FormGroup
+                        control={form.control}
+                        label='Số điện thoại'
+                        name='phoneNumber'
+                        placeholder='Số điện thoại'
+                        inputClassName='mb-4'
+                      />
+                      {/* <FormGroup
+                        control={form.control}
+                        label='Email'
+                        name='email'
+                        type='email'
+                        placeholder='Email'
+                        inputClassName='mb-4'
+                        disabled={true}
+                      /> */}
+                      <DialogFooter className='mt-4'>
+                        <Button
+                          type='submit'
+                          className='bg-sky-600 px-4 py-2 text-white hover:bg-sky-800'
+                        >
+                          Cập nhật
+                        </Button>
+                      </DialogFooter>
+                    </form>
+                  </Form>
+                </DialogContent>
+              </Dialog>
+            </div>
+          )
+        },
       }),
     ],
-    [],
+    [openDialog],
   )
   const finalData = React.useMemo(() => listAdmin, [listAdmin])
   const tableInstance = useReactTable({
@@ -237,7 +280,12 @@ export default function ListAdminTable({ listAdmin }: { listAdmin: Admin[] }) {
         </tbody>
       </table>
       <div className='w-full justify-center'>
-        <Pagination itemsPerPage={5} table={tableInstance} notilength={datalength}></Pagination>
+        <Pagination
+          itemsPerPage={5}
+          table={tableInstance}
+          notilength={datalength}
+          setPreviousPage={setPreviousPage}
+        ></Pagination>
       </div>
     </div>
   )
