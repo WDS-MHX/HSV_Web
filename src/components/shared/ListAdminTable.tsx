@@ -220,7 +220,7 @@ export default function ListAdminTable({
   return (
     <div className='flex flex-col w-full md:justify-center md:items-center lg:items-start'>
       <div className='flex lg:flex-row flex-col items-center lg:justify-between w-full mb-4'></div>
-      <table className='h-full w-full border-collapse font-Manrope mb-4'>
+      <table className='h-full w-full border-collapse font-Manrope mb-4 overflow-x-auto'>
         <thead>
           {tableInstance.getHeaderGroups().map((header) => {
             return (
@@ -231,12 +231,12 @@ export default function ListAdminTable({
                     <th
                       className={`${
                         column.column.columnDef.id == 'id'
-                          ? 'lg:w-auto md:w-[6.875rem] w-[4.375rem]'
+                          ? 'lg:w-auto md:w-[6.875rem] w-auto'
                           : column.column.columnDef.id == 'releaseDate'
-                            ? 'lg:w-[18.5rem] md:w-[10.813rem] w-[5.938rem]'
+                            ? 'lg:w-[18.5rem] md:w-[10.813rem] w-auto'
                             : column.column.columnDef.id == 'title'
                               ? 'lg:w-[27.5rem] w-auto'
-                              : 'lg:w-[12rem] md:w-[6.5rem] w-[4.813rem]'
+                              : 'lg:w-[12rem] md:w-[6.5rem] w-auto'
                       } 
                       md:text-sm sticky lg:top-0 md:top-14 top-0 bg-white leading-6 text-slate-900 border-2 p-4 text-left font-bold text-xs`}
                       key={column.id}

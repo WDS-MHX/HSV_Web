@@ -170,7 +170,7 @@ export default function DocumentsTable({
           </div>
         )}
       </div>
-      <table className='h-full w-full border-collapse font-Manrope mb-4'>
+      <table className='h-full w-full border-collapse font-Manrope mb-4 overflow-x-auto'>
         <thead>
           {tableInstance.getHeaderGroups().map((header) => {
             return (

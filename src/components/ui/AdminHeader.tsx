@@ -74,7 +74,7 @@ const AdminHeader = ({ role }: { role: String }) => {
           </ul>
         </div>
         <p
-          className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondary hover:text-primary'
+          className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'
           onClick={() => {
             authApi.logOut()
             router.push(PATH_NAME.HOME)
@@ -98,9 +98,11 @@ const AdminHeader = ({ role }: { role: String }) => {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             />
           </div>
-          <button className='py-2 px-8 rounded-md text-white font-medium bg-sky-600 h-full'>
-            Tạo bài viết mới
-          </button>
+          {role == 'Admin' && (
+            <button className='py-2 px-8 rounded-md text-white font-medium bg-sky-600 h-full'>
+              Tạo bài viết mới
+            </button>
+          )}
         </div>
         <div
           className={`
