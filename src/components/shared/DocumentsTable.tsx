@@ -188,7 +188,7 @@ export default function DocumentsTable({
                               ? 'lg:w-[27.5rem] w-auto'
                               : 'lg:w-[12rem] md:w-[6.5rem] w-[4.813rem]'
                       } 
-                      md:text-sm sticky lg:top-0 md:top-14 top-0 bg-white leading-6 text-slate-900 border-2 p-4 text-left font-bold text-xs`}
+                      md:text-sm sticky md:top-0 top-0 bg-white leading-6 text-slate-900 border-2 p-4 text-left font-bold text-xs`}
                       key={column.id}
                       colSpan={column.colSpan}
                       // style={{
