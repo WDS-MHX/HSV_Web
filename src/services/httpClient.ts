@@ -33,6 +33,11 @@ class HttpClient {
     return response.data
   }
 
+  async put<T = any>(endpoint: string, data?: object, config?: AxiosAuthRefreshRequestConfig) {
+    const response = await this.instance.put<T>(this.getUrl(endpoint), data, config)
+    return response.data
+  }
+
   async delete<T = any>(endpoint: string, config?: AxiosAuthRefreshRequestConfig) {
     const response = await this.instance.delete<T>(this.getUrl(endpoint), config)
     return response.data

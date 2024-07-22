@@ -7,21 +7,28 @@ import dynamic from 'next/dynamic'
 import React from 'react'
 import generateFroalaConfig from '@/configs/froala.config'
 import '@/styles/froala-custom.css'
+import { useRouter } from 'next/navigation'
+import { ADMIN_PATH_NAME } from '@/configs'
 
 const FroalaEditorComponent = dynamic(() => import('@/components/shared/FroalaEditorComponent'), {
   ssr: false,
 })
 
-const ChiTietBaiDang = () => {
+const TaoBaiDang = () => {
   const [isPost, setIsPost] = useState<boolean>(true)
   const froalaConfig = useMemo(() => generateFroalaConfig(), [])
   const [content, setContent] = useState<string>('')
+  const router = useRouter()
 
+  const backPreviousPage = () => {
+    router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
+  }
+  console.log(content)
   return (
     <div className='w-full bg-[#E0F2FE] lg:pt-8 px-2 pb-4 h-full'>
       <div className='bg-white rounded-xl py-4 px-6 max-md:px-1 mb-4 h-full'>
         <div className='flex justify-between items-center mb-6'>
-          <button className='flex gap-4'>
+          <button className='flex gap-4' onClick={backPreviousPage}>
             <GrLinkPrevious className='text-black' />
             <span className='font-semibold text-xs text-primaryColor hover:underline'>
               {isPost ? 'Đã đăng' : 'Chưa đăng'}
@@ -49,4 +56,4 @@ const ChiTietBaiDang = () => {
   )
 }
 
-export default ChiTietBaiDang
+export default TaoBaiDang

@@ -10,12 +10,18 @@ import { Table } from '@tanstack/react-table'
 import { Admin } from '@/models'
 
 interface PaginationType {
+  totalItemsInAllPages: number
   itemsPerPage: number
+  selectPage?: (page: number) => void
+  table?: Table<documentType> | undefined
   setItemOffset?: (offset: number) => void | undefined
   notilength: number
   table?: Table<documentType> | Table<Admin> | undefined
   setPreviousPage?: (offset: number) => void
 }
+
+function Pagination({ totalItemsInAllPages, itemsPerPage, selectPage, table }: PaginationType) {
+  let pageCount = Math.ceil(totalItemsInAllPages / itemsPerPage)
 
 function Pagination({
   itemsPerPage,
@@ -33,10 +39,8 @@ function Pagination({
         setPreviousPage(event.selected)
       }
       window.scrollTo({ top: 0, behavior: 'smooth' })
-    } else if (setItemOffset) {
-      const newOffset = (event.selected * itemsPerPage) % notilength
-      setItemOffset(newOffset)
-
+    } else if (selectPage) {
+      selectPage(event.selected)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }

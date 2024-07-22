@@ -2,6 +2,12 @@ import { ResultPage } from '@/components/shared'
 import { picturePlaceHolder } from '../../../../public'
 import { StaticImageData } from 'next/image'
 import content_img from '/assets/images/content_img.png'
+import { useState } from 'react'
+import { POST_CATEGORY } from '@/configs/enum'
+import { Pagination } from '@/types/pagination'
+import { useQuery } from '@tanstack/react-query'
+import { queryKeys } from '@/configs/queryKeys'
+import postApi from '@/apis/post'
 
 interface searchData {
   id: string
@@ -95,12 +101,65 @@ const data: searchData[] = [
   },
 ]
 
-const timkiem = () => {
+const TimKiemPage = () => {
+  const [searchValue, setSearchValue] = useState<string>('')
+  const [categrories, setCategrories] = useState<POST_CATEGORY[]>([
+    POST_CATEGORY.SINH_VIEN_5_TOT,
+    POST_CATEGORY.CAU_CHUYEN_DEP,
+    POST_CATEGORY.TINH_NGUYEN,
+    POST_CATEGORY.NCKH,
+    POST_CATEGORY.HO_TRO_SINH_VIEN,
+    POST_CATEGORY.XAY_DUNG_HOI,
+  ])
+  const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 5 })
+  const { data } = useQuery({
+    queryKey: queryKeys.viewerSearchPosts.gen(
+      pagination.page,
+      pagination.limit,
+      searchValue,
+      categrories,
+    ),
+    queryFn: () =>
+      postApi.searchPosts({
+        page: pagination.page,
+        limit: pagination.limit,
+        title: searchValue,
+        categrories,
+      }),
+    placeholderData: (previousData) => previousData,
+  })
+
+  const selectPage = (page: number) => {
+    setPagination({ ...pagination, page: page })
+  }
+
+  const postResult =
+    data?.data.map((post) => ({
+      id: post._id,
+      categorized: post.categrory,
+      title: post.title,
+      content: post.content ?? '',
+      img: post.titleImageId
+        ? process.env.NEXT_PUBLIC_API_BASE_URL + '/download/' + post.titleImageId
+        : undefined,
+      date: post.postedDate,
+    })) ?? []
+
   return (
     <div className='py-2 flex'>
-      <ResultPage isAdmin={false} searchValue={searchValue} searchResults={data} />
+      <ResultPage
+        isAdmin={false}
+        selectedCategories={categrories}
+        setSelectedCategories={setCategrories}
+        searchValue={searchValue}
+        setSearchValue={setSearchValue}
+        searchResults={postResult}
+        itemsPerPage={pagination.limit}
+        selectPage={selectPage}
+        totalSearchItems={data?.pagination.total ?? 0}
+      />
     </div>
   )
 }
 
-export default timkiem
+export default TimKiemPage

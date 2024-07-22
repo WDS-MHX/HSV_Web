@@ -9,11 +9,11 @@ import { ROLE_TITLE } from './configs'
 import SUPERUSER_PATH_NAME from './configs/pathName/superuserPathName'
 
 export default async function middleware(request: NextRequest) {
-  const pathName = request.nextUrl.pathname
-  const mainPath = '/' + pathName.split('/')[1]
-  const mainPathWithoutQuery = mainPath.split('?')[0]
+  // const pathName = request.nextUrl.pathname
+  // const mainPath = '/' + pathName.split('/')[1]
+  // const mainPathWithoutQuery = mainPath.split('?')[0]
 
-  let token = request.cookies.get('ACCESS_TOKEN')?.value
+  // let token = request.cookies.get('ACCESS_TOKEN')?.value
 
   const adminPath = Object.values(ADMIN_PATH_NAME)
   const superuserPath = Object.values(SUPERUSER_PATH_NAME)

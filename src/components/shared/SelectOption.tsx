@@ -3,30 +3,33 @@ import clsx from 'clsx'
 import { FaCheck } from 'react-icons/fa6'
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa6'
 
-// const options = [
-//   {
-//     optionName: 'Chọn danh mục',
-//     isPlaceholder: true,
-//   },
-//   {
-//     optionName: 'Tất cả',
-//   },
-//   {
-//     optionName: 'Sinh viên 5 tốt',
-//   },
-//   {
-//     optionName: 'Câu chuyện đẹp',
-//   },
-//   {
-//     optionName: 'Hỗ trợ sinh viên',
-//   },
-//   {
-//     optionName: 'NCKH',
-//   },
-//   {
-//     optionName: 'Xây dựng hội',
-//   },
-// ]
+const options = [
+  {
+    optionName: 'Chọn danh mục',
+    isPlaceholder: true,
+  },
+  {
+    optionName: 'Tất cả',
+  },
+  {
+    optionName: 'Giới thiệu',
+  },
+  {
+    optionName: 'Sinh viên 5 tốt',
+  },
+  {
+    optionName: 'Câu chuyện đẹp',
+  },
+  {
+    optionName: 'Hỗ trợ sinh viên',
+  },
+  {
+    optionName: 'NCKH',
+  },
+  {
+    optionName: 'Xây dựng hội',
+  },
+]
 
 // const DocumentOptions = [
 //   {
