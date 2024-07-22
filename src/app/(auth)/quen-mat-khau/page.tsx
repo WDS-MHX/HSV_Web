@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import { toast } from 'react-toastify'
 
 import daihoiLogo from '@/../public/daihoiLogo.svg'
 import { authApi } from '@/apis'
@@ -30,6 +31,7 @@ export default function ForgetPassword() {
     },
     onError: (error) => {
       console.error('Send OTP failed!:', error)
+      toast.error('Không tồn tại email')
     },
   })
 
