@@ -23,7 +23,7 @@ const ChiTietBaiDang = () => {
         <div className='flex justify-between items-center mb-6'>
           <button className='flex gap-4'>
             <GrLinkPrevious className='text-black' />
-            <span className='font-semibold text-xs text-primary hover:underline'>
+            <span className='font-semibold text-xs text-primaryColor hover:underline'>
               {isPost ? 'Đã đăng' : 'Chưa đăng'}
             </span>
           </button>

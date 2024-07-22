@@ -7,12 +7,13 @@ import { IoChevronForwardOutline } from 'react-icons/io5'
 import { IoChevronBackOutline } from 'react-icons/io5'
 import documentType from '@/models/document'
 import { Table } from '@tanstack/react-table'
+import { Admin } from '@/models'
 
 interface PaginationType {
   itemsPerPage: number
   setItemOffset?: (offset: number) => void | undefined
   notilength: number
-  table?: Table<documentType> | undefined
+  table?: Table<documentType> | Table<Admin> | undefined
 }
 
 function Pagination({ itemsPerPage, setItemOffset, notilength, table }: PaginationType) {

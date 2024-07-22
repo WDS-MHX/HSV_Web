@@ -7,7 +7,7 @@ import { FaBars } from 'react-icons/fa'
 
 import { PATH_NAME } from '@/configs/pathName'
 
-const AdminHeader = () => {
+const AdminHeader = ({ role }: { role: String }) => {
   const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
@@ -15,39 +15,61 @@ const AdminHeader = () => {
     <>
       <div className='max-md:hidden md:flex lg:hidden h-16 bg-[#E0F2FE] py-2 px-6 w-full z-50 sticky top-0 justify-between items-center'>
         <div className='flex gap-16 items-center'>
-          <p className='text-title font-semibold text-xl'>Admin</p>
+          <p className='text-title font-semibold text-xl'>{role}</p>
           <ul className='flex gap-2.5'>
-            <li
-              className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
-              ${
-                pathname == PATH_NAME.QUAN_LY_BAI_DANG ||
-                (pathname.startsWith(PATH_NAME.QUAN_LY_BAI_DANG) && pathname !== '/')
-                  ? 'bg-white text-primary rounded-md'
-                  : 'text-secondary'
-              }
-            `}
-            >
-              <Link href={PATH_NAME.QUAN_LY_BAI_DANG} className='cursor-pointer'>
-                Quản lý bài đăng
-              </Link>
-            </li>
-            <li
-              className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
-              ${
-                pathname == PATH_NAME.QUAN_LY_TAI_LIEU ||
-                (pathname.startsWith(PATH_NAME.QUAN_LY_TAI_LIEU) && pathname !== '/')
-                  ? 'bg-white text-primary rounded-md'
-                  : 'text-secondary'
-              }
-            `}
-            >
-              <Link href={PATH_NAME.QUAN_LY_TAI_LIEU} className='cursor-pointer'>
-                Quản lý tài liệu
-              </Link>
-            </li>
+            {/* Admin */}
+            {role == 'Admin' && (
+              <div className='flex gap-2.5'>
+                <li
+                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
+                ${
+                  pathname == PATH_NAME.QUAN_LY_BAI_DANG ||
+                  (pathname.startsWith(PATH_NAME.QUAN_LY_BAI_DANG) && pathname !== '/')
+                    ? 'bg-white text-primaryColor rounded-md'
+                    : 'text-secondaryColor'
+                }
+              `}
+                >
+                  <Link href={PATH_NAME.QUAN_LY_BAI_DANG} className='cursor-pointer'>
+                    Quản lý bài đăng
+                  </Link>
+                </li>
+                <li
+                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
+                ${
+                  pathname == PATH_NAME.QUAN_LY_TAI_LIEU ||
+                  (pathname.startsWith(PATH_NAME.QUAN_LY_TAI_LIEU) && pathname !== '/')
+                    ? 'bg-white text-primaryColor rounded-md'
+                    : 'text-secondaryColor'
+                }
+              `}
+                >
+                  <Link href={PATH_NAME.QUAN_LY_TAI_LIEU} className='cursor-pointer'>
+                    Quản lý tài liệu
+                  </Link>
+                </li>
+              </div>
+            )}
+            {/* Superuser */}
+            {role == 'Superuser' && (
+              <li
+                className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
+                ${
+                  pathname == PATH_NAME.CAP_TAI_KHOAN ||
+                  (pathname.startsWith(PATH_NAME.CAP_TAI_KHOAN) && pathname !== '/')
+                    ? 'bg-white text-primaryColor rounded-md'
+                    : 'text-secondaryColor'
+                }
+              `}
+              >
+                <Link href={PATH_NAME.CAP_TAI_KHOAN} className='cursor-pointer'>
+                  Cấp tài khoản
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
-        <p className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondary hover:text-primary'>
+        <p className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'>
           Đăng xuất
         </p>
       </div>
@@ -74,38 +96,60 @@ const AdminHeader = () => {
           md:hidden
         `}
         >
-          <p className='text-title font-semibold text-xl mx-auto'>Admin</p>
+          <p className='text-title font-semibold text-xl mx-auto'>{role}</p>
           <ul className='flex flex-col gap-2.5'>
-            <li
-              className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
-                ${
-                  pathname == PATH_NAME.QUAN_LY_BAI_DANG ||
-                  (pathname.startsWith(PATH_NAME.QUAN_LY_BAI_DANG) && pathname !== '/')
-                    ? 'bg-white text-primary rounded-md'
-                    : 'text-secondary'
-                }
-              `}
-            >
-              <Link href={PATH_NAME.QUAN_LY_BAI_DANG} className='cursor-pointer'>
-                Quản lý bài đăng
-              </Link>
-            </li>
-            <li
-              className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
-                ${
-                  pathname == PATH_NAME.QUAN_LY_TAI_LIEU ||
-                  (pathname.startsWith(PATH_NAME.QUAN_LY_TAI_LIEU) && pathname !== '/')
-                    ? 'bg-white text-primary rounded-md'
-                    : 'text-secondary'
-                }
-              `}
-            >
-              <Link href={PATH_NAME.QUAN_LY_TAI_LIEU} className='cursor-pointer'>
-                Quản lý tài liệu
-              </Link>
-            </li>
+            {/* Admin */}
+            {role == 'Admin' && (
+              <div className='flex flex-col gap-2.5'>
+                <li
+                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
+                  ${
+                    pathname == PATH_NAME.QUAN_LY_BAI_DANG ||
+                    (pathname.startsWith(PATH_NAME.QUAN_LY_BAI_DANG) && pathname !== '/')
+                      ? 'bg-white text-primaryColor rounded-md'
+                      : 'text-secondaryColor'
+                  }
+                `}
+                >
+                  <Link href={PATH_NAME.QUAN_LY_BAI_DANG} className='cursor-pointer'>
+                    Quản lý bài đăng
+                  </Link>
+                </li>
+                <li
+                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
+                  ${
+                    pathname == PATH_NAME.QUAN_LY_TAI_LIEU ||
+                    (pathname.startsWith(PATH_NAME.QUAN_LY_TAI_LIEU) && pathname !== '/')
+                      ? 'bg-white text-primaryColor rounded-md'
+                      : 'text-secondaryColor'
+                  }
+                `}
+                >
+                  <Link href={PATH_NAME.QUAN_LY_TAI_LIEU} className='cursor-pointer'>
+                    Quản lý tài liệu
+                  </Link>
+                </li>
+              </div>
+            )}
+            {/* Superuser */}
+            {role == 'Superuser' && (
+              <li
+                className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
+                  ${
+                    pathname == PATH_NAME.CAP_TAI_KHOAN ||
+                    (pathname.startsWith(PATH_NAME.CAP_TAI_KHOAN) && pathname !== '/')
+                      ? 'bg-white text-primaryColor rounded-md'
+                      : 'text-secondaryColor'
+                  }
+                `}
+              >
+                <Link href={PATH_NAME.CAP_TAI_KHOAN} className='cursor-pointer'>
+                  Cấp tài khoản
+                </Link>
+              </li>
+            )}
           </ul>
-          <p className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondary hover:text-primary'>
+          <p className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'>
             Đăng xuất
           </p>
         </div>

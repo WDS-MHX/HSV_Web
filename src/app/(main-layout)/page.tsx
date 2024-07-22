@@ -31,9 +31,9 @@ export default function Home() {
     <div className='grid lg:grid-cols-4 gap-4 md:grid-cols-1'>
       <div className='w-full lg:col-span-3 md:col-span-1'>
         <div className='flex items-center py-[0.625rem] lg:hidden md:mx-[3.438rem] mx-4 my-4'>
-          <div className='border-2 rounded-md mr-2 p-0.5 w-full'>
+          <div className='border-[1px] border-slate-300 rounded-md w-full ml-0 mr-2'>
             <input
-              className='border-none w-full focus:outline-none bg-white text-black text-sm font-normal leading-5'
+              className='border-none rounded-md mr-2 py-2 px-3 w-full focus:outline-none bg-white text-black text-sm font-normal leading-5'
               placeholder='Search'
             ></input>
           </div>

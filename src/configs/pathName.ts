@@ -11,4 +11,5 @@ export const PATH_NAME = {
   DANG_NHAP: '/dang-nhap',
   QUAN_LY_BAI_DANG: '/admin/quan-ly-bai-dang',
   QUAN_LY_TAI_LIEU: '/admin/quan-ly-tai-lieu',
+  CAP_TAI_KHOAN: '/superuser/cap-tai-khoan',
 }
