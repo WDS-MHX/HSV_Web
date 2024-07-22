@@ -51,7 +51,7 @@ export default function DocumentsTable({
   isAdmin,
 }: {
   documents: documentType[]
-  isAdmin: boolean
+  isAdmin?: boolean
 }) {
   const [columnFilters, setColumnFilters] = useState<any>([])
   const columnHelper = createColumnHelper<documentType>()
