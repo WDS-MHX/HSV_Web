@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
@@ -7,6 +8,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { toast } from 'react-toastify'
 import { AxiosError } from 'axios'
+import { LiaEyeSlashSolid, LiaEyeSolid } from 'react-icons/lia'
 
 import daihoiLogo from '@/../public/daihoiLogo.svg'
 import { authApi } from '@/apis'
@@ -19,6 +21,12 @@ interface ILoginFormInputs {
 
 export default function AdminLogin() {
   const router = useRouter()
+  const [isShow, setIsShow] = useState(false)
+
+  const handleShow = () => {
+    setIsShow(!isShow)
+  }
+
   const {
     register,
     handleSubmit,
@@ -72,14 +80,27 @@ export default function AdminLogin() {
             <label htmlFor='password' className='block'>
               Mật khẩu
             </label>
-            <input
-              type='password'
-              {...register('password', {
-                required: 'Password is required',
-              })}
-              className='w-full rounded-md border border-[#CBD5E1]'
-              placeholder='Mật khẩu'
-            />
+            <div className='relative flex w-full items-center'>
+              <input
+                type={isShow ? 'text' : 'password'}
+                {...register('password', {
+                  required: 'Password is required',
+                })}
+                className='w-full rounded-md border border-[#CBD5E1]'
+                placeholder='Mật khẩu'
+              />
+              <button
+                type='button'
+                onClick={handleShow}
+                className='text-cool-gray-60 absolute right-4'
+              >
+                {isShow ? (
+                  <LiaEyeSolid size={24} color='#475569' />
+                ) : (
+                  <LiaEyeSlashSolid size={24} color='#475569' />
+                )}
+              </button>
+            </div>
             {errors.password && <p className='text-red-600'>{errors.password.message}</p>}
           </div>
           <div className='py-2'>

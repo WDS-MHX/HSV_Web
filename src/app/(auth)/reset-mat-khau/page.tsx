@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { toast } from 'react-toastify'
+import { LiaEyeSlashSolid, LiaEyeSolid } from 'react-icons/lia'
 
 import daihoiLogo from '@/../public/daihoiLogo.svg'
 import { authApi } from '@/apis'
@@ -24,6 +25,11 @@ export default function ResetPassword() {
 
   const [otpCode, setOtpCode] = useState<string>('')
   const [countdown, setCountdown] = useState(0)
+  const [isShow, setIsShow] = useState(false)
+
+  const handleShow = () => {
+    setIsShow(!isShow)
+  }
 
   useEffect(() => {
     let timer: NodeJS.Timeout
@@ -116,32 +122,60 @@ export default function ResetPassword() {
             />
             {errors.email && <p className='text-red-600'>{errors.email.message}</p>}
           </div>
+
           <div className='space-y-1'>
             <label htmlFor='newPassword' className='block'>
               Mật khẩu
             </label>
-            <input
-              type='password'
-              {...register('newPassword', {
-                required: 'New password is required',
-              })}
-              className='w-full rounded-md border border-[#CBD5E1]'
-              placeholder='Mật khẩu mới'
-            />
+            <div className='relative flex w-full items-center'>
+              <input
+                type={isShow ? 'text' : 'password'}
+                {...register('newPassword', {
+                  required: 'New password is required',
+                })}
+                className='w-full rounded-md border border-[#CBD5E1]'
+                placeholder='Mật khẩu mới'
+              />
+              <button
+                type='button'
+                onClick={handleShow}
+                className='text-cool-gray-60 absolute right-4'
+              >
+                {isShow ? (
+                  <LiaEyeSolid size={24} color='#475569' />
+                ) : (
+                  <LiaEyeSlashSolid size={24} color='#475569' />
+                )}
+              </button>
+            </div>
             {errors.newPassword && <p className='text-red-600'>{errors.newPassword.message}</p>}
           </div>
+
           <div className='space-y-1'>
             <label htmlFor='rePassword' className='block'>
               Xác minh mật khẩu mới
             </label>
-            <input
-              type='password'
-              {...register('rePassword', {
-                required: 'Verify password is required',
-              })}
-              className='w-full rounded-md border border-[#CBD5E1]'
-              placeholder='Xác minh mật khẩu'
-            />
+            <div className='relative flex w-full items-center'>
+              <input
+                type={isShow ? 'text' : 'password'}
+                {...register('rePassword', {
+                  required: 'Verify password is required',
+                })}
+                className='w-full rounded-md border border-[#CBD5E1]'
+                placeholder='Xác minh mật khẩu'
+              />
+              <button
+                type='button'
+                onClick={handleShow}
+                className='text-cool-gray-60 absolute right-4'
+              >
+                {isShow ? (
+                  <LiaEyeSolid size={24} color='#475569' />
+                ) : (
+                  <LiaEyeSlashSolid size={24} color='#475569' />
+                )}
+              </button>
+            </div>
             {errors.rePassword && <p className='text-red-600'>{errors.rePassword.message}</p>}
           </div>
 
