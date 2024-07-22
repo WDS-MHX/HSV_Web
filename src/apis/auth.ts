@@ -1,18 +1,23 @@
 import Admin from '@/models/admin'
+import { AxiosAuthRefreshRequestConfig } from 'axios-auth-refresh'
 import { handleError, httpClient } from '@/services'
 
 class AuthApi {
   async logIn(email: string, password: string) {
-    const res = await httpClient.post<{ _id: string; role: string }>('/auth/login', {
-      email,
-      password,
-    })
-    return { adminId: res._id, role: res.role }
+    try {
+      const res = await httpClient.post<{ _id: string; role: string }>('/auth/login', {
+        email,
+        password,
+      })
+      return { adminId: res._id, role: res.role }
+    } catch (error) {
+      throw error
+    }
   }
 
-  async newAccessToken() {
+  async newAccessToken(config?: AxiosAuthRefreshRequestConfig) {
     try {
-      await httpClient.get<{ access_token: string }>('/auth/new-access-token')
+      await httpClient.get<{ access_token: string }>('/auth/new-access-token', config)
     } catch (error) {
       throw error
     }

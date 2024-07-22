@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import { toast } from 'react-toastify'
 
 import daihoiLogo from '@/../public/daihoiLogo.svg'
 import { authApi } from '@/apis'
@@ -19,8 +20,18 @@ interface IResetPasswordFormInputs {
 }
 
 export default function ResetPassword() {
-  const [otpCode, setOtpCode] = useState<string>('')
   const router = useRouter()
+
+  const [otpCode, setOtpCode] = useState<string>('')
+  const [countdown, setCountdown] = useState(0)
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout
+    if (countdown > 0) {
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000)
+    }
+    return () => clearTimeout(timer)
+  }, [countdown])
 
   const handleOtpChange = (index: number, value: string) => {
     if (value === '') {
@@ -41,19 +52,35 @@ export default function ResetPassword() {
     handleSubmit,
     formState: { errors },
     setValue,
+    getValues,
   } = useForm<IResetPasswordFormInputs>()
 
   const mutation = useMutation({
     mutationFn: ({ email, otpCode, newPassword }: IResetPasswordFormInputs) =>
       authApi.resetPassword(email, otpCode, newPassword),
+    onSuccess: () => {
+      toast.success('Đổi mật khẩu thành công, yêu cầu đăng nhập lại')
+    },
     onError: (error) => {
       console.error('Reset password failed!:', error)
+      toast.error(error.message)
+    },
+  })
+
+  const resendOtpMutation = useMutation({
+    mutationFn: (email: string) => authApi.forgotPassword(email),
+    onSuccess: () => {
+      toast.success('OTP đã được gửi lại')
+    },
+    onError: (error) => {
+      console.error('Resend OTP failed:', error)
+      toast.error(error.message)
     },
   })
 
   const onSubmit = (data: IResetPasswordFormInputs) => {
     if (data.newPassword !== data.rePassword) {
-      return alert('Mật khẩu mới và xác minh mật khẩu không khớp')
+      return toast.error('Mật khẩu mới và xác minh mật khẩu không khớp')
     }
 
     data.otpCode = otpCode
@@ -135,6 +162,21 @@ export default function ResetPassword() {
                   />
                 ))}
               </div>
+              <button
+                type='button'
+                className='px-4 py-2 rounded-md text-[#0F172A] bg-[#F1F5F9] hover:bg-[#f1f5f9c0] text-sm font-medium'
+                onClick={() => {
+                  setCountdown(15)
+                  resendOtpMutation.mutate(getValues('email'))
+                }}
+                disabled={mutation.status === 'pending' || countdown > 0}
+              >
+                {mutation.status === 'pending'
+                  ? 'Đang gửi...'
+                  : countdown > 0
+                    ? `Chờ ${countdown}s`
+                    : 'Gửi lại'}
+              </button>
             </div>
           </div>
           <div className='py-2'>

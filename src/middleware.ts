@@ -16,14 +16,14 @@ export default async function middleware(request: NextRequest) {
   const adminPath = Object.values(ADMIN_PATH_NAME)
 
   async function redirectLoop(token: any) {
-    const user = jwtDecode<any>(token)
+    const user = jwtDecode<{ id: string; role: string; isBlocked: boolean }>(token)
 
-    if (user.role === ROLE_TITLE.ADMIN && mainPathWithoutQuery === AUTH_PATH_NAME.DANG_NHAP) {
+    if (user.role === ROLE_TITLE.MAIN && mainPathWithoutQuery === AUTH_PATH_NAME.DANG_NHAP) {
       return NextResponse.redirect(new URL(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG, request.url))
     }
 
     if (
-      user.role === ROLE_TITLE.ADMIN &&
+      user.role === ROLE_TITLE.MAIN &&
       (adminPath.includes(mainPathWithoutQuery) || adminPath.includes(pathName))
     ) {
       return NextResponse.next()
@@ -39,13 +39,20 @@ export default async function middleware(request: NextRequest) {
     if (response) return response
   } else {
     try {
-      await authApi.newAccessToken()
+      const cookies = () => request.headers.get('cookie') || ''
+
+      await authApi.newAccessToken({
+        headers: { Cookie: cookies().toString() },
+      })
+
       token = request.cookies.get('ACCESS_TOKEN')?.value
       if (!!token) {
         const response = await redirectLoop(token)
         if (response) return response
       }
     } catch (error) {
+      console.log(error)
+
       if (mainPathWithoutQuery.startsWith(AUTH_PATH_NAME.DANG_NHAP)) {
         return NextResponse.next()
       }

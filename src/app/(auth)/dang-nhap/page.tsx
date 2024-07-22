@@ -5,6 +5,8 @@ import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import { toast } from 'react-toastify'
+import { AxiosError } from 'axios'
 
 import daihoiLogo from '@/../public/daihoiLogo.svg'
 import { authApi } from '@/apis'
@@ -29,8 +31,12 @@ export default function AdminLogin() {
       console.log('Login successful:', data)
       router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
     },
-    onError: (error) => {
-      console.error('Login failed:', error)
+    onError: (error: AxiosError) => {
+      if (error.response && error.response.data) {
+        toast.error((error.response.data as { message: string }).message)
+      } else {
+        toast.error('Đã xảy ra lỗi, hãy đăng nhập lại')
+      }
     },
   })
 
