@@ -18,15 +18,10 @@ import { DOCUMENT_PAGE_LIMIT_DEFAULT } from '@/configs'
 import { Button } from '@/components/ui/button'
 import { formatISOtime } from '@/helpers'
 
-
-export default function DocumentsTable({
-  documents
-}: {
-  documents: Document[]
-}) {
+export default function DocumentsTable({ documents }: { documents: Document[] }) {
   const downloadFile = async (id: string) => {
     const res = fileApi.downloadFile(id)
-  };
+  }
 
   const columnHelper = createColumnHelper<Document>()
   const datalength = documents.length
@@ -60,11 +55,7 @@ export default function DocumentsTable({
         minSize: 77,
         maxSize: 77,
         cell: (info) => (
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => downloadFile(info.getValue())}
-          >
+          <Button variant='outline' size='icon' onClick={() => downloadFile(info.getValue())}>
             <PiDownloadSimpleBold size={16} />
           </Button>
         ),
@@ -99,22 +90,23 @@ export default function DocumentsTable({
                   console.log(column.column.columnDef.header, column.column.columnDef.size)
                   return (
                     <th
-                      className={`${column.column.columnDef.id == 'id'
-                        ? 'lg:w-auto md:w-[6.875rem] w-[4.375rem]'
-                        : column.column.columnDef.id == 'releaseDate'
-                          ? 'lg:w-[18.5rem] md:w-[10.813rem] w-[5.938rem]'
-                          : column.column.columnDef.id == 'title'
-                            ? 'lg:w-[27.5rem] w-auto'
-                            : 'lg:w-[12rem] md:w-[6.5rem] w-[4.813rem]'
-                        } 
+                      className={`${
+                        column.column.columnDef.id == 'id'
+                          ? 'lg:w-auto md:w-[6.875rem] w-[4.375rem]'
+                          : column.column.columnDef.id == 'releaseDate'
+                            ? 'lg:w-[18.5rem] md:w-[10.813rem] w-[5.938rem]'
+                            : column.column.columnDef.id == 'title'
+                              ? 'lg:w-[27.5rem] w-auto'
+                              : 'lg:w-[12rem] md:w-[6.5rem] w-[4.813rem]'
+                      } 
                       md:text-sm sticky lg:top-0 md:top-14 top-0 bg-white leading-6 text-slate-900 border-2 p-4 text-left font-bold text-xs`}
                       key={column.id}
                       colSpan={column.colSpan}
-                    // style={{
-                    //   width: column.column.columnDef.size,
-                    //   minWidth: column.column.columnDef.minSize,
-                    //   maxWidth: column.column.columnDef.maxSize,
-                    // }}
+                      // style={{
+                      //   width: column.column.columnDef.size,
+                      //   minWidth: column.column.columnDef.minSize,
+                      //   maxWidth: column.column.columnDef.maxSize,
+                      // }}
                     >
                       {flexRender(column.column.columnDef.header, column.getContext())}
                     </th>
@@ -133,11 +125,11 @@ export default function DocumentsTable({
                     <td
                       className='p-4 border-2 md:text-sm leading-6 text-slate-900 font-normal text-xs'
                       key={cell.id}
-                    // style={{
-                    //   width: cell.column.columnDef.size,
-                    //   minWidth: cell.column.columnDef.minSize,
-                    //   maxWidth: cell.column.columnDef.maxSize,
-                    // }}
+                      // style={{
+                      //   width: cell.column.columnDef.size,
+                      //   minWidth: cell.column.columnDef.minSize,
+                      //   maxWidth: cell.column.columnDef.maxSize,
+                      // }}
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
