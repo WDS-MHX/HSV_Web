@@ -1,6 +1,6 @@
 import { Document } from "@/models"
 import { handleError, httpClient } from '@/services'
-import { DOCUMENT_LIMIT_DEFAULT } from "@/configs"
+import { DOCUMENT_PAGE_LIMIT_DEFAULT } from "@/configs"
 
 
 //DTOs
@@ -23,7 +23,7 @@ export interface CreateDocumentDTO {
 
 export interface SearchDTO {
     title: string
-    category: string
+    categrory: string
     page: number
     limit: number
 }
@@ -41,7 +41,7 @@ export interface UpdateDocumentDTO {
 
 //API
 class DocumentApi {
-    async getAllDocument(page: number, limit: number = DOCUMENT_LIMIT_DEFAULT) {
+    async getAllDocuments(page: number, limit: number = DOCUMENT_PAGE_LIMIT_DEFAULT) {
         try {
             const res = await httpClient.get<GetDocumentsDTO>(`/document/docs?page=${page}&limit=${limit}`)
             return res
@@ -52,7 +52,7 @@ class DocumentApi {
         }
     }
 
-    async getAllDocumentUploadedByAdmin(page: number, limit: number = DOCUMENT_LIMIT_DEFAULT) {
+    async getAllDocumentsUploadedByAdmin(page: number, limit: number = DOCUMENT_PAGE_LIMIT_DEFAULT) {
         try {
             const res = await httpClient.get<GetDocumentsDTO>(`/document/docs-of-admin?page=${page}&limit=${limit}`)
             return res

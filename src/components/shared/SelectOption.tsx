@@ -35,6 +35,9 @@ const DocumentOptions = [
     isPlaceholder: true,
   },
   {
+    optionName: 'Tất cả',
+  },
+  {
     optionName: 'Chương trình',
   },
   {
@@ -94,43 +97,43 @@ export default function SelectOption({ className, isDocument }: SelectOptionProp
         >
           {!isDocument
             ? options.map((option) => (
-                <ListboxOption
-                  key={option.optionName}
-                  value={option}
-                  className='group w-full flex cursor-pointer items-center gap-2 rounded-lg max-md:py-2.5 md:py-1.5 px-3 select-none hover:bg-slate-100 data-[focus]:bg-slate-100'
-                >
-                  {!option.isPlaceholder && (
-                    <FaCheck className='invisible size-4 font-normal fill-slate-700 group-data-[selected]:visible' />
+              <ListboxOption
+                key={option.optionName}
+                value={option}
+                className='group w-full flex cursor-pointer items-center gap-2 rounded-lg max-md:py-2.5 md:py-1.5 px-3 select-none hover:bg-slate-100 data-[focus]:bg-slate-100'
+              >
+                {!option.isPlaceholder && (
+                  <FaCheck className='invisible size-4 font-normal fill-slate-700 group-data-[selected]:visible' />
+                )}
+                <div
+                  className={clsx(
+                    'text-sm',
+                    option.isPlaceholder ? 'text-slate-400' : 'text-slate-700',
                   )}
-                  <div
-                    className={clsx(
-                      'text-sm',
-                      option.isPlaceholder ? 'text-slate-400' : 'text-slate-700',
-                    )}
-                  >
-                    {option.optionName}
-                  </div>
-                </ListboxOption>
-              ))
+                >
+                  {option.optionName}
+                </div>
+              </ListboxOption>
+            ))
             : DocumentOptions.map((option) => (
-                <ListboxOption
-                  key={option.optionName}
-                  value={option}
-                  className='group w-full flex cursor-pointer items-center gap-2 rounded-lg max-md:py-2.5 md:py-1.5 px-3 select-none hover:bg-slate-100 data-[focus]:bg-slate-100'
-                >
-                  {!option.isPlaceholder && (
-                    <FaCheck className='invisible size-4 font-normal fill-slate-700 group-data-[selected]:visible' />
+              <ListboxOption
+                key={option.optionName}
+                value={option}
+                className='group w-full flex cursor-pointer items-center gap-2 rounded-lg max-md:py-2.5 md:py-1.5 px-3 select-none hover:bg-slate-100 data-[focus]:bg-slate-100'
+              >
+                {!option.isPlaceholder && (
+                  <FaCheck className='invisible size-4 font-normal fill-slate-700 group-data-[selected]:visible' />
+                )}
+                <div
+                  className={clsx(
+                    'text-sm',
+                    option.isPlaceholder ? 'text-slate-400' : 'text-slate-700',
                   )}
-                  <div
-                    className={clsx(
-                      'text-sm',
-                      option.isPlaceholder ? 'text-slate-400' : 'text-slate-700',
-                    )}
-                  >
-                    {option.optionName}
-                  </div>
-                </ListboxOption>
-              ))}
+                >
+                  {option.optionName}
+                </div>
+              </ListboxOption>
+            ))}
         </ListboxOptions>
       </Listbox>
     </div>
