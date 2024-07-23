@@ -177,7 +177,7 @@ const ResultPage = ({ searchValue, searchResults, isAdmin }: ResultPageType) => 
           <button className='max-lg:px-8 button-primary'>Tìm</button>
         </div>
         <Select defaultValue={options[0].optionName}>
-          <SelectTrigger className='lg:hidden md:hidden w-full'>
+          <SelectTrigger className='lg:hidden md:hidden w-[90%] mx-auto'>
             <SelectValue placeholder='Chọn danh mục'></SelectValue>
           </SelectTrigger>
           <SelectContent>

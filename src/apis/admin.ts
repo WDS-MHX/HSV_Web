@@ -24,8 +24,9 @@ class AdminApi {
       const res = await httpClient.post<Admin>('/admin/new-admin', data)
       return res
     } catch (error) {
+      // throw error
       handleError(error, (res) => {
-        throw new res.data.message()
+        throw new Error(res.data.message)
       })
     }
   }
@@ -36,7 +37,7 @@ class AdminApi {
       return res
     } catch (error) {
       handleError(error, (res) => {
-        throw new res.data.message()
+        throw new Error(res.data.message)
       })
     }
   }
@@ -49,7 +50,7 @@ class AdminApi {
       })
     } catch (error) {
       handleError(error, (res) => {
-        throw new res.data.message()
+        throw new Error(res.data.message)
       })
     }
   }
@@ -60,7 +61,7 @@ class AdminApi {
       return res
     } catch (error) {
       handleError(error, (res) => {
-        throw new res.data.message()
+        throw new Error(res.data.message)
       })
     }
   }
@@ -71,7 +72,7 @@ class AdminApi {
       return res
     } catch (error) {
       handleError(error, (res) => {
-        throw new res.data.message()
+        throw new Error(res.data.message)
       })
     }
   }
