@@ -8,6 +8,7 @@ import { Pagination } from '@/types/pagination'
 import { useQuery } from '@tanstack/react-query'
 import { queryKeys } from '@/configs/queryKeys'
 import postApi from '@/apis/post'
+import { SearchPostType } from '@/types/post'
 
 interface searchData {
   id: string
@@ -104,6 +105,7 @@ const data: searchData[] = [
 const TimKiemPage = () => {
   const [searchValue, setSearchValue] = useState<string>('')
   const [categrories, setCategrories] = useState<POST_CATEGORY[]>([
+    POST_CATEGORY.GIOI_THIEU,
     POST_CATEGORY.SINH_VIEN_5_TOT,
     POST_CATEGORY.CAU_CHUYEN_DEP,
     POST_CATEGORY.TINH_NGUYEN,
@@ -133,11 +135,12 @@ const TimKiemPage = () => {
     setPagination({ ...pagination, page: page })
   }
 
-  const postResult =
+  const postResult: SearchPostType[] =
     data?.data.map((post) => ({
       id: post._id,
       categorized: post.categrory,
       title: post.title,
+      description: post.description ?? '',
       content: post.content ?? '',
       img: post.titleImageId
         ? process.env.NEXT_PUBLIC_API_BASE_URL + '/download/' + post.titleImageId

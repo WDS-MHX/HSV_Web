@@ -10,6 +10,9 @@ import { FiPlus } from 'react-icons/fi'
 import { Pagination } from '@/types/pagination'
 import postApi from '@/apis/post'
 import { POST_CATEGORY } from '@/configs/enum'
+import { SearchPostType } from '@/types/post'
+import { ADMIN_PATH_NAME } from '@/configs'
+import { useRouter } from 'next/navigation'
 
 interface SearchData {
   id: string
@@ -132,18 +135,17 @@ const PostTabs = ({
 }
 
 const Quanlybaidang = () => {
+  /**
+   * Get all posts with options
+   * - isPosted: true => get all posted posts & false => get all not posted posts
+   * - searchValue: search value for posts
+   * - categrories: categories for posts
+   * - pagination: pagination for posts
+   */
   const [isPosted, setIsPosted] = useState<boolean>(true)
-
-  const handleIsOpen = () => {
-    setIsPosted(true)
-  }
-
-  const handleNotIsOpen = () => {
-    setIsPosted(false)
-  }
-
   const [searchValue, setSearchValue] = useState<string>('')
   const [categrories, setCategrories] = useState<POST_CATEGORY[]>([
+    POST_CATEGORY.GIOI_THIEU,
     POST_CATEGORY.SINH_VIEN_5_TOT,
     POST_CATEGORY.CAU_CHUYEN_DEP,
     POST_CATEGORY.TINH_NGUYEN,
@@ -171,15 +173,24 @@ const Quanlybaidang = () => {
     placeholderData: (previousData) => previousData,
   })
 
+  const handleIsOpen = () => {
+    setIsPosted(true)
+  }
+
+  const handleNotIsOpen = () => {
+    setIsPosted(false)
+  }
+
   const selectPage = (page: number) => {
     setPagination({ ...pagination, page: page })
   }
 
-  const postResult =
+  const postResult: SearchPostType[] =
     data?.data.map((post) => ({
       id: post._id,
       categorized: post.categrory,
       title: post.title,
+      description: post.description ?? '',
       content: post.content ?? '',
       img: post.titleImageId
         ? process.env.NEXT_PUBLIC_API_BASE_URL + '/download/' + post.titleImageId
@@ -187,17 +198,26 @@ const Quanlybaidang = () => {
       date: post.postedDate,
     })) ?? []
 
+  // Navigate to create post page
+  const router = useRouter()
+  const navigateToCreatePost = () => {
+    router.push(ADMIN_PATH_NAME.TAO_BAI_DANG)
+  }
+
   return (
     <div className='w-full bg-[#E0F2FE] lg:pt-8 px-2 pb-4 h-fit'>
       <div className='bg-white rounded-xl py-4 px-6 max-md:px-1 mb-4'>
-        <div className='flex w-full justify-between pr-8 h-fit md:mb-6 items-center'>
+        <div className='flex w-full justify-between h-fit md:mb-6 items-center'>
           <PostTabs
             isPosted={isPosted}
             handleIsOpen={handleIsOpen}
             handleNotIsOpen={handleNotIsOpen}
             className='max-md:hidden'
           />
-          <button className='py-2.5 px-8 rounded-md text-white font-medium bg-sky-600 h-full max-md:hidden'>
+          <button
+            onClick={navigateToCreatePost}
+            className='py-2.5 px-8 rounded-md text-white font-medium bg-sky-600 h-full max-md:hidden'
+          >
             Tạo bài viết mới
           </button>
         </div>

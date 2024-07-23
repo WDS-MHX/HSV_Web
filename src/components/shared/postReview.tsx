@@ -1,17 +1,18 @@
 import React from 'react'
 import Image, { StaticImageData } from 'next/image'
 import { GrLinkNext } from 'react-icons/gr'
-import moment from 'moment'
-import { getPostCategoryTitle } from '@/helpers'
-import { PostReviewType } from '@/types/post-review'
+import { getPostCategoryTitle, shortenText } from '@/helpers'
+import { PostReviewType } from '@/types/post'
 import { useRouter } from 'next/navigation'
 import { PATH_NAME } from '@/configs'
+import { format } from 'date-fns'
 
 const PostReview = ({
   id,
   img,
   categorized,
   title,
+  description,
   content,
   date,
   isSearchPage,
@@ -64,11 +65,11 @@ const PostReview = ({
             </div>
           )}
           <div className='hidden mt-2 post_content w-full text-justify text-sm text-slate-900 leading-6 font-normal'>
-            <p>{content}</p>
+            <p>{shortenText(description ?? '', 30)}</p>
           </div>
           <div className='flex mt-2'>
             <p className='text-slate-500 font-medium text-justify leading-5 text-[0.75rem] mr-6'>
-              {date ? moment(date).format('DD/MM/YYYY') : 'Không rõ'}
+              {date ? format(date, 'dd/MM/YYYY') : 'Không rõ'}
             </p>
             {/* <p className='text-slate-500 font-medium text-justify leading-5 text-[0.75rem]'>
               comment: {comment}

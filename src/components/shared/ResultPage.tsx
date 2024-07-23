@@ -15,22 +15,14 @@ import {
 import PostReview from './postReview'
 import Pagination from './Pagination'
 import { POST_CATEGORY } from '@/configs/enum'
-
-interface searchData {
-  id: string
-  categorized?: POST_CATEGORY
-  title: string
-  content: string
-  img?: string
-  date?: Date
-}
+import { SearchPostType } from '@/types/post'
 
 interface ResultPageType {
   selectedCategories: Array<POST_CATEGORY>
   setSelectedCategories: React.Dispatch<React.SetStateAction<Array<POST_CATEGORY>>>
   searchValue: string
   setSearchValue: React.Dispatch<React.SetStateAction<string>>
-  searchResults: Array<searchData>
+  searchResults: Array<SearchPostType>
   itemsPerPage: number
   selectPage: (page: number) => void
   totalSearchItems: number
@@ -48,12 +40,7 @@ const ResultPage = ({
   totalSearchItems,
   isAdmin,
 }: ResultPageType) => {
-  const [currentOffset, setCurrentOffset] = useState<number>(0)
-  const [currentItems, setCurrentItems] = useState<Array<searchData>>(searchResults)
-
-  const handleItemOffsetChange = (newOffset: number) => {
-    setCurrentOffset(newOffset)
-  }
+  const [currentItems, setCurrentItems] = useState<Array<SearchPostType>>(searchResults)
 
   const handleSelectCategory = (category: POST_CATEGORY) => {
     if (selectedCategories.includes(category)) {
@@ -67,23 +54,13 @@ const ResultPage = ({
     setSearchValue(e.target.value)
   }
 
-  const postContent = setJson
-
-  function shortenText(text: string, wordLimit: number): string {
-    const words: string[] = text.split(' ')
-    if (words.length > wordLimit) {
-      return words.slice(0, wordLimit).join(' ') + ' ...'
-    }
-    return text
-  }
-
   useEffect(() => {
     setCurrentItems(
-      currentItems.filter(
+      searchResults.filter(
         (item) => item.categorized && selectedCategories.includes(item.categorized),
       ),
     )
-  }, [currentItems, selectedCategories])
+  }, [searchResults, selectedCategories])
 
   return (
     <div className='flex gap-4 w-full'>
@@ -207,7 +184,7 @@ const ResultPage = ({
               onChange={handleChangeSearch}
             />
           </div>
-          <button className='max-lg:px-8 button-primary'>Tìm</button>
+          <button className='px-8 bg-sky-900 text-white rounded-md'>Tìm</button>
         </div>
         <Select defaultValue={options[0].optionName}>
           <SelectTrigger className='lg:hidden md:hidden w-[90%] mx-auto'>
@@ -260,7 +237,8 @@ const ResultPage = ({
                 img={imageSrc}
                 categorized={searchResult.categorized}
                 title={searchResult.title}
-                content={shortenText(searchResult.content, 30)}
+                description={searchResult.description}
+                content={searchResult.content}
                 date={searchResult.date}
                 isSearchPage={true}
               />

@@ -5,7 +5,7 @@ import { shortenText } from '@/helpers'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { queryKeys } from '@/configs/queryKeys'
 import postApi from '@/apis/post'
-import { PostReviewType } from '@/types/post-review'
+import { PostReviewType } from '@/types/post'
 
 export default function Home() {
   const { data, isFetchingNextPage, hasNextPage } = useInfiniteQuery({
@@ -26,6 +26,7 @@ export default function Home() {
         id: item._id,
         categorized: item.categrory,
         title: item.title,
+        description: item.description ?? '',
         content: item.content ?? '',
         img: item.titleImageId
           ? process.env.NEXT_PUBLIC_API_BASE_URL + '/download/' + item.titleImageId
