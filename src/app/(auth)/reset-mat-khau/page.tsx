@@ -117,7 +117,7 @@ export default function ResetPassword() {
                 required: 'Email is required',
                 pattern: { value: /^\S+@\S+$/i, message: 'Invalid email address' },
               })}
-              className='w-full rounded-md border border-[#CBD5E1]'
+              className='w-full rounded-md border border-[#CBD5E1] px-[12px] py-[8px]'
               placeholder='Email'
             />
             {errors.email && <p className='text-red-600'>{errors.email.message}</p>}
@@ -133,7 +133,7 @@ export default function ResetPassword() {
                 {...register('newPassword', {
                   required: 'New password is required',
                 })}
-                className='w-full rounded-md border border-[#CBD5E1]'
+                className='w-full rounded-md border border-[#CBD5E1] px-[12px] py-[8px]'
                 placeholder='Mật khẩu mới'
               />
               <button
@@ -161,7 +161,7 @@ export default function ResetPassword() {
                 {...register('rePassword', {
                   required: 'Verify password is required',
                 })}
-                className='w-full rounded-md border border-[#CBD5E1]'
+                className='w-full rounded-md border border-[#CBD5E1] px-[12px] py-[8px]'
                 placeholder='Xác minh mật khẩu'
               />
               <button
@@ -225,7 +225,7 @@ export default function ResetPassword() {
         </form>
         <Link
           href={AUTH_PATH_NAME.DANG_NHAP}
-          className='flex mt-4 justify-center items-center w-full hover:underline text-secondary text-sm'
+          className='flex mt-4 justify-center items-center w-full hover:underline text-secondaryColor text-sm'
         >
           Đăng nhập
         </Link>

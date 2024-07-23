@@ -1,8 +1,16 @@
 import Admin from '@/models/admin'
 import { AxiosAuthRefreshRequestConfig } from 'axios-auth-refresh'
 import { handleError, httpClient } from '@/services'
+import { AUTH_PATH_NAME } from '@/configs'
 
 class AuthApi {
+  constructor() {
+    httpClient.createAuthRefreshInterceptor(() => {
+      this.logOut()
+      window.location.href = AUTH_PATH_NAME.DANG_NHAP
+    })
+  }
+
   async logIn(email: string, password: string) {
     try {
       const res = await httpClient.post<{ _id: string; role: string }>('/auth/login', {
@@ -15,9 +23,9 @@ class AuthApi {
     }
   }
 
-  async newAccessToken(config?: AxiosAuthRefreshRequestConfig) {
+  async newAccessToken(config?: object) {
     try {
-      await httpClient.get<{ access_token: string }>('/auth/new-access-token', config)
+      return await httpClient.get<{ accessToken: string }>('/auth/new-access-token', config)
     } catch (error) {
       throw error
     }
@@ -31,7 +39,7 @@ class AuthApi {
         console.log('Email không tồn tại')
       }
       handleError(error, (res) => {
-        throw new res.data.message()
+        throw new Error(res.data.message)
       })
     }
   }
@@ -45,7 +53,7 @@ class AuthApi {
       })
     } catch (error) {
       handleError(error, (res) => {
-        throw new res.data.message()
+        throw new Error(res.data.message)
       })
     }
   }
@@ -55,7 +63,7 @@ class AuthApi {
       await httpClient.get<{ admin: Admin }>('/auth/logout')
     } catch (error) {
       handleError(error, (res) => {
-        throw new res.data.message()
+        throw new Error(res.data.message)
       })
     }
   }

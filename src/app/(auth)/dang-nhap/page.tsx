@@ -37,7 +37,7 @@ export default function AdminLogin() {
     mutationFn: ({ email, password }: ILoginFormInputs) => authApi.logIn(email, password),
     onSuccess: (data) => {
       console.log('Login successful:', data)
-      router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
+      router.push('/admin/redirect')
     },
     onError: (error: AxiosError) => {
       if (error.response && error.response.data) {
@@ -71,7 +71,7 @@ export default function AdminLogin() {
                 required: 'Email is required',
                 pattern: { value: /^\S+@\S+$/i, message: 'Invalid email address' },
               })}
-              className='w-full rounded-md border border-[#CBD5E1]'
+              className='w-full rounded-md border border-[#CBD5E1] px-[12px] py-[8px]'
               placeholder='Email'
             />
             {errors.email && <p className='text-red-600'>{errors.email.message}</p>}
@@ -86,7 +86,7 @@ export default function AdminLogin() {
                 {...register('password', {
                   required: 'Password is required',
                 })}
-                className='w-full rounded-md border border-[#CBD5E1]'
+                className='w-full rounded-md border border-[#CBD5E1] px-[12px] py-[8px]'
                 placeholder='Mật khẩu'
               />
               <button
@@ -115,7 +115,7 @@ export default function AdminLogin() {
         </form>
         <Link
           href={AUTH_PATH_NAME.QUEN_MAT_KHAU}
-          className='flex mt-4 justify-center items-center w-full hover:underline text-secondary text-sm'
+          className='flex mt-4 justify-center items-center w-full hover:underline text-secondaryColor text-sm'
         >
           Quên mật khẩu
         </Link>
