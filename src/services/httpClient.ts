@@ -37,6 +37,25 @@ class HttpClient {
     const response = await this.instance.delete<T>(this.getUrl(endpoint), config)
     return response.data
   }
+
+  createAuthRefreshInterceptor(onError: () => void) {
+    _createAuthRefreshInterceptor(
+      this.instance,
+      async (failedRequest) => {
+        try {
+          await authApi.newAccessToken()
+          return Promise.resolve()
+        } catch (error) {
+          onError
+          return Promise.reject(error)
+        }
+      },
+      {
+        pauseInstanceWhileRefreshing: true,
+        statusCodes: [403],
+      },
+    )
+  }
 }
 
 export function handleError(error: any, onError?: (error: AxiosResponse) => void) {
