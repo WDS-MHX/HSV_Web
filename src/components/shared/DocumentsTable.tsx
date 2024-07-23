@@ -22,6 +22,11 @@ import {
   SelectValue,
 } from './SelectOption'
 import { MdOutlineFileUpload } from 'react-icons/md'
+import { log, table } from 'console'
+import { headers } from 'next/headers'
+import { type } from 'os'
+import { title } from 'process'
+import { map } from 'zod'
 const options: readonly { optionName: string }[] = [
   {
     optionName: 'Chương trình',
@@ -54,9 +59,15 @@ export default function DocumentsTable({
   isAdmin?: boolean
 }) {
   const [columnFilters, setColumnFilters] = useState<any>([])
+  const [category, setCategory] = useState<string>('')
+  const [query, setQuery] = useState<string>('')
+  console.log('columnfilter', columnFilters)
   const columnHelper = createColumnHelper<documentType>()
   const datalength = documents.length
   const searchInput = columnFilters.find((f: any) => f.id === 'title')?.value || ''
+  const handleInput = (event: any) => {
+    setQuery(event.target.value)
+  }
   const onFilterChange = (id: any, value: any) =>
     setColumnFilters((prev: any) =>
       prev
@@ -66,14 +77,69 @@ export default function DocumentsTable({
           value,
         }),
     )
+  const onFilterCategoryChange = () => {
+    setColumnFilters((prev: any) => {
+      let tempArr = []
+      const categorySelect = prev.find((filter: any) => filter.id === 'category')
+      console.log('categorySelect', categorySelect)
+      if (!categorySelect) {
+        console.log('VAOcategorySelectTrue')
+        tempArr = prev.concat({
+          id: 'category',
+          value: category,
+        })
+        console.log('tempArr', tempArr)
+      } else {
+        console.log('VAOcategorySelectFalse')
+        tempArr = prev.map((f: any) =>
+          f.id === 'category'
+            ? {
+                ...f,
+                value: category,
+              }
+            : f,
+        )
+      }
+      console.log('EMPTY', '')
+      const searchQuery = prev.find((filter: any) => filter.id === 'title')
+      console.log('SEARCHQURYCOUT', !searchQuery)
+      if (!searchQuery) {
+        tempArr = tempArr.concat({
+          id: 'title',
+          value: query,
+        })
+      } else {
+        tempArr = tempArr.map((f: any) =>
+          f.id === 'title'
+            ? {
+                ...f,
+                value: query,
+              }
+            : f,
+        )
+      }
+      console.log('PREVFILTER', tempArr)
+      return tempArr
+    })
+  }
   // eslint-disable-next-line
   const columnDef = useMemo(
     () => [
       columnHelper.accessor((row) => `${row.id}`, {
-        id: 'id',
+        id: 'category',
         header: 'Số / kí hiệu',
         minSize: 70,
         maxSize: 70,
+        filterFn: (row, columnId, filterCategory) => {
+          const categoryRow = row.original.type
+          console.log('filterCategoryFILTER', filterCategory)
+          console.log('ROWFILTER', row)
+          console.log('categoryRow', categoryRow)
+          if (filterCategory == '') {
+            return true
+          }
+          return filterCategory == categoryRow
+        },
       }),
       columnHelper.accessor((row) => `${row.releaseDate}`, {
         id: 'releaseDate',
@@ -128,7 +194,11 @@ export default function DocumentsTable({
         <div
           className={`flex md:flex-row flex-col items-center justify-between lg:w-[44.5rem] md:w-[39.375rem] w-full px-8 py-[0.625rem] ${isAdmin ? 'md:bg-slate-100' : 'lg:bg-slate-100'} rounded-md`}
         >
-          <Select>
+          <Select
+            onValueChange={(value: string) => {
+              setCategory(value)
+            }}
+          >
             <SelectTrigger className='md:w-auto w-full'>
               <SelectValue placeholder='Chọn danh mục'></SelectValue>
             </SelectTrigger>
@@ -148,11 +218,11 @@ export default function DocumentsTable({
               <input
                 className='border-none rounded-md mr-2 py-2 px-3 w-full focus:outline-none bg-white text-black text-sm font-normal leading-5'
                 placeholder='Gõ tên tài liệu vào đây'
-                value={searchInput}
-                onChange={(e) => onFilterChange('title', e.target.value)}
+                value={query}
+                onChange={handleInput}
               ></input>
             </div>
-            <button className='button-primary md:ml-0 ml-2'>
+            <button onClick={onFilterCategoryChange} className='button-primary md:ml-0 ml-2'>
               <p className='font-medium text-sm leading-6 text-white'>Tìm</p>
             </button>
           </div>

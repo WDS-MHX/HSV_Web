@@ -9,13 +9,13 @@ export const documents = [
   {
     id: 2,
     releaseDate: '1-1-2025',
-    title: 'test2',
+    title: 'Chào mừng',
     type: 'Công văn',
   },
   {
     id: 3,
     releaseDate: '1-1-2025',
-    title: 'test3',
+    title: 'Hướng dẫn Lorem Ipsum is simply dumm',
     type: 'Hướng dẫn',
   },
   {
