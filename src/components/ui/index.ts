@@ -1,2 +1,7 @@
 export { default as Header } from './Header'
 export { default as Footer } from './Footer'
+export { default as RemoveAlert } from './RemoveAlert'
+export * from './DateTimePicker/date-time-picker'
+export * from './label'
+export * from './input'
+export * from './textarea'

@@ -1,7 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { StaticImageData } from 'next/image'
+import React, { useState, useEffect, useCallback } from 'react'
 
 import {
   Select,
@@ -13,68 +12,134 @@ import {
   SelectLabel,
 } from './SelectOption'
 import PostReview from './postReview'
-import Pagination from './Pagination'
+import { POST_CATEGORY } from '@/configs/enum'
+import { SearchPostType } from '@/types/post'
+import PaginationSearchResult from './pagination-search-result'
 
-const options: readonly { optionName: string; isPlaceHolder?: boolean }[] = [
+const options: readonly {
+  optionType: POST_CATEGORY
+  optionName: string
+  isPlaceHolder?: boolean
+}[] = [
   {
+    optionType: POST_CATEGORY.TAT_CA,
     optionName: 'Tất cả',
   },
   {
+    optionType: POST_CATEGORY.GIOI_THIEU,
+    optionName: 'Giới thiệu',
+  },
+  {
+    optionType: POST_CATEGORY.SINH_VIEN_5_TOT,
     optionName: 'Sinh viên 5 tốt',
   },
   {
+    optionType: POST_CATEGORY.CAU_CHUYEN_DEP,
     optionName: 'Câu chuyện đẹp',
   },
   {
-    optionName: 'Hỗ trợ sinh viên',
+    optionType: POST_CATEGORY.TINH_NGUYEN,
+    optionName: 'Tình nguyện',
   },
   {
+    optionType: POST_CATEGORY.NCKH,
     optionName: 'NCKH',
   },
   {
+    optionType: POST_CATEGORY.HO_TRO_SINH_VIEN,
+    optionName: 'Hỗ trợ sinh viên',
+  },
+  {
+    optionType: POST_CATEGORY.XAY_DUNG_HOI,
     optionName: 'Xây dựng hội',
   },
 ]
 
-interface searchData {
-  id: string
-  categorized: string
-  title: string
-  content: string
-  img?: Array<string>
-  comment: number
-  date: string
-}
-
 interface ResultPageType {
+  selectedCategories: Array<POST_CATEGORY>
+  setSelectedCategories: React.Dispatch<React.SetStateAction<Array<POST_CATEGORY>>>
   searchValue: string
-  searchResults: Array<searchData>
+  setSearchValue: React.Dispatch<React.SetStateAction<string>>
+  searchResults: Array<SearchPostType>
+  itemsPerPage: number
+  selectPage: (page: number) => void
+  totalSearchItems: number
   isAdmin: boolean
+  searchPosts: () => void
 }
 
-const ResultPage = ({ searchValue, searchResults, isAdmin }: ResultPageType) => {
-  const [isLatest, setisLatest] = useState<boolean>(true)
-  const [currentOffset, setCurrentOffset] = useState<number>(0)
-  const [newSearchValue, setNewSearchValue] = useState<string>(searchValue)
-  const itemsPerPage = 5
+const ResultPage = ({
+  selectedCategories,
+  setSelectedCategories,
+  searchValue,
+  setSearchValue,
+  searchResults,
+  itemsPerPage,
+  selectPage,
+  totalSearchItems,
+  isAdmin,
+  searchPosts,
+}: ResultPageType) => {
+  const [currentItems, setCurrentItems] = useState<Array<SearchPostType>>(searchResults)
+  const [searchText, setSearchText] = useState<string>('')
 
-  const handleItemOffsetChange = (newOffset: number) => {
-    setCurrentOffset(newOffset)
-  }
-
-  const handleChange = (e: { target: { value: string } }) => {
-    setNewSearchValue(e.target.value)
-  }
-
-  const currentItems = searchResults.slice(currentOffset, currentOffset + itemsPerPage)
-
-  function shortenText(text: string, wordLimit: number): string {
-    const words: string[] = text.split(' ')
-    if (words.length > wordLimit) {
-      return words.slice(0, wordLimit).join(' ') + ' ...'
+  const handleSelectCategory = (category: POST_CATEGORY) => {
+    if (selectedCategories.includes(category)) {
+      setSelectedCategories(selectedCategories.filter((item) => item !== category))
+    } else {
+      setSelectedCategories([...selectedCategories, category])
     }
-    return text
   }
+
+  const handleSelectOneCategory = (category: POST_CATEGORY) => {
+    if (category !== POST_CATEGORY.TAT_CA) {
+      setSelectedCategories([category])
+    } else {
+      setSelectedCategories([
+        POST_CATEGORY.GIOI_THIEU,
+        POST_CATEGORY.SINH_VIEN_5_TOT,
+        POST_CATEGORY.CAU_CHUYEN_DEP,
+        POST_CATEGORY.TINH_NGUYEN,
+        POST_CATEGORY.NCKH,
+        POST_CATEGORY.HO_TRO_SINH_VIEN,
+        POST_CATEGORY.XAY_DUNG_HOI,
+      ])
+    }
+  }
+
+  const handleChangeSearch = (e: { target: { value: string } }) => {
+    setSearchText(e.target.value)
+  }
+
+  const handleSearchPosts = useCallback(() => {
+    setSearchValue(searchText)
+    searchPosts()
+  }, [searchText, searchPosts, setSearchValue])
+
+  useEffect(() => {
+    const input = document.getElementById('search-bar')
+
+    if (input) {
+      const handleSearchEvent = (event: KeyboardEvent) => {
+        if (event.key === 'Enter') {
+          event.preventDefault()
+          handleSearchPosts()
+        }
+      }
+      input.addEventListener('keypress', handleSearchEvent)
+      return () => {
+        input.removeEventListener('keypress', handleSearchEvent)
+      }
+    }
+  }, [searchText, searchPosts, handleSearchPosts])
+
+  useEffect(() => {
+    setCurrentItems(
+      searchResults.filter(
+        (item) => item.categorized && selectedCategories.includes(item.categorized),
+      ),
+    )
+  }, [searchResults, selectedCategories])
 
   return (
     <div className='flex gap-4 w-full'>
@@ -85,61 +150,85 @@ const ResultPage = ({ searchValue, searchResults, isAdmin }: ResultPageType) => 
           <ul className='mt-12'>
             <li className='flex gap-2 mb-4'>
               <input
+                checked={selectedCategories.includes(POST_CATEGORY.GIOI_THIEU)}
                 type='checkbox'
-                id='checkbox-1'
-                className='rounded border-[#E5E7EB] border cursor-pointer'
+                id={POST_CATEGORY.GIOI_THIEU}
+                className='rounded border-[#E5E7EB] border mb-4 cursor-pointer'
+                onChange={() => handleSelectCategory(POST_CATEGORY.GIOI_THIEU)}
               />
-              <label className='cursor-pointer' htmlFor='checkbox-1'>
+              <label className='cursor-pointer' htmlFor={POST_CATEGORY.GIOI_THIEU}>
+                Giới thiệu
+              </label>
+            </li>
+            <li className='flex gap-2 mb-4'>
+              <input
+                checked={selectedCategories.includes(POST_CATEGORY.SINH_VIEN_5_TOT)}
+                type='checkbox'
+                id={POST_CATEGORY.SINH_VIEN_5_TOT}
+                className='rounded border-[#E5E7EB] border mb-4 cursor-pointer'
+                onChange={() => handleSelectCategory(POST_CATEGORY.SINH_VIEN_5_TOT)}
+              />
+              <label className='cursor-pointer' htmlFor={POST_CATEGORY.SINH_VIEN_5_TOT}>
                 Sinh viên 5 tốt
               </label>
             </li>
             <li className='flex gap-2 mb-4'>
               <input
+                checked={selectedCategories.includes(POST_CATEGORY.CAU_CHUYEN_DEP)}
                 type='checkbox'
-                id='checkbox-2'
-                className='rounded border-[#E5E7EB] border cursor-pointer'
+                id={POST_CATEGORY.CAU_CHUYEN_DEP}
+                className='rounded border-[#E5E7EB] border mb-4 cursor-pointer'
+                onChange={() => handleSelectCategory(POST_CATEGORY.CAU_CHUYEN_DEP)}
               />
-              <label className='cursor-pointer' htmlFor='checkbox-2'>
+              <label className='cursor-pointer' htmlFor={POST_CATEGORY.CAU_CHUYEN_DEP}>
                 Câu chuyện đẹp
               </label>
             </li>
             <li className='flex gap-2 mb-4'>
               <input
+                checked={selectedCategories.includes(POST_CATEGORY.TINH_NGUYEN)}
                 type='checkbox'
-                id='checkbox-3'
-                className='rounded border-[#E5E7EB] border cursor-pointer'
+                id={POST_CATEGORY.TINH_NGUYEN}
+                className='rounded border-[#E5E7EB] border mb-4 cursor-pointer'
+                onChange={() => handleSelectCategory(POST_CATEGORY.TINH_NGUYEN)}
               />
-              <label className='cursor-pointer' htmlFor='checkbox-3'>
+              <label className='cursor-pointer' htmlFor={POST_CATEGORY.TINH_NGUYEN}>
                 Tình nguyện
               </label>
             </li>
             <li className='flex gap-2 mb-4'>
               <input
+                checked={selectedCategories.includes(POST_CATEGORY.NCKH)}
                 type='checkbox'
-                id='checkbox-4'
-                className='rounded border-[#E5E7EB] border cursor-pointer'
+                id={POST_CATEGORY.NCKH}
+                className='rounded border-[#E5E7EB] border mb-4 cursor-pointer'
+                onChange={() => handleSelectCategory(POST_CATEGORY.NCKH)}
               />
-              <label className='cursor-pointer' htmlFor='checkbox-4'>
+              <label className='cursor-pointer' htmlFor={POST_CATEGORY.NCKH}>
                 NCKH
               </label>
             </li>
             <li className='flex gap-2 mb-4'>
               <input
+                checked={selectedCategories.includes(POST_CATEGORY.HO_TRO_SINH_VIEN)}
                 type='checkbox'
-                id='checkbox-5'
-                className='rounded border-[#E5E7EB] border cursor-pointer'
+                id={POST_CATEGORY.HO_TRO_SINH_VIEN}
+                className='rounded border-[#E5E7EB] border mb-4 cursor-pointer'
+                onChange={() => handleSelectCategory(POST_CATEGORY.HO_TRO_SINH_VIEN)}
               />
-              <label className='cursor-pointer' htmlFor='checkbox-5'>
+              <label className='cursor-pointer' htmlFor={POST_CATEGORY.HO_TRO_SINH_VIEN}>
                 Hỗ trợ sinh viên
               </label>
             </li>
             <li className='flex gap-2 mb-4'>
               <input
+                checked={selectedCategories.includes(POST_CATEGORY.XAY_DUNG_HOI)}
                 type='checkbox'
-                id='checkbox-6'
-                className='rounded border-[#E5E7EB] border cursor-pointer'
+                id={POST_CATEGORY.XAY_DUNG_HOI}
+                className='rounded border-[#E5E7EB] border mb-4 cursor-pointer'
+                onChange={() => handleSelectCategory(POST_CATEGORY.XAY_DUNG_HOI)}
               />
-              <label className='cursor-pointer' htmlFor='checkbox-6'>
+              <label className='cursor-pointer' htmlFor={POST_CATEGORY.XAY_DUNG_HOI}>
                 Xây dựng hội
               </label>
             </li>
@@ -150,7 +239,10 @@ const ResultPage = ({ searchValue, searchResults, isAdmin }: ResultPageType) => 
       {/* Main Container */}
       <div className='flex-grow'>
         <div className='flex md:justify-normal justify-center gap-6 max-lg:gap-2 max-lg:bg-white lg:bg-backgroundColor px-8 py-2 rounded-md'>
-          <Select>
+          <Select
+            onValueChange={(value) => handleSelectOneCategory(value as POST_CATEGORY)}
+            defaultValue={options[0].optionType}
+          >
             <SelectTrigger className='lg:hidden max-md:hidden md:w-auto w-full'>
               <SelectValue placeholder='Chọn danh mục'></SelectValue>
             </SelectTrigger>
@@ -158,7 +250,7 @@ const ResultPage = ({ searchValue, searchResults, isAdmin }: ResultPageType) => 
               <SelectGroup>
                 <SelectLabel>Chọn danh mục</SelectLabel>
                 {options.map((i) => (
-                  <SelectItem key={i.optionName} value={i.optionName}>
+                  <SelectItem key={i.optionName} value={i.optionType}>
                     {i.optionName}
                   </SelectItem>
                 ))}
@@ -168,15 +260,21 @@ const ResultPage = ({ searchValue, searchResults, isAdmin }: ResultPageType) => 
           {/* <SelectOption className='lg:hidden max-md:hidden' /> */}
           <div className='border-[1px] border-slate-300 rounded-md lg:ml-2 md:mx-2 mx-0 w-full'>
             <input
+              id='search-bar'
               className='border-none rounded-md mr-2 py-2.5 px-3 w-full focus:outline-none bg-white text-black text-sm font-normal leading-5'
               placeholder='Search'
-              value={newSearchValue}
-              onChange={handleChange}
+              value={searchText}
+              onChange={handleChangeSearch}
             />
           </div>
-          <button className='max-lg:px-8 button-primary'>Tìm</button>
+          <button onClick={handleSearchPosts} className='px-8 bg-sky-900 text-white rounded-md'>
+            Tìm
+          </button>
         </div>
-        <Select defaultValue={options[0].optionName}>
+        <Select
+          onValueChange={(value) => handleSelectOneCategory(value as POST_CATEGORY)}
+          defaultValue={options[0].optionType}
+        >
           <SelectTrigger className='lg:hidden md:hidden w-[90%] mx-auto'>
             <SelectValue placeholder='Chọn danh mục'></SelectValue>
           </SelectTrigger>
@@ -184,7 +282,7 @@ const ResultPage = ({ searchValue, searchResults, isAdmin }: ResultPageType) => 
             <SelectGroup>
               <SelectLabel>Chọn danh mục</SelectLabel>
               {options.map((i) => (
-                <SelectItem key={i.optionName} value={i.optionName}>
+                <SelectItem key={i.optionName} value={i.optionType}>
                   {i.optionName}
                 </SelectItem>
               ))}
@@ -194,35 +292,15 @@ const ResultPage = ({ searchValue, searchResults, isAdmin }: ResultPageType) => 
         {/* <SelectOption className='lg:hidden md:hidden w-full px-8' /> */}
 
         <div className='mt-4 px-4 py-2'>
-          <div className='md:flex justify-between'>
-            <div className='flex gap-2 items-center'>
-              <p className='text-secondaryColor text-xs font-medium'>Sắp xếp theo: </p>
-              <button
-                onClick={() => setisLatest(true)}
-                className={`text-sm ${isLatest ? 'font-medium text-primaryColor' : 'font-normal text-secondaryColor'}`}
-              >
-                Mới nhất
-              </button>
-              <p className='text-primaryColor'>|</p>
-              <button
-                onClick={() => setisLatest(false)}
-                className={`text-sm ${!isLatest ? 'font-medium text-primaryColor' : 'font-normal text-secondaryColor'}`}
-              >
-                Liên quan
-              </button>
-            </div>
-
+          <div className='md:flex justify-between flex-row-reverse'>
             <div className='flex gap-1 text-[#0C4A6E]'>
-              <p className='font-semibold'>{searchResults?.length}</p>
+              <p className='font-semibold'>{totalSearchItems}</p>
               <p>kết quả</p>
             </div>
           </div>
 
           {currentItems?.map((searchResult, index) => {
-            const imageSrc: string =
-              searchResult.img && searchResult.img.length > 0
-                ? searchResult.img[0]
-                : '/assets/images/picture-placeholder.png'
+            const imageSrc: string = searchResult.img ?? '/assets/images/picture-placeholder.png'
 
             return (
               <PostReview
@@ -230,17 +308,18 @@ const ResultPage = ({ searchValue, searchResults, isAdmin }: ResultPageType) => 
                 img={imageSrc}
                 categorized={searchResult.categorized}
                 title={searchResult.title}
-                content={shortenText(searchResult.content, 30)}
+                description={searchResult.description}
+                content={searchResult.content}
                 date={searchResult.date}
-                comment={searchResult.comment}
                 isSearchPage={true}
+                hasCategoryBadge
               />
             )
           })}
-          <Pagination
+          <PaginationSearchResult
             itemsPerPage={itemsPerPage}
-            setItemOffset={handleItemOffsetChange}
-            notilength={searchResults.length}
+            selectPage={selectPage}
+            totalItemsInAllPages={totalSearchItems}
           />
         </div>
       </div>
