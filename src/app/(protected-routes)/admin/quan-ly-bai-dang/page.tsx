@@ -154,7 +154,7 @@ const Quanlybaidang = () => {
     POST_CATEGORY.XAY_DUNG_HOI,
   ])
   const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 5 })
-  const { data } = useQuery({
+  const { data, refetch: searchPosts } = useQuery({
     queryKey: queryKeys.adminSearchPosts.gen(
       pagination.page,
       pagination.limit,
@@ -231,6 +231,7 @@ const Quanlybaidang = () => {
           itemsPerPage={pagination.limit}
           selectPage={selectPage}
           totalSearchItems={data?.pagination.total ?? 0}
+          searchPosts={searchPosts}
         />
 
         {/* 

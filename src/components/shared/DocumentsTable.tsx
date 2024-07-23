@@ -230,11 +230,7 @@ export default function DocumentsTable({
         </tbody>
       </table>
       <div className='w-full justify-center'>
-        <Pagination
-          itemsPerPage={10}
-          table={tableInstance}
-          totalItemsInAllPages={datalength}
-        ></Pagination>
+        <Pagination itemsPerPage={10} table={tableInstance} notilength={datalength}></Pagination>
       </div>
     </div>
   )

@@ -4,6 +4,7 @@ export enum ROLE_TITLE {
 }
 
 export enum POST_CATEGORY {
+  TAT_CA = 'TAT_CA',
   GIOI_THIEU = 'GIOI_THIEU',
   SINH_VIEN_5_TOT = 'SINH_VIEN_5_TOT',
   CAU_CHUYEN_DEP = 'CAU_CHUYEN_DEP',

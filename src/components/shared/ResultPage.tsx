@@ -1,7 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { StaticImageData } from 'next/image'
+import React, { useState, useEffect, useCallback } from 'react'
 
 import {
   Select,
@@ -13,9 +12,48 @@ import {
   SelectLabel,
 } from './SelectOption'
 import PostReview from './postReview'
-import Pagination from './Pagination'
 import { POST_CATEGORY } from '@/configs/enum'
 import { SearchPostType } from '@/types/post'
+import PaginationSearchResult from './pagination-search-result'
+
+const options: readonly {
+  optionType: POST_CATEGORY
+  optionName: string
+  isPlaceHolder?: boolean
+}[] = [
+  {
+    optionType: POST_CATEGORY.TAT_CA,
+    optionName: 'Tất cả',
+  },
+  {
+    optionType: POST_CATEGORY.GIOI_THIEU,
+    optionName: 'Giới thiệu',
+  },
+  {
+    optionType: POST_CATEGORY.SINH_VIEN_5_TOT,
+    optionName: 'Sinh viên 5 tốt',
+  },
+  {
+    optionType: POST_CATEGORY.CAU_CHUYEN_DEP,
+    optionName: 'Câu chuyện đẹp',
+  },
+  {
+    optionType: POST_CATEGORY.TINH_NGUYEN,
+    optionName: 'Tình nguyện',
+  },
+  {
+    optionType: POST_CATEGORY.NCKH,
+    optionName: 'NCKH',
+  },
+  {
+    optionType: POST_CATEGORY.HO_TRO_SINH_VIEN,
+    optionName: 'Hỗ trợ sinh viên',
+  },
+  {
+    optionType: POST_CATEGORY.XAY_DUNG_HOI,
+    optionName: 'Xây dựng hội',
+  },
+]
 
 interface ResultPageType {
   selectedCategories: Array<POST_CATEGORY>
@@ -27,6 +65,7 @@ interface ResultPageType {
   selectPage: (page: number) => void
   totalSearchItems: number
   isAdmin: boolean
+  searchPosts: () => void
 }
 
 const ResultPage = ({
@@ -39,8 +78,10 @@ const ResultPage = ({
   selectPage,
   totalSearchItems,
   isAdmin,
+  searchPosts,
 }: ResultPageType) => {
   const [currentItems, setCurrentItems] = useState<Array<SearchPostType>>(searchResults)
+  const [searchText, setSearchText] = useState<string>('')
 
   const handleSelectCategory = (category: POST_CATEGORY) => {
     if (selectedCategories.includes(category)) {
@@ -50,9 +91,47 @@ const ResultPage = ({
     }
   }
 
-  const handleChangeSearch = (e: { target: { value: string } }) => {
-    setSearchValue(e.target.value)
+  const handleSelectOneCategory = (category: POST_CATEGORY) => {
+    if (category !== POST_CATEGORY.TAT_CA) {
+      setSelectedCategories([category])
+    } else {
+      setSelectedCategories([
+        POST_CATEGORY.GIOI_THIEU,
+        POST_CATEGORY.SINH_VIEN_5_TOT,
+        POST_CATEGORY.CAU_CHUYEN_DEP,
+        POST_CATEGORY.TINH_NGUYEN,
+        POST_CATEGORY.NCKH,
+        POST_CATEGORY.HO_TRO_SINH_VIEN,
+        POST_CATEGORY.XAY_DUNG_HOI,
+      ])
+    }
   }
+
+  const handleChangeSearch = (e: { target: { value: string } }) => {
+    setSearchText(e.target.value)
+  }
+
+  const handleSearchPosts = useCallback(() => {
+    setSearchValue(searchText)
+    searchPosts()
+  }, [searchText, searchPosts, setSearchValue])
+
+  useEffect(() => {
+    const input = document.getElementById('search-bar')
+
+    if (input) {
+      const handleSearchEvent = (event: KeyboardEvent) => {
+        if (event.key === 'Enter') {
+          event.preventDefault()
+          handleSearchPosts()
+        }
+      }
+      input.addEventListener('keypress', handleSearchEvent)
+      return () => {
+        input.removeEventListener('keypress', handleSearchEvent)
+      }
+    }
+  }, [searchText, searchPosts, handleSearchPosts])
 
   useEffect(() => {
     setCurrentItems(
@@ -69,7 +148,7 @@ const ResultPage = ({
         <div className='text-sky-900 font-semibold text-lg'>Category</div>
         <div className='py-2 text-secondaryColor text-sm font-medium'>
           <ul className='mt-12'>
-            <li className='flex gap-2'>
+            <li className='flex gap-2 mb-4'>
               <input
                 checked={selectedCategories.includes(POST_CATEGORY.GIOI_THIEU)}
                 type='checkbox'
@@ -81,7 +160,7 @@ const ResultPage = ({
                 Giới thiệu
               </label>
             </li>
-            <li className='flex gap-2'>
+            <li className='flex gap-2 mb-4'>
               <input
                 checked={selectedCategories.includes(POST_CATEGORY.SINH_VIEN_5_TOT)}
                 type='checkbox'
@@ -160,7 +239,10 @@ const ResultPage = ({
       {/* Main Container */}
       <div className='flex-grow'>
         <div className='flex md:justify-normal justify-center gap-6 max-lg:gap-2 max-lg:bg-white lg:bg-backgroundColor px-8 py-2 rounded-md'>
-          <Select>
+          <Select
+            onValueChange={(value) => handleSelectOneCategory(value as POST_CATEGORY)}
+            defaultValue={options[0].optionType}
+          >
             <SelectTrigger className='lg:hidden max-md:hidden md:w-auto w-full'>
               <SelectValue placeholder='Chọn danh mục'></SelectValue>
             </SelectTrigger>
@@ -168,7 +250,7 @@ const ResultPage = ({
               <SelectGroup>
                 <SelectLabel>Chọn danh mục</SelectLabel>
                 {options.map((i) => (
-                  <SelectItem key={i.optionName} value={i.optionName}>
+                  <SelectItem key={i.optionName} value={i.optionType}>
                     {i.optionName}
                   </SelectItem>
                 ))}
@@ -178,15 +260,21 @@ const ResultPage = ({
           {/* <SelectOption className='lg:hidden max-md:hidden' /> */}
           <div className='border-[1px] border-slate-300 rounded-md lg:ml-2 md:mx-2 mx-0 w-full'>
             <input
+              id='search-bar'
               className='border-none rounded-md mr-2 py-2.5 px-3 w-full focus:outline-none bg-white text-black text-sm font-normal leading-5'
               placeholder='Search'
-              value={searchValue}
+              value={searchText}
               onChange={handleChangeSearch}
             />
           </div>
-          <button className='px-8 bg-sky-900 text-white rounded-md'>Tìm</button>
+          <button onClick={handleSearchPosts} className='px-8 bg-sky-900 text-white rounded-md'>
+            Tìm
+          </button>
         </div>
-        <Select defaultValue={options[0].optionName}>
+        <Select
+          onValueChange={(value) => handleSelectOneCategory(value as POST_CATEGORY)}
+          defaultValue={options[0].optionType}
+        >
           <SelectTrigger className='lg:hidden md:hidden w-[90%] mx-auto'>
             <SelectValue placeholder='Chọn danh mục'></SelectValue>
           </SelectTrigger>
@@ -194,7 +282,7 @@ const ResultPage = ({
             <SelectGroup>
               <SelectLabel>Chọn danh mục</SelectLabel>
               {options.map((i) => (
-                <SelectItem key={i.optionName} value={i.optionName}>
+                <SelectItem key={i.optionName} value={i.optionType}>
                   {i.optionName}
                 </SelectItem>
               ))}
@@ -205,23 +293,6 @@ const ResultPage = ({
 
         <div className='mt-4 px-4 py-2'>
           <div className='md:flex justify-between flex-row-reverse'>
-            {/* <div className='flex gap-2 items-center'>
-              <p className='text-secondary text-xs font-medium'>Sắp xếp theo: </p>
-              <button
-                onClick={() => setisLatest(true)}
-                className={`text-sm ${isLatest ? 'font-medium text-primaryColor' : 'font-normal text-secondaryColor'}`}
-              >
-                Mới nhất
-              </button>
-              <p className='text-primaryColor'>|</p>
-              <button
-                onClick={() => setisLatest(false)}
-                className={`text-sm ${!isLatest ? 'font-medium text-primaryColor' : 'font-normal text-secondaryColor'}`}
-              >
-                Liên quan
-              </button>
-            </div> */}
-
             <div className='flex gap-1 text-[#0C4A6E]'>
               <p className='font-semibold'>{totalSearchItems}</p>
               <p>kết quả</p>
@@ -241,10 +312,11 @@ const ResultPage = ({
                 content={searchResult.content}
                 date={searchResult.date}
                 isSearchPage={true}
+                hasCategoryBadge
               />
             )
           })}
-          <Pagination
+          <PaginationSearchResult
             itemsPerPage={itemsPerPage}
             selectPage={selectPage}
             totalItemsInAllPages={totalSearchItems}

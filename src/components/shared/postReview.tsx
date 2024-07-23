@@ -69,7 +69,7 @@ const PostReview = ({
           </div>
           <div className='flex mt-2'>
             <p className='text-slate-500 font-medium text-justify leading-5 text-[0.75rem] mr-6'>
-              {date ? format(date, 'dd/MM/YYYY') : 'Không rõ'}
+              {date ? format(date, 'dd/MM/yyyy') : 'Không rõ'}
             </p>
             {/* <p className='text-slate-500 font-medium text-justify leading-5 text-[0.75rem]'>
               comment: {comment}

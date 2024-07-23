@@ -5,10 +5,10 @@ import { AUTH_PATH_NAME } from '@/configs'
 
 class AuthApi {
   constructor() {
-    httpClient.createAuthRefreshInterceptor(() => {
-      this.logOut()
-      window.location.href = AUTH_PATH_NAME.DANG_NHAP
-    })
+    // httpClient.createAuthRefreshInterceptor(() => {
+    //   this.logOut()
+    //   window.location.href = AUTH_PATH_NAME.DANG_NHAP
+    // })
   }
 
   async logIn(email: string, password: string) {

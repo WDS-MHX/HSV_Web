@@ -74,7 +74,6 @@ const TaoBaiDang = () => {
   })
 
   const onSubmit = (data: CreatePostDto) => {
-    alert(1)
     createPost(data)
   }
 

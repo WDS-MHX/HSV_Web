@@ -1,44 +1,26 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import ReactPaginate from 'react-paginate'
 
 import { IoChevronForwardOutline } from 'react-icons/io5'
 import { IoChevronBackOutline } from 'react-icons/io5'
-import documentType from '@/models/document'
-import { Table } from '@tanstack/react-table'
-import { Admin } from '@/models'
 
 interface PaginationType {
+  totalItemsInAllPages: number
   itemsPerPage: number
-  setItemOffset?: (offset: number) => void | undefined
-  notilength: number
-  table?: Table<documentType> | Table<Admin> | undefined
-  setPreviousPage?: (offset: number) => void
+  selectPage: (page: number) => void
 }
 
-function Pagination({
+function PaginationSearchResult({
+  totalItemsInAllPages,
   itemsPerPage,
-  setItemOffset,
-  notilength,
-  table,
-  setPreviousPage,
+  selectPage,
 }: PaginationType) {
-  let pageCount = Math.ceil(notilength / itemsPerPage)
-  const handlePageClick = (event: { selected: number }) => {
-    console.log('PAGESELECT', event.selected)
-    if (table) {
-      table.setPageIndex(event.selected)
-      if (setPreviousPage) {
-        setPreviousPage(event.selected)
-      }
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    } else if (setItemOffset) {
-      const newOffset = (event.selected * itemsPerPage) % notilength
-      setItemOffset(newOffset)
+  const pageCount = Math.ceil(totalItemsInAllPages / itemsPerPage)
 
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
+  const handlePageClick = (event: { selected: number }) => {
+    selectPage(event.selected)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
@@ -71,4 +53,4 @@ function Pagination({
   )
 }
 
-export default Pagination
+export default PaginationSearchResult
