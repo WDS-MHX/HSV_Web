@@ -84,7 +84,7 @@ const Navbar = () => {
                 className={
                   pathname == PATH_NAME.GIOI_THIEU ||
                   (pathname.startsWith(PATH_NAME.GIOI_THIEU) && pathname !== '/')
-                    ? 'bg-sky-700 text-secondary rounded-md'
+                    ? 'bg-sky-700 text-secondaryColor rounded-md'
                     : ''
                 }
               >
@@ -99,7 +99,7 @@ const Navbar = () => {
                 className={
                   pathname == PATH_NAME.SVNT ||
                   (pathname.startsWith(PATH_NAME.SVNT) && pathname !== '/')
-                    ? 'bg-sky-700 text-secondary rounded-md'
+                    ? 'bg-sky-700 text-secondaryColor rounded-md'
                     : ''
                 }
               >
@@ -114,7 +114,7 @@ const Navbar = () => {
                 className={
                   pathname == PATH_NAME.CAU_CHUYEN_DEP ||
                   (pathname.startsWith(PATH_NAME.CAU_CHUYEN_DEP) && pathname !== '/')
-                    ? 'bg-sky-700 text-secondary rounded-md'
+                    ? 'bg-sky-700 text-secondaryColor rounded-md'
                     : ''
                 }
               >
@@ -129,7 +129,7 @@ const Navbar = () => {
                 className={
                   pathname == PATH_NAME.TINH_NGUYEN ||
                   (pathname.startsWith(PATH_NAME.TINH_NGUYEN) && pathname !== '/')
-                    ? 'bg-sky-700 text-secondary rounded-md'
+                    ? 'bg-sky-700 text-secondaryColor rounded-md'
                     : ''
                 }
               >
@@ -144,7 +144,7 @@ const Navbar = () => {
                 className={
                   pathname == PATH_NAME.NCKH ||
                   (pathname.startsWith(PATH_NAME.NCKH) && pathname !== '/')
-                    ? 'bg-sky-700 text-secondary rounded-md'
+                    ? 'bg-sky-700 text-secondaryColor rounded-md'
                     : ''
                 }
               >
@@ -159,7 +159,7 @@ const Navbar = () => {
                 className={
                   pathname == PATH_NAME.HO_TRO_SINH_VIEN ||
                   (pathname.startsWith(PATH_NAME.HO_TRO_SINH_VIEN) && pathname !== '/')
-                    ? 'bg-sky-700 text-secondary rounded-md'
+                    ? 'bg-sky-700 text-secondaryColor rounded-md'
                     : ''
                 }
               >
@@ -174,7 +174,7 @@ const Navbar = () => {
                 className={
                   pathname == PATH_NAME.XAY_DUNG_HOI ||
                   (pathname.startsWith(PATH_NAME.XAY_DUNG_HOI) && pathname !== '/')
-                    ? 'bg-sky-700 text-secondary rounded-md'
+                    ? 'bg-sky-700 text-secondaryColor rounded-md'
                     : ''
                 }
               >
@@ -189,7 +189,7 @@ const Navbar = () => {
                 className={
                   pathname == PATH_NAME.HE_THONG_VAN_BAN ||
                   (pathname.startsWith(PATH_NAME.HE_THONG_VAN_BAN) && pathname !== '/')
-                    ? 'bg-sky-700 text-secondary rounded-md'
+                    ? 'bg-sky-700 text-secondaryColor rounded-md'
                     : ''
                 }
               >

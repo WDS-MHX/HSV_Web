@@ -3,7 +3,7 @@ import { documents } from './data'
 export default function hethongvanban() {
   return (
     <div className='my-4'>
-      <DocumentsTable documents={documents} isAdmin={false}></DocumentsTable>
+      <DocumentsTable documents={documents}></DocumentsTable>
     </div>
   )
 }

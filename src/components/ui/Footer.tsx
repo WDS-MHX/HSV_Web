@@ -6,7 +6,7 @@ import { HiOutlineMail } from 'react-icons/hi'
 
 const Footer = () => {
   return (
-    <footer className='md:flex justify-center items-center bg-background h-[21rem] p-2.5 w-full'>
+    <footer className='md:flex justify-center items-center bg-backgroundColor h-[21rem] p-2.5 w-full'>
       <div className='md:flex gap-32 items-center'>
         <Image
           src='/assets/images/footer_logos.png'
@@ -15,7 +15,7 @@ const Footer = () => {
           height={94}
           className='object-contain max-md:mx-auto'
         />
-        <ul className='flex flex-col gap-6 text-primary text-sm max-md:mt-5'>
+        <ul className='flex flex-col gap-6 text-primaryColor text-sm max-md:mt-5'>
           <li className='flex items-center gap-7'>
             <TbCircleLetterC color='[#0F172A]' size={24} />
             <p>Hội Sinh viên Việt Nam Trường Đại học Công Nghệ Thông Tin, ĐHQG-HCM</p>

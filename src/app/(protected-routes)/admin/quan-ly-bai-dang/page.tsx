@@ -111,15 +111,15 @@ const Quanlybaidang = () => {
     <div className='w-full bg-[#E0F2FE] lg:pt-8 px-2 pb-4 h-fit'>
       <div className='bg-white rounded-xl py-4 px-6 max-md:px-1 mb-4'>
         <div className='flex w-full justify-between pr-8 h-fit md:mb-6 items-center'>
-          <div className='p-1.5 flex bg-background w-fit max-md:hidden'>
+          <div className='p-1.5 flex bg-backgroundColor w-fit max-md:hidden'>
             <div
-              className={`cursor-pointer duration-300 transition-colors ${isPost ? 'text-primary font-semibold bg-white' : 'text-[#334155]'} px-3 py-1.5 rounded-md`}
+              className={`cursor-pointer duration-300 transition-colors ${isPost ? 'text-primaryColor font-semibold bg-white' : 'text-[#334155]'} px-3 py-1.5 rounded-md`}
               onClick={handleIsOpen}
             >
               Đã đăng
             </div>
             <div
-              className={`cursor-pointer duration-300 transition-colors ${!isPost ? 'text-primary font-semibold bg-white' : 'text-[#334155]'} px-3 py-1.5 rounded-md`}
+              className={`cursor-pointer duration-300 transition-colors ${!isPost ? 'text-primaryColor font-semibold bg-white' : 'text-[#334155]'} px-3 py-1.5 rounded-md`}
               onClick={handleNotIsOpen}
             >
               Chưa đăng

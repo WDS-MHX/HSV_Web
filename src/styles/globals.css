@@ -58,7 +58,102 @@
     --chart-5: 340 75% 55%;
   }
 }
+body {
+  font-family: 'Inter', sans-serif;
+  color: rgb(var(--foreground-rgb));
+  /* background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb)))
+    rgb(var(--background-start-rgb)); */
+}
 
+.button-primary {
+  background-color: #0b4a6e;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  line-height: 1.5rem;
+  color: #ffffff;
+}
+
+.category {
+  display: flex;
+  width: fit-content;
+  margin-bottom: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  text-align: center;
+  vertical-align: middle;
+  background-color: var(--bg-categorized);
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+}
+
+.content {
+  min-height: 100vh;
+}
+
+.post_content {
+  @media (min-width: 1024px) {
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+  }
+}
+
+.ql-align-center {
+  text-align: center;
+}
+
+.ql-align-right {
+  text-align: right;
+}
+
+.ql-editor img {
+  max-width: 100%;
+  height: auto;
+}
+
+.imgpost {
+  width: 100%;
+  height: 11.523rem;
+  object-fit: cover;
+  @media (min-width: 740px) {
+    height: 12.438rem;
+  }
+
+  @media (min-width: 1024px) {
+    height: 21.25rem;
+  }
+}
+.imgsearch {
+  width: 100%;
+  height: 11.523rem;
+  object-fit: cover;
+  @media (min-width: 740px) {
+    height: 8.411rem;
+  }
+
+  @media (min-width: 1024px) {
+    height: 15rem;
+  }
+}
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
 @layer base {
   * {
     @apply border-border;

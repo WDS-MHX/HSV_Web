@@ -12,15 +12,46 @@ import { PiDownloadSimpleBold } from 'react-icons/pi'
 import React, { useMemo, useState } from 'react'
 import documentType from '@/models/document'
 import Pagination from './Pagination'
-// import SelectOption from '@/app/(main-layout)/he-thong-van-ban/components/SelectOption/SelectOption'
-import SelectOption from './SelectOption'
-import InputFileUpload from './uploadBtn'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from './SelectOption'
+import { MdOutlineFileUpload } from 'react-icons/md'
+const options: readonly { optionName: string }[] = [
+  {
+    optionName: 'Chương trình',
+  },
+  {
+    optionName: 'Công văn',
+  },
+  {
+    optionName: 'Hướng dẫn',
+  },
+  {
+    optionName: 'Kế hoạch',
+  },
+  {
+    optionName: 'Kế hoạch liên tịch',
+  },
+  {
+    optionName: 'Thông báo',
+  },
+  {
+    optionName: 'Thư mời',
+  },
+]
+
 export default function DocumentsTable({
   documents,
   isAdmin,
 }: {
   documents: documentType[]
-  isAdmin: boolean
+  isAdmin?: boolean
 }) {
   const [columnFilters, setColumnFilters] = useState<any>([])
   const columnHelper = createColumnHelper<documentType>()
@@ -97,7 +128,21 @@ export default function DocumentsTable({
         <div
           className={`flex md:flex-row flex-col items-center justify-between lg:w-[44.5rem] md:w-[39.375rem] w-full px-8 py-[0.625rem] ${isAdmin ? 'md:bg-slate-100' : 'lg:bg-slate-100'} rounded-md`}
         >
-          <SelectOption className='lg:block md:w-auto w-full' isDocument={true}></SelectOption>
+          <Select>
+            <SelectTrigger className='md:w-auto w-full'>
+              <SelectValue placeholder='Chọn danh mục'></SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Chọn danh mục</SelectLabel>
+                {options.map((i) => (
+                  <SelectItem key={i.optionName} value={i.optionName}>
+                    {i.optionName}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
           <div className='flex w-full items-center justify-between md:order-none -order-1 md:mb-0 mb-[0.625rem]'>
             <div className='border-[1px] border-slate-300 rounded-md w-full lg:mx-6 md:mx-2 mx-0'>
               <input
@@ -114,11 +159,18 @@ export default function DocumentsTable({
         </div>
         {isAdmin && (
           <div className='lg:mt-0 md:mt-[0.625rem] mt-0'>
-            <InputFileUpload></InputFileUpload>
+            <input type='file' id='file' className='hidden'></input>
+            <label
+              htmlFor='file'
+              className='flex items-center py-2 px-4 justify-between bg-sky-600 rounded-lg font-medium text-sm text-white cursor-pointer hover:bg-sky-900 transition-all'
+            >
+              <MdOutlineFileUpload className='text-xl mr-1' />
+              Upload tài liệu
+            </label>
           </div>
         )}
       </div>
-      <table className='h-full w-full border-collapse font-Manrope mb-4'>
+      <table className='h-full w-full border-collapse font-Manrope mb-4 overflow-x-auto'>
         <thead>
           {tableInstance.getHeaderGroups().map((header) => {
             return (
@@ -136,7 +188,7 @@ export default function DocumentsTable({
                               ? 'lg:w-[27.5rem] w-auto'
                               : 'lg:w-[12rem] md:w-[6.5rem] w-[4.813rem]'
                       } 
-                      md:text-sm sticky lg:top-0 md:top-14 top-0 bg-white leading-6 text-slate-900 border-2 p-4 text-left font-bold text-xs`}
+                      md:text-sm sticky md:top-0 top-0 bg-white leading-6 text-slate-900 border-2 p-4 text-left font-bold text-xs`}
                       key={column.id}
                       colSpan={column.colSpan}
                       // style={{
