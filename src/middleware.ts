@@ -20,9 +20,6 @@ export default async function middleware(request: NextRequest) {
 
   async function redirectLoop(token: any) {
     const user = jwtDecode<{ id: string; role: string; isBlocked: boolean }>(token)
-
-    console.log(pathName)
-
     if (user.role === ROLE_TITLE.ASSISTANT && pathName === '/admin/redirect') {
       return NextResponse.redirect(new URL(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG, request.url))
     }
@@ -72,8 +69,6 @@ export default async function middleware(request: NextRequest) {
         return NextResponse.next()
       }
     } catch (error) {
-      // console.log(error)
-
       if (mainPathWithoutQuery.startsWith(AUTH_PATH_NAME.DANG_NHAP)) {
         return NextResponse.next()
       }

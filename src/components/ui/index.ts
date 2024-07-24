@@ -1,6 +1,7 @@
 export { default as Header } from './Header'
 export { default as Footer } from './Footer'
 export { default as RemoveAlert } from './RemoveAlert'
+export { default as PostDetail } from './PostDetail'
 export * from './DateTimePicker/date-time-picker'
 export * from './label'
 export * from './input'
