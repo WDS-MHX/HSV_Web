@@ -262,7 +262,7 @@ export default function ListAdminTable({
                 {row.getVisibleCells().map((cell) => {
                   return (
                     <td
-                      className='p-4 border-2 md:text-sm leading-6 text-slate-900 font-normal text-xs'
+                      className='p-4 border-2 md:text-sm leading-6 bg-white text-slate-900 font-normal text-xs'
                       key={cell.id}
                       // style={{
                       //   width: cell.column.columnDef.size,

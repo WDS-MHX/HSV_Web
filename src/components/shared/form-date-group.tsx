@@ -42,7 +42,7 @@ export default function FormGroup({
                 <Button
                   variant={'outline'}
                   className={cn(
-                    'w-full pl-3 h-10 text-left font-normal border-[1.5px] border-slate-300 rounded-md',
+                    'w-full pl-3 h-10 text-left font-normal border-[1.5px] bg-white border-slate-300 rounded-md',
                     !field.value && 'text-muted-foreground',
                   )}
                 >

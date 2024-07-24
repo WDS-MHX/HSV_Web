@@ -246,7 +246,7 @@ export default function DocumentsTable({
             onClick={() => downloadFile(info.getValue())}
             variant='outline'
             size='icon'
-            className='rounded-full'
+            className='rounded-full bg-white'
           >
             <PiDownloadSimpleBold size={16}></PiDownloadSimpleBold>
           </Button>
@@ -266,7 +266,7 @@ export default function DocumentsTable({
               onClick={() => deleteDocument(info.getValue())}
               variant='outline'
               size='icon'
-              className='rounded-full text-red-600'
+              className='rounded-full text-red-600 bg-white'
             >
               <PiTrashBold size={16}></PiTrashBold>
             </Button>
@@ -496,7 +496,7 @@ export default function DocumentsTable({
                 {row.getVisibleCells().map((cell) => {
                   return (
                     <td
-                      className='p-4 border-2 md:text-sm leading-6 text-slate-900 font-normal text-xs'
+                      className='p-4 border-2 md:text-sm leading-6 bg-white text-slate-900 font-normal text-xs'
                       key={cell.id}
                       // style={{
                       //   width: cell.column.columnDef.size,
