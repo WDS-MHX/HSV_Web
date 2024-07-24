@@ -1,6 +1,9 @@
-export default interface documentType {
-  id: number
-  releaseDate: string
+export default interface Document {
+  _id: string
+  docNumber: number
   title: string
-  type: string
+  categrory: string
+  mediaFileId: string
+  issueDate: string
+  reference: string
 }

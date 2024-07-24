@@ -12,7 +12,7 @@ import {
   DialogFooter,
 } from '@/components/shared/dialog'
 import { X } from 'lucide-react'
-import { infer, object, string, z } from 'zod'
+import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form } from '@/components/shared/form'

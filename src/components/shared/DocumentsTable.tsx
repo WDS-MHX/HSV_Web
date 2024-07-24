@@ -8,9 +8,8 @@ import {
   flexRender,
   getPaginationRowModel,
 } from '@tanstack/react-table'
-import { PiDownloadSimpleBold } from 'react-icons/pi'
+import { PiDownloadSimpleBold, PiTrashBold } from 'react-icons/pi'
 import React, { useMemo, useState } from 'react'
-import documentType from '@/models/document'
 import Pagination from './Pagination'
 import {
   Select,
@@ -22,47 +21,123 @@ import {
   SelectValue,
 } from './SelectOption'
 import { MdOutlineFileUpload } from 'react-icons/md'
-import { log, table } from 'console'
-import { headers } from 'next/headers'
-import { type } from 'os'
-import { title } from 'process'
-import { map } from 'zod'
-const options: readonly { optionName: string }[] = [
-  {
-    optionName: 'Chương trình',
-  },
-  {
-    optionName: 'Công văn',
-  },
-  {
-    optionName: 'Hướng dẫn',
-  },
-  {
-    optionName: 'Kế hoạch',
-  },
-  {
-    optionName: 'Kế hoạch liên tịch',
-  },
-  {
-    optionName: 'Thông báo',
-  },
-  {
-    optionName: 'Thư mời',
-  },
-]
+import { X } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { Button } from './button'
+import {
+  Dialog,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+  DialogContent,
+  DialogTrigger,
+} from './dialog'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './form'
+import FormGroup from './form-group'
+import FormTextAreaGroup from './form-textarea-group'
+import { Document } from '@/models'
+import { formatISOtime } from '@/helpers'
+import { documentFilterOptions } from '@/configs/categoryFilters'
+import { documentApi, fileApi } from '@/apis'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
+import { Input } from './input'
+import DateFormGroup from './form-date-group'
+// const options: readonly { optionName: string }[] = [
+//   {
+//     optionName: 'Chương trình',
+//   },
+//   {
+//     optionName: 'Công văn',
+//   },
+//   {
+//     optionName: 'Hướng dẫn',
+//   },
+//   {
+//     optionName: 'Kế hoạch',
+//   },
+//   {
+//     optionName: 'Kế hoạch liên tịch',
+//   },
+//   {
+//     optionName: 'Thông báo',
+//   },
+//   {
+//     optionName: 'Thư mời',
+//   },
+// ]
+const formSchema = z.object({
+  docNumber: z.string().min(1, 'Vui lòng nhập Số/ Ký hiệu'),
+  title: z.string().min(1, 'Vui lòng nhập tiêu đề'),
+  categrory: z.string().min(1, 'Vui lòng chọn thể loại'),
+  issueDate: z.date(),
+  reference: z.string().min(1, 'Vui lòng nhập ký hiệu'),
+  file: typeof window === 'undefined' ? z.any() : z.instanceof(FileList),
+})
 
 export default function DocumentsTable({
   documents,
   isAdmin,
+  reloadDocument,
 }: {
-  documents: documentType[]
+  documents: Document[]
   isAdmin?: boolean
+  reloadDocument?: any
 }) {
+  const queryClient = useQueryClient()
+  const [openDialog, setOpenDialog] = useState(false)
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      docNumber: '',
+      title: '',
+      categrory: '',
+    },
+  })
+  const fileRef = form.register('file')
+  const createDocument = useMutation({
+    mutationFn: documentApi.createDocument,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['createDocument'] })
+      console.log('success')
+      toast.success('Thêm document thành công!')
+      reloadDocument()
+      setOpenDialog(false)
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+  })
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log('VAOONSUBMIT')
+    const dataJson = JSON.stringify({
+      docNumber: Number(values.docNumber),
+      title: values.title,
+      categrory: values.categrory,
+      reference: values.reference,
+      issueDate: values.issueDate,
+    })
+    const data = {
+      docJson: dataJson,
+      file: values.file,
+    }
+    createDocument.mutate(data)
+  }
+  const downloadFile = async (id: string) => {
+    const res = fileApi.downloadFile(id)
+  }
+  const deleteDocument = async (id: string) => {
+    const res = documentApi.deleteDocument(id)
+    reloadDocument()
+  }
   const [columnFilters, setColumnFilters] = useState<any>([])
   const [category, setCategory] = useState<string>('')
   const [query, setQuery] = useState<string>('')
   console.log('columnfilter', columnFilters)
-  const columnHelper = createColumnHelper<documentType>()
+  const columnHelper = createColumnHelper<Document>()
   const datalength = documents.length
   const searchInput = columnFilters.find((f: any) => f.id === 'title')?.value || ''
   const handleInput = (event: any) => {
@@ -123,15 +198,21 @@ export default function DocumentsTable({
     })
   }
   // eslint-disable-next-line
-  const columnDef = useMemo(
-    () => [
-      columnHelper.accessor((row) => `${row.id}`, {
+  const columnDef = useMemo(() => {
+    const columns = [
+      columnHelper.accessor((row) => `${row.docNumber}`, {
         id: 'category',
         header: 'Số / kí hiệu',
         minSize: 70,
         maxSize: 70,
+        cell: (info) => (
+          <div className='flex items-center'>
+            <span>{info.getValue()}/</span>
+            <span>{info.cell.row.original.reference}</span>
+          </div>
+        ),
         filterFn: (row, columnId, filterCategory) => {
-          const categoryRow = row.original.type
+          const categoryRow = row.original.categrory
           console.log('filterCategoryFILTER', filterCategory)
           console.log('ROWFILTER', row)
           console.log('categoryRow', categoryRow)
@@ -141,7 +222,7 @@ export default function DocumentsTable({
           return filterCategory == categoryRow
         },
       }),
-      columnHelper.accessor((row) => `${row.releaseDate}`, {
+      columnHelper.accessor((row) => `${formatISOtime(row.issueDate)}`, {
         id: 'releaseDate',
         header: 'Ngày ban hành',
         size: 100,
@@ -155,20 +236,46 @@ export default function DocumentsTable({
         size: 440,
         maxSize: 540,
       }),
-      columnHelper.accessor((row) => `${row.id}`, {
+      columnHelper.accessor((row) => `${row.mediaFileId}`, {
         id: 'Download',
         header: 'Download',
         minSize: 77,
         maxSize: 77,
         cell: (info) => (
-          <div className='rounded-full cursor-pointer mx-auto w-fit p-3 border-[1px] border-slate-200'>
+          <Button
+            onClick={() => downloadFile(info.getValue())}
+            variant='outline'
+            size='icon'
+            className='rounded-full'
+          >
             <PiDownloadSimpleBold size={16}></PiDownloadSimpleBold>
-          </div>
+          </Button>
         ),
       }),
-    ],
-    [],
-  )
+    ]
+    if (isAdmin) {
+      columns.push(
+        columnHelper.accessor((row) => `${row._id}`, {
+          id: 'Delete',
+          enableHiding: true,
+          header: 'Xóa',
+          minSize: 77,
+          maxSize: 77,
+          cell: (info) => (
+            <Button
+              onClick={() => deleteDocument(info.getValue())}
+              variant='outline'
+              size='icon'
+              className='rounded-full text-red-600'
+            >
+              <PiTrashBold size={16}></PiTrashBold>
+            </Button>
+          ),
+        }),
+      )
+    }
+    return columns
+  }, [])
   const finalData = React.useMemo(() => documents, [documents])
   const tableInstance = useReactTable({
     columns: columnDef,
@@ -205,9 +312,9 @@ export default function DocumentsTable({
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Chọn danh mục</SelectLabel>
-                {options.map((i) => (
-                  <SelectItem key={i.optionName} value={i.optionName}>
-                    {i.optionName}
+                {documentFilterOptions.map((i) => (
+                  <SelectItem key={i.key} value={i.key}>
+                    {i.name}
                   </SelectItem>
                 ))}
               </SelectGroup>
@@ -229,14 +336,121 @@ export default function DocumentsTable({
         </div>
         {isAdmin && (
           <div className='lg:mt-0 md:mt-[0.625rem] mt-0'>
-            <input type='file' id='file' className='hidden'></input>
+            {/* <input type='file' id='file' className='hidden'></input>
             <label
               htmlFor='file'
               className='flex items-center py-2 px-4 justify-between bg-sky-600 rounded-lg font-medium text-sm text-white cursor-pointer hover:bg-sky-900 transition-all'
             >
               <MdOutlineFileUpload className='text-xl mr-1' />
               Upload tài liệu
-            </label>
+            </label> */}
+            <Dialog open={openDialog} onOpenChange={() => setOpenDialog(!openDialog)}>
+              <DialogTrigger asChild>
+                <Button className='flex items-center py-2 px-4 justify-between bg-sky-600 rounded-lg font-medium text-sm text-white cursor-pointer hover:bg-sky-900 transition-all'>
+                  <MdOutlineFileUpload className='text-xl mr-1' />
+                  Upload tài liệu
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader className='flex flex-row items-center justify-between'>
+                  <DialogTitle className='text-3xl'>Upload tài liệu</DialogTitle>
+                  <DialogClose>
+                    <X className='h-6 w-6 mb-2' />
+                  </DialogClose>
+                </DialogHeader>
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)}>
+                    <FormGroup
+                      control={form.control}
+                      label='Số / Ký hiệu'
+                      name='docNumber'
+                      placeholder='Nhập Số /Ký hiệu'
+                      autoFocus
+                      inputClassName='mb-4 text-base font-normal text-placeHolder'
+                    />
+                    <FormTextAreaGroup
+                      control={form.control}
+                      label='Title'
+                      name='title'
+                      inputClassName='resize-none text-base font-normal text-placeHolder'
+                      placeholder='Nhập title'
+                    />
+                    <div className='flex w-full items-center justify-between gap-2'>
+                      <FormGroup
+                        control={form.control}
+                        label='Ký hiệu'
+                        name='reference'
+                        placeholder='Nhập Ký hiệu'
+                        inputClassName='mb-4 text-base font-normal text-placeHolder'
+                      />
+                      <DateFormGroup
+                        control={form.control}
+                        label='Ngày phát hành'
+                        name='issueDate'
+                        placeholder='Nhập ngày phát'
+                      />
+                    </div>
+                    <FormField
+                      control={form.control}
+                      name='categrory'
+                      render={({ field }) => (
+                        <FormItem className='w-full'>
+                          <FormLabel className='text-sm font-medium text-black'>Danh mục</FormLabel>
+                          <Select onValueChange={field.onChange}>
+                            <FormControl>
+                              <div className='flex space-x-3 w-full'>
+                                <SelectTrigger className='bg-white !w-full h-10 text-base text-placeHolder !font-normal border-slate-300 border-[1.5px] rounded-md !cursor-pointer '>
+                                  <SelectValue placeholder='Chọn danh mục' />
+                                </SelectTrigger>
+                              </div>
+                            </FormControl>
+                            <SelectContent>
+                              {documentFilterOptions.map((i) => (
+                                <SelectItem key={i.key} value={i.key}>
+                                  {i.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    {/* <FormGroup
+                    control={form.control}
+                    label='File'
+                    name='file'
+                    type='file'
+                    inputClassName='mb-4 text-base font-normal text-placeHolder placeholder:text-base cursor-pointer'
+                    /> */}
+                    <FormField
+                      control={form.control}
+                      name='file'
+                      render={({ field }) => (
+                        <FormItem className='w-full'>
+                          <FormLabel className='text-sm font-medium text-black'>file</FormLabel>
+                          <FormControl>
+                            <Input
+                              className='mb-4 text-base font-normal text-placeHolder placeholder:text-base cursor-pointer'
+                              type='file'
+                              {...fileRef}
+                            ></Input>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <DialogFooter className='mt-4'>
+                      <Button
+                        type='submit'
+                        className='bg-sky-600 px-4 py-2 text-white hover:bg-sky-800'
+                      >
+                        Upload
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
           </div>
         )}
       </div>
