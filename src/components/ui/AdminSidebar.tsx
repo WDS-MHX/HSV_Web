@@ -72,15 +72,25 @@ const AdminSidebar = ({ role }: { role: String }) => {
           )}
         </ul>
       </div>
-      <p
-        className=' py-2.5 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'
-        onClick={async () => {
-          await authApi.logOut()
-          router.push(PATH_NAME.HOME)
-        }}
-      >
-        Đăng xuất
-      </p>
+      <div>
+        <p
+          className=' py-2.5 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'
+          onClick={() => {
+            router.push(PATH_NAME.HOME)
+          }}
+        >
+          Trang chủ
+        </p>
+        <p
+          className='mt-1.5 py-2.5 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'
+          onClick={async () => {
+            await authApi.logOut()
+            router.push(PATH_NAME.HOME)
+          }}
+        >
+          Đăng xuất
+        </p>
+      </div>
     </div>
   )
 }
