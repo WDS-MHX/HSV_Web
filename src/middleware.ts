@@ -5,6 +5,7 @@ import { cookies } from 'next/headers'
 
 import { authApi } from './apis'
 import { ADMIN_PATH_NAME, AUTH_PATH_NAME, PATH_NAME } from './configs'
+import { ADMIN_PATH_NAME_REGEX } from './configs/pathName/adminPathName'
 import { ROLE_TITLE } from './configs'
 import SUPERUSER_PATH_NAME from './configs/pathName/superuserPathName'
 
@@ -13,9 +14,11 @@ export default async function middleware(request: NextRequest) {
   const mainPath = '/' + pathName.split('/')[1]
   const mainPathWithoutQuery = mainPath.split('?')[0]
 
+  console.log(pathName)
+
   let token = request.cookies.get('ACCESS_TOKEN')?.value
 
-  const adminPath = Object.values(ADMIN_PATH_NAME)
+  const adminPath = Object.values(ADMIN_PATH_NAME_REGEX)
   const superuserPath = Object.values(SUPERUSER_PATH_NAME)
 
   async function redirectLoop(token: any) {
@@ -36,10 +39,9 @@ export default async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL(SUPERUSER_PATH_NAME.CAP_TAI_KHOAN, request.url))
     }
 
-    if (
-      (user.role === ROLE_TITLE.ASSISTANT || user.role === ROLE_TITLE.MAIN) &&
-      (adminPath.includes(mainPathWithoutQuery) || adminPath.includes(pathName))
-    ) {
+    const isAdminPath = adminPath.some((regex) => regex.test(pathName))
+
+    if ((user.role === ROLE_TITLE.ASSISTANT || user.role === ROLE_TITLE.MAIN) && isAdminPath) {
       return NextResponse.next()
     } else if (
       user.role === ROLE_TITLE.MAIN &&

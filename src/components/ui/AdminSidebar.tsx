@@ -74,8 +74,8 @@ const AdminSidebar = ({ role }: { role: String }) => {
       </div>
       <p
         className=' py-2.5 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'
-        onClick={() => {
-          authApi.logOut()
+        onClick={async () => {
+          await authApi.logOut()
           router.push(PATH_NAME.HOME)
         }}
       >

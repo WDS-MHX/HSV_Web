@@ -1,12 +1,16 @@
 'use client'
+import dynamic from 'next/dynamic'
+import { useQuery } from '@tanstack/react-query'
 
 import postApi from '@/apis/post'
 import { queryKeys } from '@/configs/queryKeys'
-import { useQuery } from '@tanstack/react-query'
 import { getPostCategoryTitle } from '@/helpers'
-import Link from 'next/link'
-import FroalaEditorView from 'react-froala-wysiwyg/FroalaEditorView'
 import { ADMIN_PATH_NAME } from '@/configs'
+import { useRouter } from 'next/navigation'
+
+const FroalaEditorView = dynamic(() => import('react-froala-wysiwyg/FroalaEditorView'), {
+  ssr: false,
+})
 
 interface PostDetailType {
   id: string
@@ -14,6 +18,8 @@ interface PostDetailType {
 }
 
 const PostDetail = ({ id, isAuth }: PostDetailType) => {
+  const router = useRouter()
+
   const { data } = useQuery({
     queryKey: queryKeys.post.gen(id),
     queryFn: () => postApi.getPostById(id),
@@ -43,12 +49,11 @@ const PostDetail = ({ id, isAuth }: PostDetailType) => {
         <FroalaEditorView model={data?.content} />
 
         {isAuth && (
-          <Link href={`${ADMIN_PATH_NAME.TAO_BAI_DANG}/${data?._id}`}>
-            <img
-              src='/assets/images/edit_btn.png'
-              className='cursor-pointer mx-auto w-16 h-16 hover:opacity-80'
-            />
-          </Link>
+          <img
+            onClick={() => router.push(`${ADMIN_PATH_NAME.TAO_BAI_DANG}/${id}`)}
+            src='/assets/images/edit_btn.png'
+            className='cursor-pointer mx-auto w-16 h-16 hover:opacity-80'
+          />
         )}
       </div>
       <div className='flex flex-col lg:block max-lg:hidden'>
