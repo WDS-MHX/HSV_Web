@@ -9,8 +9,8 @@ import { PostReviewType } from '@/types/post'
 import { POST_CATEGORY } from '@/configs/enum'
 
 export default function NCKH() {
-  const { data, isFetchingNextPage, hasNextPage } = useInfiniteQuery({
-    queryKey: queryKeys.allPosts.gen(),
+  const { data, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteQuery({
+    queryKey: queryKeys.allPosts.gen(POST_CATEGORY.NCKH),
     queryFn: ({ pageParam }) => postApi.getAllPostsByCategory(pageParam, 4, POST_CATEGORY.NCKH),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
@@ -64,7 +64,11 @@ export default function NCKH() {
           ))}
           <div className='flex justify-center items-center w-full'>
             {hasNextPage && (
-              <button className='flex items-center bg-sky-800 text-white px-4 py-2 rounded-lg font-medium text-sm leading-6'>
+              <button
+                onClick={() => fetchNextPage()}
+                disabled={isFetchingNextPage}
+                className='flex items-center bg-sky-800 text-white px-4 py-2 rounded-lg font-medium text-sm leading-6'
+              >
                 {isFetchingNextPage ? 'Đang tải ...' : 'Xem thêm ...'}
               </button>
             )}

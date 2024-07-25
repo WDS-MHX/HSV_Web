@@ -1,39 +1,28 @@
 'use client'
+import dynamic from 'next/dynamic'
+import { useQuery } from '@tanstack/react-query'
 
-import { PostReview } from '@/components'
-import { shortenText } from '@/helpers'
-import { useInfiniteQuery } from '@tanstack/react-query'
-import { queryKeys } from '@/configs/queryKeys'
 import postApi from '@/apis/post'
-import { PostReviewType } from '@/types/post'
+import { queryKeys } from '@/configs/queryKeys'
+import { getPostCategoryTitle } from '@/helpers'
+import { ADMIN_PATH_NAME } from '@/configs'
+import { useRouter } from 'next/navigation'
 
-export default function Home() {
-  const { data, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: queryKeys.allPosts.gen(),
-    queryFn: ({ pageParam }) => postApi.getAllPosts(pageParam, 4),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage) => {
-      const totalPages = Math.floor(lastPage?.pagination.total ?? 0 / 4)
-      const actualPage = lastPage?.pagination.currentPage ?? 0
-      return actualPage < totalPages ? actualPage + 1 : undefined
-    },
-  })
+const FroalaEditorView = dynamic(() => import('react-froala-wysiwyg/FroalaEditorView'), {
+  ssr: false,
+})
 
-  const postResult: PostReviewType[] = []
-  data?.pages.forEach((post) => {
-    post?.data.forEach((item) => {
-      postResult.push({
-        id: item._id,
-        categorized: item.categrory,
-        title: item.title,
-        description: item.description ?? '',
-        content: item.content ?? '',
-        img: item.titleImageId
-          ? process.env.NEXT_PUBLIC_API_BASE_URL + '/download/' + item.titleImageId
-          : undefined,
-        date: item.postedDate,
-      })
-    })
+interface PostDetailType {
+  id: string
+  isAuth: boolean
+}
+
+const PostDetail = ({ id, isAuth }: PostDetailType) => {
+  const router = useRouter()
+
+  const { data } = useQuery({
+    queryKey: queryKeys.post.gen(id),
+    queryFn: () => postApi.getPostById(id),
   })
 
   return (
@@ -49,30 +38,23 @@ export default function Home() {
           <button className='w-[5.625rem] button-primary'>Tìm</button>
         </div>
 
-        <div className='flex flex-col mt-6'>
-          {postResult.map((post) => (
-            <PostReview
-              key={post.id}
-              id={post.id}
-              img={post.img}
-              categorized={post.categorized}
-              title={post.title}
-              content={shortenText(post.content, 50)}
-              date={post.date}
-              hasCategoryBadge
-            />
-          ))}
-          <div className='flex justify-center items-center w-full'>
-            {hasNextPage && (
-              <button
-                onClick={() => fetchNextPage()}
-                className='flex items-center bg-sky-800 text-white px-4 py-2 rounded-lg font-medium text-sm leading-6'
-              >
-                {isFetchingNextPage ? 'Đang tải ...' : 'Xem thêm ...'}
-              </button>
-            )}
+        <div className='flex justify-between mt-8'>
+          <div className='flex w-fit mb-2 items-center justify-center rounded-full bg-categorized px-2 text-center align-middle'>
+            <p className='text-center text-[0.75rem] font-semibold text-white'>
+              {getPostCategoryTitle(data?.categrory)}
+            </p>
           </div>
         </div>
+
+        <FroalaEditorView model={data?.content} />
+
+        {isAuth && (
+          <img
+            onClick={() => router.push(`${ADMIN_PATH_NAME.TAO_BAI_DANG}/${id}`)}
+            src='/assets/images/edit_btn.png'
+            className='cursor-pointer mx-auto w-16 h-16 hover:opacity-80'
+          />
+        )}
       </div>
       <div className='flex flex-col lg:block max-lg:hidden'>
         <div className='flex items-center py-[0.625rem]'>
@@ -105,3 +87,5 @@ export default function Home() {
     </div>
   )
 }
+
+export default PostDetail

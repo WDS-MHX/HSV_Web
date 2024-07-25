@@ -304,6 +304,7 @@ const ResultPage = ({
 
             return (
               <PostReview
+                id={searchResult.id}
                 key={index}
                 id={searchResult.id}
                 img={imageSrc}

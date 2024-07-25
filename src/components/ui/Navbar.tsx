@@ -9,11 +9,15 @@ import { useState, useEffect, useRef } from 'react'
 
 import { PATH_NAME, AUTH_PATH_NAME } from '@/configs'
 
-const Navbar = () => {
+interface NavbarPropType {
+  isAuth: boolean
+}
+
+const Navbar = ({ isAuth = false }: NavbarPropType) => {
   const pathname = usePathname()
   const navbarRef = useRef<HTMLDivElement>(null)
 
-  const [isLoggin, setIsLoggin] = useState<boolean>(false)
+  const [isLoggin, setIsLoggin] = useState<boolean>(isAuth)
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
   const toggleMenu = () => {
@@ -62,13 +66,20 @@ const Navbar = () => {
             className={`nav-links ${isMenuOpen ? 'top-[0%]' : 'top-[-100%]'} transition-all duration-500 ease-in-out w-full lg:static absolute bg-sky-600 lg:min-h-fit min-h-[60vh] left-0 lg:w-auto flex items-center z-50`}
           >
             <ul className='text-sm flex flex-col lg:p-0 mt-4 font-medium lg:flex-row lg:mt-0 lg:border-0 lg:items-center justify-center w-full'>
-              <li className='lg:hidden flex justify-between'>
-                <div className='flex items-center px-4'>
+              <li className='lg:hidden flex justify-between items-center'>
+                <div className='flex items-center px-4 gap-1'>
                   <Link
                     href={PATH_NAME.HOME}
                     className='text-2xl block text-white pr-3 border-r-[1px] border-white'
                   >
                     <GoHomeFill />
+                  </Link>
+                  <Link
+                    href={AUTH_PATH_NAME.DANG_NHAP}
+                    type='button'
+                    className='block text-white text-lg px-4 items-center justify-center'
+                  >
+                    <FaUser />
                   </Link>
                 </div>
                 <div className='flex lg:hidden'>
@@ -202,9 +213,13 @@ const Navbar = () => {
               </li>
               <li>
                 {isLoggin ? (
-                  <button type='button' className='text-white text-lg'>
+                  <Link
+                    href={AUTH_PATH_NAME.DANG_NHAP}
+                    type='button'
+                    className='block text-white text-lg pl-[2.5rem] items-center justify-center max-lg:hidden max-md:hidden'
+                  >
                     <FaUser />
-                  </button>
+                  </Link>
                 ) : (
                   <Link
                     href={AUTH_PATH_NAME.DANG_NHAP}

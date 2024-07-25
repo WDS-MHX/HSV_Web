@@ -1,7 +1,11 @@
 import Navbar from './Navbar'
 import Image from 'next/image'
 
-const Header = () => {
+interface HeaderPropType {
+  isAuth: boolean
+}
+
+const Header = ({ isAuth = false }: HeaderPropType) => {
   return (
     <header className='max-w-6xl w-full mx-auto'>
       <div className='relative w-full'>
@@ -17,7 +21,7 @@ const Header = () => {
           alt='header_banner'
         />
       </div>
-      <Navbar />
+      <Navbar isAuth={isAuth} />
     </header>
   )
 }
