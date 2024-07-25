@@ -9,8 +9,8 @@ import { PostReviewType } from '@/types/post'
 import { POST_CATEGORY } from '@/configs/enum'
 
 export default function CauChuyenDep() {
-  const { data, isFetchingNextPage, hasNextPage } = useInfiniteQuery({
-    queryKey: queryKeys.allPosts.gen(),
+  const { data, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteQuery({
+    queryKey: queryKeys.allPosts.gen(POST_CATEGORY.CAU_CHUYEN_DEP),
     queryFn: ({ pageParam }) =>
       postApi.getAllPostsByCategory(pageParam, 4, POST_CATEGORY.CAU_CHUYEN_DEP),
     initialPageParam: 1,
@@ -65,7 +65,11 @@ export default function CauChuyenDep() {
           ))}
           <div className='flex justify-center items-center w-full'>
             {hasNextPage && (
-              <button className='flex items-center bg-sky-800 text-white px-4 py-2 rounded-lg font-medium text-sm leading-6'>
+              <button
+                onClick={() => fetchNextPage()}
+                disabled={isFetchingNextPage}
+                className='flex items-center bg-sky-800 text-white px-4 py-2 rounded-lg font-medium text-sm leading-6'
+              >
                 {isFetchingNextPage ? 'Đang tải ...' : 'Xem thêm ...'}
               </button>
             )}

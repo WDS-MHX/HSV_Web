@@ -8,7 +8,7 @@ import postApi from '@/apis/post'
 import { PostReviewType } from '@/types/post'
 
 export default function Home() {
-  const { data, isFetchingNextPage, hasNextPage } = useInfiniteQuery({
+  const { data, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: queryKeys.allPosts.gen(),
     queryFn: ({ pageParam }) => postApi.getAllPosts(pageParam, 4),
     initialPageParam: 1,
@@ -64,7 +64,10 @@ export default function Home() {
           ))}
           <div className='flex justify-center items-center w-full'>
             {hasNextPage && (
-              <button className='flex items-center bg-sky-800 text-white px-4 py-2 rounded-lg font-medium text-sm leading-6'>
+              <button
+                onClick={() => fetchNextPage()}
+                className='flex items-center bg-sky-800 text-white px-4 py-2 rounded-lg font-medium text-sm leading-6'
+              >
                 {isFetchingNextPage ? 'Đang tải ...' : 'Xem thêm ...'}
               </button>
             )}
