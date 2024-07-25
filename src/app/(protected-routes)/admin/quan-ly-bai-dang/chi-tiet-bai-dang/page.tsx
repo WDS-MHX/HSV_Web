@@ -17,6 +17,7 @@ import { useMutation } from '@tanstack/react-query'
 import postApi from '@/apis/post'
 import { Input, Label, Textarea } from '@/components/ui'
 import { imgContent } from '@/models/post'
+import { fileApi } from '@/apis'
 const FroalaEditorComponent = dynamic(() => import('@/components/shared/FroalaEditorComponent'), {
   ssr: false,
 })
@@ -24,16 +25,24 @@ const TaoBaiDang = () => {
   const [isPost, setIsPost] = useState<boolean>(true)
   const [contentImageIds, setContentImageIds] = useState<imgContent[]>([])
   const contentImageIdsRef = useRef(contentImageIds)
+  const [idImageRemoved, setIdImageRemoved] = useState<string | undefined>()
   useEffect(() => {
     contentImageIdsRef.current = contentImageIds
   }, [contentImageIds])
+  async function removeImage() {
+    if (idImageRemoved) await fileApi.removeImage(idImageRemoved)
+  }
+  useEffect(() => {
+    if (idImageRemoved) {
+      removeImage()
+    }
+  }, [idImageRemoved])
   const froalaConfig = useMemo(
-    () => generateFroalaConfig(setContentImageIds, contentImageIdsRef.current),
+    () => generateFroalaConfig(setContentImageIds, contentImageIdsRef.current, setIdImageRemoved),
     [setContentImageIds],
   )
   const [content, setContent] = useState<string>('')
   const [postTime, setPostTime] = useState<Date | undefined>(new Date())
-  console.log('contentImageIds', contentImageIds)
   const router = useRouter()
   const backPreviousPage = () => {
     router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)

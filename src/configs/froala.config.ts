@@ -19,6 +19,7 @@ let imageUploadPromise: Promise<void> | undefined
 function generateFroalaConfig(
   setContentImageIds: React.Dispatch<React.SetStateAction<imgContent[]>>,
   contentImageIds: imgContent[],
+  setIdImageRemoved: React.Dispatch<React.SetStateAction<string | undefined>>,
 ) {
   let events: FroalaEvents = {
     'image.beforeUpload': async function (images) {
@@ -77,19 +78,28 @@ function generateFroalaConfig(
       console.log('Error: ', error, response)
     },
     'image.removed': async function ($img, response) {
-      console.log('removed: ', $img)
+      console.log('removed: ', $img[0].currentSrc)
+      let idRemove = undefined
       let url: string = $img[0].currentSrc
       let parts: string[] = url.split('/')
       let idUrl: string = parts.pop() || ''
-      let itemRemove = contentImageIds.find((item) => item.contentId === idUrl)
-      let idRemove = itemRemove ? itemRemove.contentId : undefined
-      if (idRemove) {
-        try {
-          await fileApi.removeImage(idRemove)
-        } catch (error) {
-          console.log(error)
-        }
-      }
+      setContentImageIds((prev) => {
+        let tempArr = prev
+        let itemRemove = prev.find((item) => item.contentId === idUrl)
+        idRemove = itemRemove ? itemRemove.id : undefined
+        setIdImageRemoved(idRemove)
+        return (tempArr = prev.filter((item) => item.contentId !== idUrl))
+      })
+      // let idRemove = itemRemove ? itemRemove.contentId : undefined
+      // console.log("IDREMOVE",idRemove)
+      // if (idRemove) {
+      //   try {
+      //     console.log("VAOREMOVE")
+      //     await fileApi.removeImage(idRemove)
+      //   } catch (error) {
+      //     console.log(error)
+      //   }
+      // }
     },
   }
 
