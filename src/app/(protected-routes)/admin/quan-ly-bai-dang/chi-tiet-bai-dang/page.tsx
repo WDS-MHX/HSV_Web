@@ -1,11 +1,11 @@
 'use client'
 
 import { GrLinkPrevious } from 'react-icons/gr'
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 
 import dynamic from 'next/dynamic'
 import React from 'react'
-import generateFroalaConfig from '@/configs/froala.config'
+import generateFroalaConfig, { FroalaEvents } from '@/configs/froala.config'
 import '@/styles/froala-custom.css'
 import { useRouter } from 'next/navigation'
 import { ADMIN_PATH_NAME } from '@/configs'
@@ -16,22 +16,28 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import postApi from '@/apis/post'
 import { Input, Label, Textarea } from '@/components/ui'
-
+import { imgContent } from '@/models/post'
 const FroalaEditorComponent = dynamic(() => import('@/components/shared/FroalaEditorComponent'), {
   ssr: false,
 })
-
 const TaoBaiDang = () => {
   const [isPost, setIsPost] = useState<boolean>(true)
-  const froalaConfig = useMemo(() => generateFroalaConfig(), [])
+  const [contentImageIds, setContentImageIds] = useState<imgContent[]>([])
+  const contentImageIdsRef = useRef(contentImageIds)
+  useEffect(() => {
+    contentImageIdsRef.current = contentImageIds
+  }, [contentImageIds])
+  const froalaConfig = useMemo(
+    () => generateFroalaConfig(setContentImageIds, contentImageIdsRef.current),
+    [setContentImageIds],
+  )
   const [content, setContent] = useState<string>('')
   const [postTime, setPostTime] = useState<Date | undefined>(new Date())
-
+  console.log('contentImageIds', contentImageIds)
   const router = useRouter()
   const backPreviousPage = () => {
     router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
   }
-
   const {
     register,
     handleSubmit,
@@ -74,6 +80,10 @@ const TaoBaiDang = () => {
   })
 
   const onSubmit = (data: CreatePostDto) => {
+    console.log('VAOSUBMIT')
+    const contentImagesIdArr: string[] = contentImageIds.map((item) => item.id)
+    data = { ...data, contentImageIds: contentImagesIdArr }
+    console.log('DATAFINAL', data)
     createPost(data)
   }
 

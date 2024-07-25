@@ -1,20 +1,41 @@
 // src/configs/froala.config.ts
 
+import { fileApi } from '@/apis'
+import React from 'react'
+import { imgContent } from '@/models/post'
 // import { clientInstance } from '~/services/axios'
 // import blogEndpoint from '~/services/axios/endpoints/blog.endpoint'
 
-interface FroalaEvents {
-  'image.beforeUpload': (images: any) => void
+export interface FroalaEvents {
+  'image.beforeUpload': (images: FileList) => Promise<void>
   // 'image.uploaded': (response: string) => boolean;
-  'image.inserted': ($img: [HTMLImageElement], response: any) => void
+  'image.inserted': ($img: any, response: any) => void
   'image.replaced': ($img: any, response: any) => void
   'image.error': (error: any, response: any) => void
+  'image.removed': ($img: any, response: any) => void
 }
-
-function generateFroalaConfig() {
-  const events: FroalaEvents = {
-    'image.beforeUpload': function (images) {
+let idImageGlobal: string = 'Froala'
+let imageUploadPromise: Promise<void> | undefined
+function generateFroalaConfig(
+  setContentImageIds: React.Dispatch<React.SetStateAction<imgContent[]>>,
+  contentImageIds: imgContent[],
+) {
+  let events: FroalaEvents = {
+    'image.beforeUpload': async function (images) {
       console.log('Before Upload: ', images)
+      imageUploadPromise = new Promise(async (resolve, reject) => {
+        try {
+          let res = await fileApi.uploadImage(images)
+          if (res) {
+            idImageGlobal = res
+            resolve()
+          }
+        } catch (error) {
+          console.log(error)
+          reject(error)
+        }
+      })
+      return imageUploadPromise
     },
     // 'image.uploaded': function(response) {
     //     console.log('response: ', response)
@@ -29,14 +50,46 @@ function generateFroalaConfig() {
     //     )
     //     return false
     // },
-    'image.inserted': function ($img, response) {
-      console.log('Inserted: ', $img, response)
+    'image.inserted': async function ($img, response) {
+      try {
+        if (imageUploadPromise) {
+          await imageUploadPromise
+        }
+        console.log('Inserted: ', $img[0].currentSrc, response)
+        let url: string = $img[0].currentSrc
+        let parts: string[] = url.split('/')
+        let idUrl: string = parts.pop() || ''
+        if (!!idImageGlobal && !!idUrl) {
+          let obj = {
+            id: idImageGlobal,
+            contentId: idUrl,
+          }
+          setContentImageIds((prevIds) => [...prevIds, obj])
+        }
+      } catch (error) {
+        console.log(error)
+      }
     },
     'image.replaced': function ($img, response) {
       console.log('Replaced: ', $img, response)
     },
     'image.error': function (error, response) {
       console.log('Error: ', error, response)
+    },
+    'image.removed': async function ($img, response) {
+      console.log('removed: ', $img)
+      let url: string = $img[0].currentSrc
+      let parts: string[] = url.split('/')
+      let idUrl: string = parts.pop() || ''
+      let itemRemove = contentImageIds.find((item) => item.contentId === idUrl)
+      let idRemove = itemRemove ? itemRemove.contentId : undefined
+      if (idRemove) {
+        try {
+          await fileApi.removeImage(idRemove)
+        } catch (error) {
+          console.log(error)
+        }
+      }
     },
   }
 
