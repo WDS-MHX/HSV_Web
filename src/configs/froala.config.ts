@@ -20,6 +20,8 @@ function generateFroalaConfig(
   setContentImageIds: React.Dispatch<React.SetStateAction<imgContent[]>>,
   contentImageIds: imgContent[],
   setIdImageRemoved: React.Dispatch<React.SetStateAction<string | undefined>>,
+  setCheckExistImage?: React.Dispatch<React.SetStateAction<string | undefined>>,
+  setOpenDialog?: React.Dispatch<React.SetStateAction<boolean>>,
 ) {
   let events: FroalaEvents = {
     'image.beforeUpload': async function (images) {
@@ -88,6 +90,11 @@ function generateFroalaConfig(
         let itemRemove = prev.find((item) => item.contentId === idUrl)
         idRemove = itemRemove ? itemRemove.id : undefined
         setIdImageRemoved(idRemove)
+        if (setCheckExistImage && setOpenDialog && idRemove == undefined) {
+          setCheckExistImage(idUrl)
+          setOpenDialog(true)
+          return (tempArr = prev.filter((item) => item.id !== idUrl))
+        }
         return (tempArr = prev.filter((item) => item.contentId !== idUrl))
       })
       // let idRemove = itemRemove ? itemRemove.contentId : undefined
