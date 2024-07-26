@@ -13,8 +13,9 @@ export default function Home() {
     queryFn: ({ pageParam }) => postApi.getAllPosts(pageParam, 4),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
-      const totalPages = Math.floor(lastPage?.pagination.total ?? 0 / 4)
-      const actualPage = lastPage?.pagination.currentPage ?? 0
+      const totalPages = Math.floor((lastPage?.pagination.total ?? 0) / 4)
+      const actualPage: number = Number(lastPage?.pagination.currentPage ?? 0)
+
       return actualPage < totalPages ? actualPage + 1 : undefined
     },
   })
