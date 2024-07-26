@@ -80,23 +80,30 @@ function generateFroalaConfig(
       console.log('Error: ', error, response)
     },
     'image.removed': async function ($img, response) {
-      console.log('removed: ', $img[0].currentSrc)
-      let idRemove = undefined
-      let url: string = $img[0].currentSrc
-      let parts: string[] = url.split('/')
-      let idUrl: string = parts.pop() || ''
-      setContentImageIds((prev) => {
-        let tempArr = prev
-        let itemRemove = prev.find((item) => item.contentId === idUrl)
-        idRemove = itemRemove ? itemRemove.id : undefined
-        setIdImageRemoved(idRemove)
-        if (setCheckExistImage && setOpenDialog && idRemove == undefined) {
-          setCheckExistImage(idUrl)
-          setOpenDialog(true)
-          return (tempArr = prev.filter((item) => item.id !== idUrl))
+      try {
+        if (imageUploadPromise) {
+          await imageUploadPromise
         }
-        return (tempArr = prev.filter((item) => item.contentId !== idUrl))
-      })
+        console.log('removed: ', $img[0].currentSrc)
+        let idRemove = undefined
+        let url: string = $img[0].currentSrc
+        let parts: string[] = url.split('/')
+        let idUrl: string = parts.pop() || ''
+        setContentImageIds((prev) => {
+          let tempArr = prev
+          let itemRemove = prev.find((item) => item.contentId === idUrl)
+          idRemove = itemRemove ? itemRemove.id : undefined
+          setIdImageRemoved(idRemove)
+          if (setCheckExistImage && setOpenDialog && idRemove == undefined) {
+            setCheckExistImage(idUrl)
+            setOpenDialog(true)
+            return (tempArr = prev.filter((item) => item.id !== idUrl))
+          }
+          return (tempArr = prev.filter((item) => item.contentId !== idUrl))
+        })
+      } catch (error) {
+        console.log(error)
+      }
       // let idRemove = itemRemove ? itemRemove.contentId : undefined
       // console.log("IDREMOVE",idRemove)
       // if (idRemove) {
