@@ -25,6 +25,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import RemoveImageAlert from '@/components/ui/removeImageAlert'
 
 const FroalaEditorComponent = dynamic(() => import('@/components/shared/FroalaEditorComponent'), {
   ssr: false,
@@ -205,21 +206,28 @@ const ChiTietBaiDang = () => {
             model={content}
             onModelChange={(e: string) => setContent(e)}
           />
+          <Dialog open={openDialog} onOpenChange={() => setOpenDialog(!openDialog)}>
+            <DialogContent asChild>
+              <DialogHeader className='flex flex-row items-center justify-center w-full'>
+                <DialogTitle>Bạn có đồng ý xóa ảnh?</DialogTitle>
+              </DialogHeader>
+              <div className='flex w-full items-center justify-center gap-4'>
+                <Button
+                  onClick={() => confirmDeleteImg()}
+                  className='bg-green-600 px-4 py-2 text-white hover:bg-green-800'
+                >
+                  Đồng ý
+                </Button>
+                <Button
+                  onClick={() => denyDeleteImg()}
+                  className='bg-red-600 px-4 py-2 text-white hover:bg-red-800'
+                >
+                  Hủy bỏ
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
-        {/* <Dialog open={openDialog} onOpenChange={() => setOpenDialog(!openDialog)}>
-          <DialogTrigger asChild>
-            <Button></Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader className='flex flex-row items-center justify-center w-full'>
-              <DialogTitle>Bạn có đồng ý xóa ảnh?</DialogTitle>
-            </DialogHeader>
-            <DialogFooter className='flex w-full items-center justify-between'>
-              <Button  onClick={()=>confirmDeleteImg()} className='bg-green-600 px-4 py-2 text-white hover:bg-green-800'>Đồng ý</Button>
-              <Button onClick={()=>denyDeleteImg()} className='bg-red-600 px-4 py-2 text-white hover:bg-red-800'>Hủy bỏ</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog> */}
       </div>
     </div>
   )
