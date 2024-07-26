@@ -75,7 +75,9 @@ const TaoBaiDang = () => {
   const [contentImageIds, setContentImageIds] = useState<imgContent[]>([])
   const contentImageIdsRef = useRef(contentImageIds)
   const [idImageRemoved, setIdImageRemoved] = useState<string | undefined>()
-  const [SelectedCategories, setSelectedCategories] = useState<POST_CATEGORY>()
+  const [SelectedCategories, setSelectedCategories] = useState<POST_CATEGORY>(
+    POST_CATEGORY.GIOI_THIEU,
+  )
   useEffect(() => {
     contentImageIdsRef.current = contentImageIds
   }, [contentImageIds])
@@ -147,6 +149,7 @@ const TaoBaiDang = () => {
         titleImageId: contentImagesIdArr[0],
         postedDate: postTime,
         categrory: SelectedCategories,
+        showPost: true,
       }
       console.log('DATAFINAL', dataPost)
       createPost(dataPost)

@@ -41,7 +41,7 @@ class DocumentApi {
       return res
     } catch (error) {
       handleError(error, (res) => {
-        throw new res.data.message()
+        throw new Error(res.data.message)
       })
     }
   }
@@ -52,7 +52,7 @@ class DocumentApi {
       return res
     } catch (error) {
       handleError(error, (res) => {
-        throw new res.data.message()
+        throw new Error(res.data.message)
       })
     }
   }
@@ -63,7 +63,7 @@ class DocumentApi {
       return res
     } catch (error) {
       handleError(error, (res) => {
-        throw new res.data.message()
+        throw new Error(res.data.message)
       })
     }
   }
@@ -78,7 +78,7 @@ class DocumentApi {
       return res
     } catch (error) {
       handleError(error, (res) => {
-        throw new res.data.message()
+        throw new Error(res.data.message)
       })
     }
   }
@@ -89,7 +89,7 @@ class DocumentApi {
       return res
     } catch (error) {
       handleError(error, (res) => {
-        throw new res.data.message()
+        throw new Error(res.data.message)
       })
     }
   }
@@ -100,7 +100,7 @@ class DocumentApi {
       return res
     } catch (error) {
       handleError(error, (res) => {
-        throw new res.data.message()
+        throw new Error(res.data.message)
       })
     }
   }

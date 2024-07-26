@@ -19,7 +19,7 @@ function PaginationSearchResult({
   const pageCount = Math.ceil(totalItemsInAllPages / itemsPerPage)
 
   const handlePageClick = (event: { selected: number }) => {
-    selectPage(event.selected)
+    selectPage(event.selected + 1)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
