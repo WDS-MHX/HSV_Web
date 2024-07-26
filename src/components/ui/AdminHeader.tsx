@@ -73,15 +73,25 @@ const AdminHeader = ({ role }: { role: String }) => {
             )}
           </ul>
         </div>
-        <p
-          className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'
-          onClick={() => {
-            authApi.logOut()
-            router.push(PATH_NAME.HOME)
-          }}
-        >
-          Đăng xuất
-        </p>
+        <div className='flex gap-2.5'>
+          <p
+            className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'
+            onClick={() => {
+              router.push(PATH_NAME.HOME)
+            }}
+          >
+            Trang chủ
+          </p>
+          <p
+            className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'
+            onClick={async () => {
+              await authApi.logOut()
+              router.push(PATH_NAME.HOME)
+            }}
+          >
+            Đăng xuất
+          </p>
+        </div>
       </div>
 
       <div className='`md:hidden'>
@@ -164,7 +174,21 @@ const AdminHeader = ({ role }: { role: String }) => {
               </li>
             )}
           </ul>
-          <p className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'>
+          <p
+            className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'
+            onClick={() => {
+              router.push(PATH_NAME.HOME)
+            }}
+          >
+            Trang chủ
+          </p>
+          <p
+            className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'
+            onClick={async () => {
+              await authApi.logOut()
+              router.push(PATH_NAME.HOME)
+            }}
+          >
             Đăng xuất
           </p>
         </div>
