@@ -2,14 +2,23 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { FaBars } from 'react-icons/fa'
 import { authApi } from '@/apis'
+import { httpClient } from '@/services'
+import { AUTH_PATH_NAME } from '@/configs'
 
 import { ADMIN_PATH_NAME, PATH_NAME } from '@/configs'
 import SUPERUSER_PATH_NAME from '@/configs/pathName/superuserPathName'
 
 const AdminHeader = ({ role }: { role: String }) => {
+  useEffect(() => {
+    httpClient.createAuthRefreshInterceptor(() => {
+      authApi.logOut()
+      window.location.href = AUTH_PATH_NAME.DANG_NHAP
+    })
+  }, [])
+
   const router = useRouter()
 
   const pathname = usePathname()
