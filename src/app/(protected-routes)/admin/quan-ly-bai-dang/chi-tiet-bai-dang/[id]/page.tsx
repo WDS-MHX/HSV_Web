@@ -171,13 +171,12 @@ const ChiTietBaiDang = () => {
               <RemoveAlert
                 title='Bạn có chắc chắn muốn gỡ bài viết này?'
                 action={() => deletePost()}
+                className='text-sm rounded-md px-4 py-2 text-white font-medium bg-[#BF202E] w-full hover:opacity-80 hover:text-[#0F172A] transition-colors cursor-pointer'
               >
-                <button className='text-sm rounded-md px-4 py-2 text-white font-medium bg-[#BF202E] w-full hover:opacity-80 hover:text-[#0F172A] transition-colors'>
-                  Gỡ
-                </button>
+                Gỡ
               </RemoveAlert>
               <PostTimer datetime={postTime} selectDatetime={setPostTime}>
-                <button className='text-sm rounded-md p-2 text-[#0F172A] font-medium bg-[#E2E8F0] w-full hover:bg-[#bcc1c9] transition-colors'>
+                <button className='text-sm rounded-md p-2 text-[#0F172A] font-medium bg-[#E2E8F0] w-full hover:bg-[#bcc1c9] transition-colors whitespace-nowrap'>
                   Hẹn giờ đăng
                 </button>
               </PostTimer>
