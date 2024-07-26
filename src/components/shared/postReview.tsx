@@ -1,5 +1,8 @@
+'use client'
+
 import React from 'react'
 import Image, { StaticImageData } from 'next/image'
+import { useState } from 'react'
 import { GrLinkNext } from 'react-icons/gr'
 import { getPostCategoryTitle, shortenText } from '@/helpers'
 import { PostReviewType } from '@/types/post'
@@ -18,6 +21,7 @@ const PostReview = ({
   isSearchPage,
   hasCategoryBadge = false,
 }: Partial<PostReviewType> & { hasCategoryBadge?: boolean }) => {
+  const [imgSrc, setImgSrc] = useState(img || '/assets/images/picture-placeholder.png')
   const router = useRouter()
 
   return (
@@ -27,22 +31,24 @@ const PostReview = ({
           (!isSearchPage ? (
             <Image
               id='imgPost'
-              src={img}
+              src={imgSrc}
               alt=''
               width={500}
               height={500}
               object-fit='contain'
               className='imgpost'
+              onError={() => setImgSrc('/assets/images/picture-placeholder.png')}
             />
           ) : (
             <Image
               id='imgSearch'
-              src={img}
+              src={imgSrc}
               alt=''
               width={500}
               height={500}
               object-fit='contain'
               className='imgsearch'
+              onError={() => setImgSrc('/assets/images/picture-placeholder.png')}
             />
           ))}
       </div>
