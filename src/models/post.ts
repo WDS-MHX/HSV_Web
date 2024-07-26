@@ -13,6 +13,17 @@ export const postSchema = z.object({
 })
 export type CreatePostDto = z.infer<typeof postSchema>
 
+export const postSchemaTemporary = z.object({
+  title: z.string({ required_error: 'Tiêu đề không được để trống' }),
+  // titleImageId: z.string(),
+  description: z.string({ required_error: 'Mô tả không được để trống' }),
+  // contentImageIds: z.array(z.string()),
+  content: z.string({ required_error: 'Nội dung không được để trống' }),
+  // postedDate: z.date().default(new Date()),
+  // categrory: z.nativeEnum(POST_CATEGORY).optional(),
+})
+export type CreatePostTemporaryDto = z.infer<typeof postSchemaTemporary>
+
 export type UpdatePostDTO = z.infer<typeof postSchema> & {
   _id: string
 }
@@ -29,7 +40,10 @@ export interface Post {
   categrory?: POST_CATEGORY
   creator?: Admin
 }
-
+export interface imgContent {
+  id: string
+  contentId: string
+}
 export interface AllPosts {
   data: Post[]
   pagination: {

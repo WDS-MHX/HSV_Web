@@ -1,7 +1,7 @@
 'use client'
 
 import { GrLinkPrevious } from 'react-icons/gr'
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 
 import dynamic from 'next/dynamic'
 import generateFroalaConfig from '@/configs/froala.config'
@@ -13,6 +13,18 @@ import { queryKeys } from '@/configs/queryKeys'
 import postApi from '@/apis/post'
 import { RemoveAlert } from '@/components/ui'
 import { PostTimer } from '../component'
+import { imgContent, UpdatePostDTO } from '@/models/post'
+import { fileApi } from '@/apis'
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+  DialogFooter,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 
 const FroalaEditorComponent = dynamic(() => import('@/components/shared/FroalaEditorComponent'), {
   ssr: false,
@@ -20,23 +32,69 @@ const FroalaEditorComponent = dynamic(() => import('@/components/shared/FroalaEd
 
 const ChiTietBaiDang = () => {
   const { id: postId } = useParams<{ id: string }>()
-  const froalaConfig = useMemo(() => generateFroalaConfig(), [])
-
-  const [content, setContent] = useState<string>('')
-  const [postTime, setPostTime] = useState<Date | undefined>(new Date())
-
-  const router = useRouter()
-  const queryClient = useQueryClient()
 
   const { data } = useQuery({
     queryKey: queryKeys.post.gen(postId),
     queryFn: () => postApi.getPostById(postId),
   })
 
+  const [contentImageIds, setContentImageIds] = useState<imgContent[]>([])
+  const [checkExistImage, setCheckExistImage] = useState<string | undefined>()
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [openDialog, setOpenDialog] = useState(false)
+  const contentImageIdsRef = useRef(contentImageIds)
+  const [idImageRemoved, setIdImageRemoved] = useState<string | undefined>()
+  useEffect(() => {
+    contentImageIdsRef.current = contentImageIds
+  }, [contentImageIds])
+  async function removeImage(idImageRemoved: string) {
+    if (idImageRemoved) await fileApi.removeImage(idImageRemoved)
+  }
+  useEffect(() => {
+    if (idImageRemoved) {
+      removeImage(idImageRemoved)
+    }
+  }, [idImageRemoved])
+  const froalaConfig = useMemo(
+    () =>
+      generateFroalaConfig(
+        setContentImageIds,
+        contentImageIdsRef.current,
+        setIdImageRemoved,
+        setCheckExistImage,
+        setOpenDialog,
+      ),
+    [setContentImageIds],
+  )
+  function confirmDeleteImg() {
+    if (checkExistImage) {
+      removeImage(checkExistImage)
+      setConfirmDelete(false)
+      setCheckExistImage(undefined)
+      setOpenDialog(false)
+    }
+  }
+  function denyDeleteImg() {
+    setConfirmDelete(false)
+    setCheckExistImage(undefined)
+    setOpenDialog(false)
+  }
+  const [content, setContent] = useState<string>('')
+  const [postTime, setPostTime] = useState<Date | undefined>(new Date())
+
+  const router = useRouter()
+  const queryClient = useQueryClient()
+
   useEffect(() => {
     if (data) {
       setContent(data.content ?? '')
       setPostTime(data.postedDate ?? new Date())
+      let newContentImageIds = data.contentImageIds?.map((id) => ({
+        id: id,
+        contentId: '',
+      }))
+      if (newContentImageIds && newContentImageIds?.length > 0)
+        setContentImageIds(newContentImageIds)
     }
   }, [data])
 
@@ -61,6 +119,38 @@ const ChiTietBaiDang = () => {
       router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
     },
   })
+
+  const { mutate: updatePost } = useMutation({
+    mutationFn: (data: UpdatePostDTO) =>
+      postApi.updatePost({
+        ...data,
+      }),
+    onSuccess: () => {
+      //toast
+      backPreviousPage()
+    },
+    onError: () => {
+      //toast
+    },
+  })
+
+  const onSubmit = () => {
+    console.log('VAOSUBMIT')
+    const contentImagesIdArr: Array<string> = contentImageIds.map((item) => item.id)
+    if (postTime && data?.title) {
+      let dataPost = {
+        ...data,
+        contentImageIds: contentImagesIdArr,
+        titleImageId: contentImagesIdArr[0],
+        postedDate: postTime,
+        _id: postId,
+        content: content,
+        description: data.description ?? '',
+      }
+      console.log('DATAFINAL', dataPost)
+      updatePost(dataPost)
+    }
+  }
 
   return (
     <div className='w-full bg-[#E0F2FE] lg:pt-8 px-2 pb-4 h-full'>
@@ -99,7 +189,10 @@ const ChiTietBaiDang = () => {
               >
                 {data?.showPost ? 'Ẩn' : 'Đăng'}
               </button>
-              <button className='text-sm rounded-md px-4 py-2 text-white font-medium bg-[#0284C7] w-full hover:font-bold hover:bg-[#0285c7d5]'>
+              <button
+                onClick={() => onSubmit()}
+                className='text-sm rounded-md px-4 py-2 text-white font-medium bg-[#0284C7] w-full hover:font-bold hover:bg-[#0285c7d5]'
+              >
                 Lưu
               </button>
             </div>
@@ -113,6 +206,20 @@ const ChiTietBaiDang = () => {
             onModelChange={(e: string) => setContent(e)}
           />
         </div>
+        {/* <Dialog open={openDialog} onOpenChange={() => setOpenDialog(!openDialog)}>
+          <DialogTrigger asChild>
+            <Button></Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader className='flex flex-row items-center justify-center w-full'>
+              <DialogTitle>Bạn có đồng ý xóa ảnh?</DialogTitle>
+            </DialogHeader>
+            <DialogFooter className='flex w-full items-center justify-between'>
+              <Button  onClick={()=>confirmDeleteImg()} className='bg-green-600 px-4 py-2 text-white hover:bg-green-800'>Đồng ý</Button>
+              <Button onClick={()=>denyDeleteImg()} className='bg-red-600 px-4 py-2 text-white hover:bg-red-800'>Hủy bỏ</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog> */}
       </div>
     </div>
   )

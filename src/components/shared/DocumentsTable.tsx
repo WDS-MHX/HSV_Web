@@ -112,7 +112,7 @@ export default function DocumentsTable({
     },
   })
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log('VAOONSUBMIT')
+    console.log('VAOONSUBMIT', values.file)
     const dataJson = JSON.stringify({
       docNumber: Number(values.docNumber),
       title: values.title,

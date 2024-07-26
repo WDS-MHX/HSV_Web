@@ -25,6 +25,27 @@ class FileApi {
       })
     }
   }
+  async uploadImage(file: FileList) {
+    try {
+      const formData = new FormData()
+      formData.append('image', file[0])
+      const res = await httpClient.post<string>(`/file/upload-image`, formData)
+      return res
+    } catch (error) {
+      handleError(error, (res) => {
+        throw new res.data.message()
+      })
+    }
+  }
+  async removeImage(id: string) {
+    try {
+      await httpClient.delete(`/file/remove-image/${id}`)
+    } catch (error) {
+      handleError(error, (res) => {
+        throw new res.data.message()
+      })
+    }
+  }
 }
 
 const fileApi = new FileApi()

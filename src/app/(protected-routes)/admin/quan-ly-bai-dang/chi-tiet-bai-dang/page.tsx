@@ -1,57 +1,121 @@
 'use client'
 
 import { GrLinkPrevious } from 'react-icons/gr'
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 
 import dynamic from 'next/dynamic'
 import React from 'react'
-import generateFroalaConfig from '@/configs/froala.config'
+import generateFroalaConfig, { FroalaEvents } from '@/configs/froala.config'
 import '@/styles/froala-custom.css'
 import { useRouter } from 'next/navigation'
 import { ADMIN_PATH_NAME } from '@/configs'
 import { PostTimer } from './component'
 import { useForm } from 'react-hook-form'
-import { CreatePostDto, postSchema } from '@/models/post'
+import {
+  CreatePostDto,
+  CreatePostTemporaryDto,
+  postSchema,
+  postSchemaTemporary,
+} from '@/models/post'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import postApi from '@/apis/post'
 import { Input, Label, Textarea } from '@/components/ui'
-
+import { imgContent } from '@/models/post'
+import { fileApi } from '@/apis'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/shared/SelectOption'
+import { POST_CATEGORY } from '@/configs/enum'
 const FroalaEditorComponent = dynamic(() => import('@/components/shared/FroalaEditorComponent'), {
   ssr: false,
 })
-
+const options: readonly {
+  optionType: POST_CATEGORY
+  optionName: string
+  isPlaceHolder?: boolean
+}[] = [
+  {
+    optionType: POST_CATEGORY.GIOI_THIEU,
+    optionName: 'Giới thiệu',
+  },
+  {
+    optionType: POST_CATEGORY.SINH_VIEN_5_TOT,
+    optionName: 'Sinh viên 5 tốt',
+  },
+  {
+    optionType: POST_CATEGORY.CAU_CHUYEN_DEP,
+    optionName: 'Câu chuyện đẹp',
+  },
+  {
+    optionType: POST_CATEGORY.TINH_NGUYEN,
+    optionName: 'Tình nguyện',
+  },
+  {
+    optionType: POST_CATEGORY.NCKH,
+    optionName: 'NCKH',
+  },
+  {
+    optionType: POST_CATEGORY.HO_TRO_SINH_VIEN,
+    optionName: 'Hỗ trợ sinh viên',
+  },
+  {
+    optionType: POST_CATEGORY.XAY_DUNG_HOI,
+    optionName: 'Xây dựng hội',
+  },
+]
 const TaoBaiDang = () => {
   const [isPost, setIsPost] = useState<boolean>(true)
-  const froalaConfig = useMemo(() => generateFroalaConfig(), [])
+  const [contentImageIds, setContentImageIds] = useState<imgContent[]>([])
+  const contentImageIdsRef = useRef(contentImageIds)
+  const [idImageRemoved, setIdImageRemoved] = useState<string | undefined>()
+  const [SelectedCategories, setSelectedCategories] = useState<POST_CATEGORY>()
+  useEffect(() => {
+    contentImageIdsRef.current = contentImageIds
+  }, [contentImageIds])
+  async function removeImage() {
+    if (idImageRemoved) await fileApi.removeImage(idImageRemoved)
+  }
+  useEffect(() => {
+    if (idImageRemoved) {
+      removeImage()
+    }
+  }, [idImageRemoved])
+  const froalaConfig = useMemo(
+    () => generateFroalaConfig(setContentImageIds, contentImageIdsRef.current, setIdImageRemoved),
+    [setContentImageIds],
+  )
   const [content, setContent] = useState<string>('')
   const [postTime, setPostTime] = useState<Date | undefined>(new Date())
-
   const router = useRouter()
   const backPreviousPage = () => {
     router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
   }
-
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<CreatePostDto>({
-    resolver: zodResolver(postSchema),
+  } = useForm<CreatePostTemporaryDto>({
+    resolver: zodResolver(postSchemaTemporary),
     defaultValues: {
       title: 'hello',
       description: '',
       content: '',
-      postedDate: new Date(),
     },
   })
 
-  useEffect(() => {
-    if (postTime) {
-      setValue('postedDate', postTime)
-    }
-  }, [postTime, setValue])
+  // useEffect(() => {
+  //   if (postTime) {
+  //     setValue('postedDate', postTime)
+  //   }
+  // }, [postTime, setValue])
 
   useEffect(() => {
     if (content) {
@@ -73,8 +137,24 @@ const TaoBaiDang = () => {
     },
   })
 
-  const onSubmit = (data: CreatePostDto) => {
-    createPost(data)
+  const onSubmit = (data: CreatePostTemporaryDto) => {
+    console.log('VAOSUBMIT')
+    const contentImagesIdArr: Array<string> = contentImageIds.map((item) => item.id)
+    if (postTime) {
+      let dataPost = {
+        ...data,
+        contentImageIds: contentImagesIdArr,
+        titleImageId: contentImagesIdArr[0],
+        postedDate: postTime,
+        categrory: SelectedCategories,
+      }
+      console.log('DATAFINAL', dataPost)
+      createPost(dataPost)
+    }
+  }
+
+  const handleSelectOneCategory = (category: POST_CATEGORY) => {
+    setSelectedCategories(category)
   }
 
   return (
@@ -113,16 +193,36 @@ const TaoBaiDang = () => {
         <div className='mb-8'>
           <h3 className='text-2xl font-semibold mb-4'>Thông tin chung</h3>
           <div className='space-y-2'>
-            <div>
-              <Label htmlFor='title' className='mb-1'>
-                Tiêu đề <span className='text-red-500'>*</span>
-              </Label>
-              <Input
-                id='title'
-                {...register('title')}
-                placeholder='Nhập tiêu đề'
-                className='w-full bg-[#F9F9F9]'
-              />
+            <div className='w-full flex justify-between items-center'>
+              <div className='w-full'>
+                <Label htmlFor='title' className='mb-1'>
+                  Tiêu đề <span className='text-red-500'>*</span>
+                </Label>
+                <Input
+                  id='title'
+                  {...register('title')}
+                  placeholder='Nhập tiêu đề'
+                  className='w-full bg-[#F9F9F9]'
+                />
+              </div>
+              <Select
+                onValueChange={(value) => handleSelectOneCategory(value as POST_CATEGORY)}
+                defaultValue={options[0].optionType}
+              >
+                <SelectTrigger className='w-full h-[40px] ml-3 mt-auto'>
+                  <SelectValue placeholder='Chọn danh mục'></SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Chọn danh mục</SelectLabel>
+                    {options.map((i) => (
+                      <SelectItem key={i.optionName} value={i.optionType}>
+                        {i.optionName}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
               {errors.title && <p className='text-red-500'>{errors.title.message}</p>}
             </div>
             <div>
