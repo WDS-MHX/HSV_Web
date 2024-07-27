@@ -62,6 +62,11 @@ function generateFroalaConfig(
         let url: string = $img[0].currentSrc
         let parts: string[] = url.split('/')
         let idUrl: string = parts.pop() || ''
+
+        let apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || ''
+        let modifiedUrl = `${apiBaseUrl}/file/download/${idImageGlobal}`
+        $img.attr('src', modifiedUrl)
+
         if (!!idImageGlobal && !!idUrl) {
           let obj = {
             id: idImageGlobal,

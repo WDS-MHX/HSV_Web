@@ -30,7 +30,7 @@ export default function Home() {
         description: item.description ?? '',
         content: item.content ?? '',
         img: item.titleImageId
-          ? process.env.NEXT_PUBLIC_API_BASE_URL + '/download/' + item.titleImageId
+          ? process.env.NEXT_PUBLIC_API_BASE_URL + '/file/download/' + item.titleImageId
           : undefined,
         date: item.postedDate,
       })
