@@ -114,9 +114,9 @@ const ChiTietBaiDang = () => {
   const { mutate: deletePost } = useMutation({
     mutationFn: () => postApi.deletePost(postId),
     onSettled: () => {
-      // queryClient.invalidateQueries({
-      //   queryKey: queryKeys.allPosts.gen(),
-      // })
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.allPosts.gen(),
+      })
       router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
     },
   })
