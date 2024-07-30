@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import RemoveImageAlert from '@/components/ui/removeImageAlert'
+import { POST_CATEGORY } from '@/configs/enum'
 
 const FroalaEditorComponent = dynamic(() => import('@/components/shared/FroalaEditorComponent'), {
   ssr: false,
@@ -115,7 +116,21 @@ const ChiTietBaiDang = () => {
     mutationFn: () => postApi.deletePost(postId),
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.allPosts.gen(),
+        queryKey: queryKeys.adminSearchPosts.gen(
+          1,
+          5,
+          '',
+          [
+            POST_CATEGORY.GIOI_THIEU,
+            POST_CATEGORY.SINH_VIEN_5_TOT,
+            POST_CATEGORY.CAU_CHUYEN_DEP,
+            POST_CATEGORY.TINH_NGUYEN,
+            POST_CATEGORY.NCKH,
+            POST_CATEGORY.HO_TRO_SINH_VIEN,
+            POST_CATEGORY.XAY_DUNG_HOI,
+          ],
+          true,
+        ),
       })
       router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
     },
@@ -172,12 +187,12 @@ const ChiTietBaiDang = () => {
               <RemoveAlert
                 title='Bạn có chắc chắn muốn gỡ bài viết này?'
                 action={() => deletePost()}
-                className='text-sm rounded-md px-4 py-2 text-white font-medium bg-[#BF202E] w-full hover:opacity-80 hover:text-[#0F172A] transition-colors cursor-pointer'
+                className='text-sm rounded-md px-4 py-2 text-white font-medium bg-[#BF202E] w-full transition-colors cursor-pointer'
               >
                 Gỡ
               </RemoveAlert>
               <PostTimer datetime={postTime} selectDatetime={setPostTime}>
-                <button className='text-sm rounded-md p-2 text-[#0F172A] font-medium bg-[#E2E8F0] w-full hover:bg-[#bcc1c9] transition-colors whitespace-nowrap'>
+                <button className='text-sm rounded-md p-2 text-[#0F172A] font-medium bg-[#E2E8F0] w-full transition-colors whitespace-nowrap'>
                   Hẹn giờ đăng
                 </button>
               </PostTimer>
@@ -185,13 +200,13 @@ const ChiTietBaiDang = () => {
             <div className='flex gap-1.5 px-4'>
               <button
                 onClick={() => updateShowPost()}
-                className='text-sm rounded-md px-4 py-2 text-[#0F172A] font-medium bg-[#E2E8F0] w-full hover:font-bold hover:bg-[#e2e8f0c9]'
+                className='text-sm rounded-md px-4 py-2 text-[#0F172A] font-medium bg-[#E2E8F0] w-full'
               >
                 {data?.showPost ? 'Ẩn' : 'Đăng'}
               </button>
               <button
                 onClick={() => onSubmit()}
-                className='text-sm rounded-md px-4 py-2 text-white font-medium bg-[#0284C7] w-full hover:font-bold hover:bg-[#0285c7d5]'
+                className='text-sm rounded-md px-4 py-2 text-white font-medium bg-[#0284C7] w-full'
               >
                 Lưu
               </button>

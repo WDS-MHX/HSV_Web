@@ -18,7 +18,7 @@ import {
   postSchemaTemporary,
 } from '@/models/post'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
+import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query'
 import postApi from '@/apis/post'
 import { Input, Label, Textarea } from '@/components/ui'
 import { imgContent } from '@/models/post'
@@ -33,6 +33,9 @@ import {
   SelectValue,
 } from '@/components/shared/SelectOption'
 import { POST_CATEGORY } from '@/configs/enum'
+import { queryKeys } from '@/configs/queryKeys'
+import { toast } from 'react-toastify'
+
 const FroalaEditorComponent = dynamic(() => import('@/components/shared/FroalaEditorComponent'), {
   ssr: false,
 })
@@ -71,6 +74,8 @@ const options: readonly {
   },
 ]
 const TaoBaiDang = () => {
+  const queryClient = useQueryClient()
+
   const [isPost, setIsPost] = useState<boolean>(true)
   const [contentImageIds, setContentImageIds] = useState<imgContent[]>([])
   const contentImageIdsRef = useRef(contentImageIds)
@@ -125,17 +130,52 @@ const TaoBaiDang = () => {
     }
   }, [content, setValue])
 
-  const { mutate: createPost } = useMutation({
-    mutationFn: (data: CreatePostDto) =>
-      postApi.createPost({
-        ...data,
-      }),
+  const toastId = useRef<ReturnType<typeof toast.loading> | null>(null)
+
+  const { mutate: createPost, isPending } = useMutation({
+    onMutate: () => {
+      toastId.current = toast.loading('Đang tạo bài viết...')
+    },
+    mutationFn: (data: CreatePostDto) => postApi.createPost({ ...data }),
     onSuccess: () => {
-      //toast
+      if (toastId.current) {
+        toast.update(toastId.current, {
+          render: 'Tạo bài viết thành công!',
+          type: 'success',
+          isLoading: false,
+          autoClose: 5000,
+        })
+      }
+
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.adminSearchPosts.gen(
+          1,
+          5,
+          '',
+          [
+            POST_CATEGORY.GIOI_THIEU,
+            POST_CATEGORY.SINH_VIEN_5_TOT,
+            POST_CATEGORY.CAU_CHUYEN_DEP,
+            POST_CATEGORY.TINH_NGUYEN,
+            POST_CATEGORY.NCKH,
+            POST_CATEGORY.HO_TRO_SINH_VIEN,
+            POST_CATEGORY.XAY_DUNG_HOI,
+          ],
+          true,
+        ),
+      })
+
       backPreviousPage()
     },
     onError: () => {
-      //toast
+      if (toastId.current) {
+        toast.update(toastId.current, {
+          render: 'Tạo bài viết thất bại!',
+          type: 'error',
+          isLoading: false,
+          autoClose: 5000,
+        })
+      }
     },
   })
 
@@ -187,6 +227,7 @@ const TaoBaiDang = () => {
               <button
                 type='submit'
                 className='text-sm rounded-md px-4 py-2 text-white font-medium bg-sky-600 w-full'
+                disabled={isPending}
               >
                 Đăng
               </button>

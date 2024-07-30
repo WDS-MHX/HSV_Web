@@ -7,7 +7,7 @@ import { GrLinkNext } from 'react-icons/gr'
 import { getPostCategoryTitle, shortenText } from '@/helpers'
 import { PostReviewType } from '@/types/post'
 import { useRouter } from 'next/navigation'
-import { PATH_NAME } from '@/configs'
+import { ADMIN_PATH_NAME, PATH_NAME } from '@/configs'
 import { format } from 'date-fns'
 
 const PostReview = ({
@@ -20,6 +20,7 @@ const PostReview = ({
   date,
   isSearchPage,
   hasCategoryBadge = false,
+  isAuth = false,
 }: Partial<PostReviewType> & { hasCategoryBadge?: boolean }) => {
   const [imgSrc, setImgSrc] = useState(img || '/assets/images/picture-placeholder.png')
   const router = useRouter()
@@ -84,7 +85,9 @@ const PostReview = ({
         </div>
         <div className='w-full flex justify-end items-end'>
           <button
-            onClick={() => router.push(`${PATH_NAME.BAI_VIET}/${id}`)}
+            onClick={() =>
+              router.push(`${isAuth ? ADMIN_PATH_NAME.TAO_BAI_DANG : PATH_NAME.BAI_VIET}/${id}`)
+            }
             className='bg-slate-200 font-medium leading-6 text-slate-900 px-4 py-2 flex items-center rounded-lg'
           >
             Chi tiết <GrLinkNext className='ml-2' />
