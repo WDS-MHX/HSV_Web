@@ -8,6 +8,7 @@ export interface SearchPostType {
   content: string
   img?: string
   date?: Date
+  isAuth?: boolean
 }
 
 export interface PostReviewType extends SearchPostType {

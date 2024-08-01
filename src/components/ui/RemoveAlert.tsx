@@ -13,13 +13,14 @@ import {
 interface RemoveAlertProps {
   children: React.ReactNode
   title: string
+  className: string
   action: () => void
 }
 
-export default function RemoveAlert({ children, title, action }: RemoveAlertProps) {
+export default function RemoveAlert({ children, title, action, className }: RemoveAlertProps) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger>{children}</AlertDialogTrigger>
+      <AlertDialogTrigger className={className}>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>

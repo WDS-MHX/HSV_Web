@@ -9,7 +9,7 @@ import { FaPlus } from 'react-icons/fa6'
 import { FiPlus } from 'react-icons/fi'
 import { Pagination } from '@/types/pagination'
 import postApi from '@/apis/post'
-import { POST_CATEGORY } from '@/configs/enum'
+import { POST_CATEGORY, POST_STATUS } from '@/configs/enum'
 import { SearchPostType } from '@/types/post'
 import { ADMIN_PATH_NAME } from '@/configs'
 import { useRouter } from 'next/navigation'
@@ -106,29 +106,37 @@ interface SearchData {
 // ]
 
 const PostTabs = ({
-  isPosted,
+  postStatus,
   handleIsOpen,
   handleNotIsOpen,
+  handleHide,
   className,
 }: {
-  isPosted: boolean
+  postStatus: POST_STATUS
   handleIsOpen: () => void
   handleNotIsOpen: () => void
+  handleHide: () => void
   className?: string
 }) => {
   return (
     <div className={`p-1.5 flex bg-background w-fit rounded-md ${className}`}>
       <div
-        className={`cursor-pointer duration-300 transition-colors ${isPosted ? 'text-primary font-semibold bg-white' : 'text-[#334155]'} px-3 py-1.5 rounded-[3px]`}
+        className={`cursor-pointer duration-300 transition-colors ${postStatus === POST_STATUS.POSTED ? 'text-primary font-semibold bg-white' : 'text-[#334155]'} px-3 py-1.5 rounded-[3px]`}
         onClick={handleIsOpen}
       >
         Đã đăng
       </div>
       <div
-        className={`cursor-pointer duration-300 transition-colors ${!isPosted ? 'text-primary font-semibold bg-white' : 'text-[#334155]'} px-3 py-1.5 rounded-[3px]`}
+        className={`cursor-pointer duration-300 transition-colors ${postStatus === POST_STATUS.NOT_POSTED ? 'text-primary font-semibold bg-white' : 'text-[#334155]'} px-3 py-1.5 rounded-[3px]`}
         onClick={handleNotIsOpen}
       >
         Chưa đăng
+      </div>
+      <div
+        className={`cursor-pointer duration-300 transition-colors ${postStatus === POST_STATUS.HIDE ? 'text-primary font-semibold bg-white' : 'text-[#334155]'} px-3 py-1.5 rounded-[3px]`}
+        onClick={handleHide}
+      >
+        Ẩn
       </div>
     </div>
   )
@@ -142,7 +150,7 @@ const Quanlybaidang = () => {
    * - categrories: categories for posts
    * - pagination: pagination for posts
    */
-  const [isPosted, setIsPosted] = useState<boolean>(true)
+  const [postStatus, setPostStatus] = useState<POST_STATUS>(POST_STATUS.POSTED)
   const [searchValue, setSearchValue] = useState<string>('')
   const [categrories, setCategrories] = useState<POST_CATEGORY[]>([
     POST_CATEGORY.GIOI_THIEU,
@@ -160,13 +168,13 @@ const Quanlybaidang = () => {
       pagination.limit,
       searchValue,
       categrories,
-      isPosted,
+      postStatus,
     ),
     queryFn: () =>
       postApi.searchPostsForAdmin({
         page: pagination.page,
         limit: pagination.limit,
-        showPost: isPosted,
+        showPost: postStatus,
         title: searchValue,
         categrories,
       }),
@@ -174,11 +182,15 @@ const Quanlybaidang = () => {
   })
 
   const handleIsOpen = () => {
-    setIsPosted(true)
+    setPostStatus(POST_STATUS.POSTED)
   }
 
   const handleNotIsOpen = () => {
-    setIsPosted(false)
+    setPostStatus(POST_STATUS.NOT_POSTED)
+  }
+
+  const handleHide = () => {
+    setPostStatus(POST_STATUS.HIDE)
   }
 
   const selectPage = (page: number) => {
@@ -193,7 +205,7 @@ const Quanlybaidang = () => {
       description: post.description ?? '',
       content: post.content ?? '',
       img: post.titleImageId
-        ? process.env.NEXT_PUBLIC_API_BASE_URL + '/download/' + post.titleImageId
+        ? process.env.NEXT_PUBLIC_API_BASE_URL + '/file/download/' + post.titleImageId
         : undefined,
       date: post.postedDate,
     })) ?? []
@@ -209,9 +221,10 @@ const Quanlybaidang = () => {
       <div className='bg-white rounded-xl py-4 px-6 max-md:px-1 mb-4'>
         <div className='flex w-full justify-between h-fit md:mb-6 items-center'>
           <PostTabs
-            isPosted={isPosted}
+            postStatus={postStatus}
             handleIsOpen={handleIsOpen}
             handleNotIsOpen={handleNotIsOpen}
+            handleHide={handleHide}
             className='max-md:hidden'
           />
           <button
@@ -241,9 +254,10 @@ const Quanlybaidang = () => {
           <FiPlus className='text-sky-600 group-hover:text-white text-[32px]' />
         </div>
         <PostTabs
-          isPosted={isPosted}
+          postStatus={postStatus}
           handleIsOpen={handleIsOpen}
           handleNotIsOpen={handleNotIsOpen}
+          handleHide={handleHide}
           className='fixed bottom-[23px] left-1/2 -translate-x-1/2 shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)] md:hidden'
         />
       </div>

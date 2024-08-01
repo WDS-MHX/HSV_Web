@@ -50,7 +50,7 @@ const TimKiemPage = () => {
       description: post.description ?? '',
       content: post.content ?? '',
       img: post.titleImageId
-        ? process.env.NEXT_PUBLIC_API_BASE_URL + '/download/' + post.titleImageId
+        ? process.env.NEXT_PUBLIC_API_BASE_URL + '/file/download/' + post.titleImageId
         : undefined,
       date: post.postedDate,
     })) ?? []

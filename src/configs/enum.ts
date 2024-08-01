@@ -13,3 +13,9 @@ export enum POST_CATEGORY {
   HO_TRO_SINH_VIEN = 'HO_TRO_SINH_VIEN',
   XAY_DUNG_HOI = 'XAY_DUNG_HOI',
 }
+
+export enum POST_STATUS {
+  POSTED = 'POSTED',
+  NOT_POSTED = 'NOT_POSTED',
+  HIDE = 'HIDE',
+}
