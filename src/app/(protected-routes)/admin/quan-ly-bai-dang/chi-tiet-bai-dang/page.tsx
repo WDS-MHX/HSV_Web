@@ -32,7 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/shared/SelectOption'
-import { POST_CATEGORY } from '@/configs/enum'
+import { POST_CATEGORY, POST_STATUS } from '@/configs/enum'
 import { queryKeys } from '@/configs/queryKeys'
 import { toast } from 'react-toastify'
 
@@ -161,7 +161,7 @@ const TaoBaiDang = () => {
             POST_CATEGORY.HO_TRO_SINH_VIEN,
             POST_CATEGORY.XAY_DUNG_HOI,
           ],
-          true,
+          POST_STATUS.POSTED,
         ),
       })
 

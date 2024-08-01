@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import RemoveImageAlert from '@/components/ui/removeImageAlert'
-import { POST_CATEGORY } from '@/configs/enum'
+import { POST_CATEGORY, POST_STATUS } from '@/configs/enum'
 
 const FroalaEditorComponent = dynamic(() => import('@/components/shared/FroalaEditorComponent'), {
   ssr: false,
@@ -129,7 +129,7 @@ const ChiTietBaiDang = () => {
             POST_CATEGORY.HO_TRO_SINH_VIEN,
             POST_CATEGORY.XAY_DUNG_HOI,
           ],
-          true,
+          POST_STATUS.POSTED,
         ),
       })
       router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)

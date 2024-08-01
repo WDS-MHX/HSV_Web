@@ -1,4 +1,4 @@
-import { POST_CATEGORY } from '@/configs/enum'
+import { POST_CATEGORY, POST_STATUS } from '@/configs/enum'
 import Admin from './admin'
 import { z } from 'zod'
 
@@ -60,5 +60,5 @@ export interface SearchPostDTO {
 }
 
 export interface AdminSearchPostDTO extends Partial<SearchPostDTO> {
-  showPost: boolean
+  showPost: POST_STATUS
 }
