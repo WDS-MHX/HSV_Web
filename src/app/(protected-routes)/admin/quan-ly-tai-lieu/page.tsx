@@ -5,8 +5,8 @@ import { useQuery } from '@tanstack/react-query'
 import { documentApi } from '@/apis'
 const QuanLyTaiLieu = () => {
   const { data: getAllDocmentsQuery, refetch: reloadDocument } = useQuery({
-    queryKey: ['documentsByAdmin'],
-    queryFn: () => documentApi.getAllDocumentsUploadedByAdmin(),
+    queryKey: ['documents'],
+    queryFn: () => documentApi.getAllDocuments(),
     refetchInterval: (query) => {
       const currentStatus = query.state?.data
       if (currentStatus) {

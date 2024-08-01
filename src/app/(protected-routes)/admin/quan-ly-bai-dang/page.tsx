@@ -248,7 +248,7 @@ const Quanlybaidang = () => {
         />
 
         {/* 
-          Tạo bài viết mới button and Đã đăng & Chưa đăng post tabs in mobile
+          Tạo bài viết mới button and Đã đăng & Chưa đăng & Ẩn post tabs in mobile
          */}
         <div className='group fixed right-4 bottom-[92px] p-4 rounded-full bg-white hover:bg-sky-600 border border-sky-600 shadow-[0px_2px_20px_0px_rgba(2,132,199,0.3)] cursor-pointer md:hidden'>
           <FiPlus className='text-sky-600 group-hover:text-white text-[32px]' />

@@ -239,7 +239,7 @@ export default function ListAdminTable({
                               ? 'lg:w-[27.5rem] w-auto'
                               : 'lg:w-[12rem] md:w-[6.5rem] w-auto'
                       } 
-                      md:text-sm sticky lg:top-0 md:top-14 top-0 bg-white leading-6 text-sky-600 border-2 p-4 text-left font-bold text-xs`}
+                      md:text-sm sticky lg:top-0 md:top-14 top-0 bg-sky-600 leading-6 text-white border-2 p-4 text-left font-bold text-xs`}
                       key={column.id}
                       colSpan={column.colSpan}
                       // style={{

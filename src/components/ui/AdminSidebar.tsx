@@ -38,7 +38,7 @@ const AdminSidebar = ({ role }: { role: String }) => {
               >
                 <Link
                   href={ADMIN_PATH_NAME.QUAN_LY_BAI_DANG}
-                  className='block py-2.5 px-4 cursor-pointer transition-colors rounded-md duration-300 hover:font-medium hover:text-primaryColor hover:bg-slate-100'
+                  className='block py-2.5 px-4 cursor-pointer transition-colors rounded-md duration-300 hover:font-medium hover:text-primaryColor hover:bg-white'
                 >
                   Quản lý bài đăng
                 </Link>
@@ -53,7 +53,7 @@ const AdminSidebar = ({ role }: { role: String }) => {
               >
                 <Link
                   href={ADMIN_PATH_NAME.QUAN_LY_TAI_LIEU}
-                  className='mt-1.5 block py-2.5 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:text-primaryColor hover:bg-slate-100'
+                  className='mt-1.5 block py-2.5 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:text-primaryColor hover:bg-white'
                 >
                   Quản lý tài liệu
                 </Link>
