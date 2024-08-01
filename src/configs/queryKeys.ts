@@ -1,3 +1,5 @@
+import { POST_STATUS } from './enum'
+
 export const queryKeys = {
   adminSearchPosts: {
     gen: (
@@ -5,8 +7,8 @@ export const queryKeys = {
       limit: number,
       searchText: string,
       categories: string[],
-      isPosted: boolean,
-    ) => ['adminPosts', page, limit, searchText, categories, isPosted],
+      postStatus: POST_STATUS,
+    ) => ['adminPosts', page, limit, searchText, categories, postStatus],
   },
   viewerSearchPosts: {
     gen: (page: number, limit: number, searchText: string, categories: string[]) => [

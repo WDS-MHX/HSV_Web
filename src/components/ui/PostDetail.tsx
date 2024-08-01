@@ -3,12 +3,13 @@ import dynamic from 'next/dynamic'
 import { useQuery } from '@tanstack/react-query'
 
 import postApi from '@/apis/post'
+import '@/configs/froala.config'
 import { queryKeys } from '@/configs/queryKeys'
 import { getPostCategoryTitle } from '@/helpers'
 import { ADMIN_PATH_NAME } from '@/configs'
 import { useRouter } from 'next/navigation'
 
-const FroalaEditorView = dynamic(() => import('react-froala-wysiwyg/FroalaEditorView'), {
+const FroalaEditorView = dynamic(() => import('@/components/shared/FroalaViewComponent'), {
   ssr: false,
 })
 
