@@ -149,6 +149,15 @@ body {
     height: 15rem;
   }
 }
+
+.table-row:nth-child(even) {
+  background-color: #e0f2fe; /* sky/100 */
+}
+
+.table-row:nth-child(odd) {
+  background-color: #ffffff; /* trắng */
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

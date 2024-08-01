@@ -26,20 +26,20 @@ const AdminHeader = ({ role }: { role: String }) => {
 
   return (
     <>
-      <div className='max-md:hidden md:flex lg:hidden h-16 bg-[#E0F2FE] py-2 px-6 w-full z-50 sticky top-0 justify-between items-center'>
+      <div className='max-md:hidden md:flex lg:hidden h-16 bg-sky-600 rounded-b-2xl py-2 px-6 w-full z-50 sticky top-0 justify-between items-center'>
         <div className='flex gap-16 items-center'>
-          <p className='text-title font-semibold text-xl'>{role}</p>
+          <p className='text-white font-semibold text-xl'>{role}</p>
           <ul className='flex gap-2.5'>
             {/* Admin */}
             {role == 'Admin' && (
               <div className='flex gap-2.5'>
                 <li
-                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
+                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 hover:text-primaryColor rounded-md
                 ${
                   pathname == ADMIN_PATH_NAME.QUAN_LY_BAI_DANG ||
                   (pathname.startsWith(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG) && pathname !== '/')
                     ? 'bg-white text-primaryColor rounded-md'
-                    : 'text-secondaryColor'
+                    : 'text-slate-50'
                 }
               `}
                 >
@@ -48,12 +48,12 @@ const AdminHeader = ({ role }: { role: String }) => {
                   </Link>
                 </li>
                 <li
-                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
+                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 hover:text-primaryColor rounded-md
                 ${
                   pathname == ADMIN_PATH_NAME.QUAN_LY_TAI_LIEU ||
                   (pathname.startsWith(ADMIN_PATH_NAME.QUAN_LY_TAI_LIEU) && pathname !== '/')
                     ? 'bg-white text-primaryColor rounded-md'
-                    : 'text-secondaryColor'
+                    : 'text-slate-50'
                 }
               `}
                 >
@@ -71,7 +71,7 @@ const AdminHeader = ({ role }: { role: String }) => {
                   pathname == SUPERUSER_PATH_NAME.CAP_TAI_KHOAN ||
                   (pathname.startsWith(SUPERUSER_PATH_NAME.CAP_TAI_KHOAN) && pathname !== '/')
                     ? 'bg-white text-primaryColor rounded-md'
-                    : 'text-secondaryColor'
+                    : 'text-slate-50'
                 }
               `}
               >
@@ -84,7 +84,7 @@ const AdminHeader = ({ role }: { role: String }) => {
         </div>
         <div className='flex gap-2.5'>
           <p
-            className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'
+            className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-slate-50 hover:text-primaryColor'
             onClick={() => {
               router.push(PATH_NAME.HOME)
             }}
@@ -92,7 +92,7 @@ const AdminHeader = ({ role }: { role: String }) => {
             Trang chủ
           </p>
           <p
-            className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'
+            className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-slate-50 hover:text-primaryColor'
             onClick={async () => {
               await authApi.logOut()
               router.push(PATH_NAME.HOME)
@@ -110,10 +110,10 @@ const AdminHeader = ({ role }: { role: String }) => {
             onClick={() => setIsMenuOpen(false)}
           ></div>
         )}
-        <div className='flex md:hidden h-16 bg-[#E0F2FE] py-2 px-6 w-full z-50 sticky top-0 justify-between items-center'>
+        <div className='flex md:hidden h-16 bg-sky-600 rounded-b-2xl py-2 px-6 w-full z-50 sticky top-0 justify-between items-center'>
           <div className='flex justify-between items-center'>
             <FaBars
-              className='text-xl text-black cursor-pointer'
+              className='text-xl text-white cursor-pointer'
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             />
           </div>
@@ -125,23 +125,23 @@ const AdminHeader = ({ role }: { role: String }) => {
         </div>
         <div
           className={`
-          fixed left-0 w-full bg-[#E0F2FE] p-6 z-50 flex flex-col gap-2.5 transition-all duration-300 ease-in-out
+          fixed left-0 w-full bg-sky-600 p-6 z-50 flex flex-col gap-2.5 transition-all duration-300 ease-in-out
           ${isMenuOpen ? 'top-0' : 'top-[-100%]'}
           md:hidden
         `}
         >
-          <p className='text-title font-semibold text-xl mx-auto'>{role}</p>
+          <p className='text-white font-semibold text-xl mx-auto'>{role}</p>
           <ul className='flex flex-col gap-2.5'>
             {/* Admin */}
             {role == 'Admin' && (
               <div className='flex flex-col gap-2.5'>
                 <li
-                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
+                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 hover:text-primaryColor rounded-md
                   ${
                     pathname == ADMIN_PATH_NAME.QUAN_LY_BAI_DANG ||
                     (pathname.startsWith(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG) && pathname !== '/')
                       ? 'bg-white text-primaryColor rounded-md'
-                      : 'text-secondaryColor'
+                      : 'text-slate-50'
                   }
                 `}
                 >
@@ -150,12 +150,12 @@ const AdminHeader = ({ role }: { role: String }) => {
                   </Link>
                 </li>
                 <li
-                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
+                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 hover:text-primaryColor rounded-md
                   ${
                     pathname == ADMIN_PATH_NAME.QUAN_LY_TAI_LIEU ||
                     (pathname.startsWith(ADMIN_PATH_NAME.QUAN_LY_TAI_LIEU) && pathname !== '/')
                       ? 'bg-white text-primaryColor rounded-md'
-                      : 'text-secondaryColor'
+                      : 'text-slate-50'
                   }
                 `}
                 >
@@ -173,7 +173,7 @@ const AdminHeader = ({ role }: { role: String }) => {
                     pathname == SUPERUSER_PATH_NAME.CAP_TAI_KHOAN ||
                     (pathname.startsWith(SUPERUSER_PATH_NAME.CAP_TAI_KHOAN) && pathname !== '/')
                       ? 'bg-white text-primaryColor rounded-md'
-                      : 'text-secondaryColor'
+                      : 'text-slate-50'
                   }
                 `}
               >
@@ -184,7 +184,7 @@ const AdminHeader = ({ role }: { role: String }) => {
             )}
           </ul>
           <p
-            className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'
+            className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-slate-50 hover:text-primaryColor'
             onClick={() => {
               router.push(PATH_NAME.HOME)
             }}
@@ -192,7 +192,7 @@ const AdminHeader = ({ role }: { role: String }) => {
             Trang chủ
           </p>
           <p
-            className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'
+            className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-slate-50 hover:text-primaryColor'
             onClick={async () => {
               await authApi.logOut()
               router.push(PATH_NAME.HOME)

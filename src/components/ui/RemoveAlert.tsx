@@ -13,7 +13,7 @@ import {
 interface RemoveAlertProps {
   children: React.ReactNode
   title: string
-  className: string
+  className?: string
   action: () => void
 }
 
@@ -23,11 +23,13 @@ export default function RemoveAlert({ children, title, action, className }: Remo
       <AlertDialogTrigger className={className}>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogTitle className='font-semibold'>{title}</AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={action}>Continue</AlertDialogAction>
+          <AlertDialogCancel className='hover:bg-slate-200'>Không</AlertDialogCancel>
+          <AlertDialogAction onClick={action} className='bg-red-500 hover:bg-red-500/90'>
+            Có
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

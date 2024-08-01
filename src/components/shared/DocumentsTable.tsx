@@ -46,6 +46,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import { Input } from './input'
 import DateFormGroup from './form-date-group'
+import { RemoveAlert } from '../ui'
 // const options: readonly { optionName: string }[] = [
 //   {
 //     optionName: 'Chương trình',
@@ -262,14 +263,18 @@ export default function DocumentsTable({
           minSize: 77,
           maxSize: 77,
           cell: (info) => (
-            <Button
-              onClick={() => deleteDocument(info.getValue())}
-              variant='outline'
-              size='icon'
-              className='rounded-full text-red-600 bg-white'
+            <RemoveAlert
+              title='Bạn có chắc chắn muốn xóa tài liệu này?'
+              action={() => deleteDocument(info.getValue())}
             >
-              <PiTrashBold size={16}></PiTrashBold>
-            </Button>
+              <Button
+                variant='outline'
+                size='icon'
+                className='rounded-full text-red-600 hover:text-red-600 bg-white'
+              >
+                <PiTrashBold size={16}></PiTrashBold>
+              </Button>
+            </RemoveAlert>
           ),
         }),
       )
@@ -353,7 +358,7 @@ export default function DocumentsTable({
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader className='flex flex-row items-center justify-between'>
-                  <DialogTitle className='text-3xl'>Upload tài liệu</DialogTitle>
+                  <DialogTitle className='text-2xl'>Upload tài liệu</DialogTitle>
                   <DialogClose>
                     <X className='h-6 w-6 mb-2' />
                   </DialogClose>
@@ -472,7 +477,7 @@ export default function DocumentsTable({
                               ? 'lg:w-[27.5rem] w-auto'
                               : 'lg:w-[12rem] md:w-[6.5rem] w-[4.813rem]'
                       } 
-                      md:text-sm sticky md:top-0 top-0 bg-white leading-6 text-slate-900 border-2 p-4 text-left font-bold text-xs`}
+                      md:text-sm sticky md:top-0 top-0 bg-sky-600 leading-6 text-white border-2 p-4 text-left font-bold text-xs`}
                       key={column.id}
                       colSpan={column.colSpan}
                       // style={{
@@ -492,11 +497,11 @@ export default function DocumentsTable({
         <tbody>
           {tableInstance.getRowModel().rows.map((row) => {
             return (
-              <tr key={row.id}>
+              <tr key={row.id} className='table-row'>
                 {row.getVisibleCells().map((cell) => {
                   return (
                     <td
-                      className='p-4 border-2 md:text-sm leading-6 bg-white text-slate-900 font-normal text-xs'
+                      className='p-4 border-2 md:text-sm leading-6 text-slate-900 font-normal text-xs'
                       key={cell.id}
                       // style={{
                       //   width: cell.column.columnDef.size,

@@ -3,7 +3,7 @@ import AdminHeader from '@/components/ui/AdminHeader'
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className='w-full bg-[#E0F2FE]'>
+    <div className='w-full bg-sky-600'>
       <AdminHeader role='Superuser' />
       <div className='flex'>
         <AdminSidebar role='Superuser' />

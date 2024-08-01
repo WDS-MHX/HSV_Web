@@ -5,8 +5,8 @@ import { useQuery } from '@tanstack/react-query'
 import { documentApi } from '@/apis'
 const QuanLyTaiLieu = () => {
   const { data: getAllDocmentsQuery, refetch: reloadDocument } = useQuery({
-    queryKey: ['documentsByAdmin'],
-    queryFn: () => documentApi.getAllDocumentsUploadedByAdmin(),
+    queryKey: ['documents'],
+    queryFn: () => documentApi.getAllDocuments(),
     refetchInterval: (query) => {
       const currentStatus = query.state?.data
       if (currentStatus) {
@@ -16,7 +16,7 @@ const QuanLyTaiLieu = () => {
     },
   })
   return (
-    <div className='w-full bg-[#E0F2FE] pt-8 px-2 pb-4 h-fit'>
+    <div className='w-full lg:bg-sky-600 bg-white lg:pt-8 lg:px-2 px-0 pt-0 pb-4 h-fit'>
       <div className='bg-white rounded-xl py-4 px-6 max-md:px-1 mb-4'>
         {!getAllDocmentsQuery ? (
           <></>

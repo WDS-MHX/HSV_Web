@@ -306,7 +306,7 @@ const ResultPage = ({
               <PostReview
                 isAuth={isAdmin}
                 id={searchResult.id}
-                key={index}
+                key={searchResult.id}
                 img={imageSrc}
                 categorized={searchResult.categorized}
                 title={searchResult.title}

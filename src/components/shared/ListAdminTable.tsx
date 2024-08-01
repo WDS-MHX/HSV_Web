@@ -33,6 +33,7 @@ import { log, table } from 'console'
 import { headers } from 'next/headers'
 import { type } from 'os'
 import { toast } from 'react-toastify'
+import { min } from 'date-fns'
 const formSchema = z.object({
   name: z.string().min(1, 'Vui long nhap ho va ten'),
   phoneNumber: z
@@ -238,7 +239,7 @@ export default function ListAdminTable({
                               ? 'lg:w-[27.5rem] w-auto'
                               : 'lg:w-[12rem] md:w-[6.5rem] w-auto'
                       } 
-                      md:text-sm sticky lg:top-0 md:top-14 top-0 bg-white leading-6 text-slate-900 border-2 p-4 text-left font-bold text-xs`}
+                      md:text-sm sticky lg:top-0 md:top-14 top-0 bg-sky-600 leading-6 text-white border-2 p-4 text-left font-bold text-xs`}
                       key={column.id}
                       colSpan={column.colSpan}
                       // style={{
@@ -258,11 +259,11 @@ export default function ListAdminTable({
         <tbody>
           {tableInstance.getRowModel().rows.map((row) => {
             return (
-              <tr key={row.id}>
+              <tr key={row.id} className='table-row'>
                 {row.getVisibleCells().map((cell) => {
                   return (
                     <td
-                      className='p-4 border-2 md:text-sm leading-6 bg-white text-slate-900 font-normal text-xs'
+                      className='p-4 border-2 md:text-sm leading-6 text-slate-900 font-normal text-xs'
                       key={cell.id}
                       // style={{
                       //   width: cell.column.columnDef.size,

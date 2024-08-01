@@ -169,7 +169,7 @@ const ChiTietBaiDang = () => {
   }
 
   return (
-    <div className='w-full bg-[#E0F2FE] lg:pt-8 px-2 pb-4 h-full'>
+    <div className='w-full lg:bg-sky-600 bg-white lg:pt-8 pt-0 lg:px-2 px-0 pb-4 h-full'>
       <div className='bg-white rounded-xl py-4 px-6 max-md:px-1 mb-4 h-full'>
         <div className='flex justify-between items-center mb-6'>
           <div className='flex gap-4 items-center'>
