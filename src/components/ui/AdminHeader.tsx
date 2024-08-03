@@ -86,7 +86,7 @@ const AdminHeader = ({ role }: { role: String }) => {
           <p
             className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'
             onClick={() => {
-              router.push(PATH_NAME.HOME)
+              window.location.href = '/'
             }}
           >
             Trang chủ
@@ -95,7 +95,7 @@ const AdminHeader = ({ role }: { role: String }) => {
             className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'
             onClick={async () => {
               await authApi.logOut()
-              router.push(PATH_NAME.HOME)
+              window.location.href = '/'
             }}
           >
             Đăng xuất
@@ -186,7 +186,7 @@ const AdminHeader = ({ role }: { role: String }) => {
           <p
             className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'
             onClick={() => {
-              router.push(PATH_NAME.HOME)
+              window.location.href = '/'
             }}
           >
             Trang chủ
@@ -195,7 +195,7 @@ const AdminHeader = ({ role }: { role: String }) => {
             className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-secondaryColor hover:text-primaryColor'
             onClick={async () => {
               await authApi.logOut()
-              router.push(PATH_NAME.HOME)
+              window.location.href = '/'
             }}
           >
             Đăng xuất

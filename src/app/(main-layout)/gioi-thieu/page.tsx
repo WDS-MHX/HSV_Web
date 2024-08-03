@@ -31,7 +31,7 @@ export default function GioiThieu() {
         description: item.description ?? '',
         content: item.content ?? '',
         img: item.titleImageId
-          ? process.env.NEXT_PUBLIC_API_BASE_URL + '/download/' + item.titleImageId
+          ? process.env.NEXT_PUBLIC_API_BASE_URL + '/file/download/' + item.titleImageId
           : undefined,
         date: item.postedDate,
       })
@@ -64,7 +64,7 @@ export default function GioiThieu() {
             />
           ))}
           <div className='flex justify-center items-center w-full'>
-            {hasNextPage && (
+            {data && hasNextPage && (
               <button
                 onClick={() => fetchNextPage()}
                 disabled={isFetchingNextPage}

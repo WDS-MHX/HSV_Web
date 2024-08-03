@@ -77,7 +77,7 @@ const Navbar = ({ isAuth = false }: NavbarPropType) => {
                   <Link
                     href={AUTH_PATH_NAME.DANG_NHAP}
                     type='button'
-                    className='block text-white text-lg px-4 items-center justify-center'
+                    className={`block text-white text-lg px-4 items-center justify-center ${isAuth ? '' : 'hidden'}`}
                   >
                     <FaUser />
                   </Link>
