@@ -11,9 +11,14 @@ import { ADMIN_PATH_NAME } from '@/configs'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from '@/configs/queryKeys'
 import postApi from '@/apis/post'
-import { RemoveAlert } from '@/components/ui'
+import { Input, Label, RemoveAlert } from '@/components/ui'
 import { PostTimer } from '../component'
-import { imgContent, UpdatePostDTO } from '@/models/post'
+import {
+  CreatePostTemporaryDto,
+  imgContent,
+  postSchemaTemporary,
+  UpdatePostDTO,
+} from '@/models/post'
 import { fileApi } from '@/apis'
 import {
   Dialog,
@@ -27,10 +32,58 @@ import {
 import { Button } from '@/components/ui/button'
 import RemoveImageAlert from '@/components/ui/removeImageAlert'
 import { POST_CATEGORY, POST_STATUS } from '@/configs/enum'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/shared/SelectOption'
+import { Textarea } from '@/components/shared/textArea'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import FroalaEditor from 'react-froala-wysiwyg'
 
 const FroalaEditorComponent = dynamic(() => import('@/components/shared/FroalaEditorComponent'), {
   ssr: false,
 })
+
+const options: readonly {
+  optionType: POST_CATEGORY
+  optionName: string
+  isPlaceHolder?: boolean
+}[] = [
+  {
+    optionType: POST_CATEGORY.GIOI_THIEU,
+    optionName: 'Giới thiệu',
+  },
+  {
+    optionType: POST_CATEGORY.SINH_VIEN_5_TOT,
+    optionName: 'Sinh viên 5 tốt',
+  },
+  {
+    optionType: POST_CATEGORY.CAU_CHUYEN_DEP,
+    optionName: 'Câu chuyện đẹp',
+  },
+  {
+    optionType: POST_CATEGORY.TINH_NGUYEN,
+    optionName: 'Tình nguyện',
+  },
+  {
+    optionType: POST_CATEGORY.NCKH,
+    optionName: 'NCKH',
+  },
+  {
+    optionType: POST_CATEGORY.HO_TRO_SINH_VIEN,
+    optionName: 'Hỗ trợ sinh viên',
+  },
+  {
+    optionType: POST_CATEGORY.XAY_DUNG_HOI,
+    optionName: 'Xây dựng hội',
+  },
+]
 
 const ChiTietBaiDang = () => {
   const { id: postId } = useParams<{ id: string }>()
@@ -40,6 +93,13 @@ const ChiTietBaiDang = () => {
     queryFn: () => postApi.getPostById(postId),
   })
 
+  const [SelectedCategories, setSelectedCategories] = useState<POST_CATEGORY>(
+    data?.categrory ?? POST_CATEGORY.HO_TRO_SINH_VIEN,
+  )
+
+  // const editorRef = useRef<FroalaEditor | null>(null);
+
+  const [deleteConfirmed, setDeleteConfirmed] = useState<((confirm: boolean) => void) | null>(null)
   const [contentImageIds, setContentImageIds] = useState<imgContent[]>([])
   const [checkExistImage, setCheckExistImage] = useState<string | undefined>()
   const [confirmDelete, setConfirmDelete] = useState(false)
@@ -65,25 +125,41 @@ const ChiTietBaiDang = () => {
         setIdImageRemoved,
         setCheckExistImage,
         setOpenDialog,
+        setDeleteConfirmed,
       ),
     [setContentImageIds],
   )
+  console.log('CONTENTIMAGEID', contentImageIds)
+
   function confirmDeleteImg() {
+    if (deleteConfirmed) {
+      console.log('CHAYVAOCONFIRMDELET')
+      deleteConfirmed(true)
+    }
+    setOpenDialog(false)
+  }
+  useEffect(() => {
     if (checkExistImage) {
       removeImage(checkExistImage)
       setConfirmDelete(false)
       setCheckExistImage(undefined)
-      setOpenDialog(false)
     }
-  }
+  }, [checkExistImage])
+
   function denyDeleteImg() {
+    if (deleteConfirmed) {
+      console.log('CHAYVAOCONFIRMDENY')
+      deleteConfirmed(false)
+    }
     setConfirmDelete(false)
     setCheckExistImage(undefined)
     setOpenDialog(false)
   }
   const [content, setContent] = useState<string>('')
+  const [title, setTitle] = useState<string>('')
+  const [description, setDescription] = useState<string>('')
   const [postTime, setPostTime] = useState<Date | undefined>(new Date())
-
+  console.log('LAYDATA', title, content, description, postTime)
   const router = useRouter()
   const queryClient = useQueryClient()
 
@@ -91,6 +167,10 @@ const ChiTietBaiDang = () => {
     if (data) {
       setContent(data.content ?? '')
       setPostTime(data.postedDate ?? new Date())
+      setDescription(data.description ?? '')
+      setTitle(data.title ?? '')
+      console.log('CHAYVAOUSEEFFECTDATA')
+      setSelectedCategories(data.categrory ?? POST_CATEGORY.SINH_VIEN_5_TOT)
       let newContentImageIds = data.contentImageIds?.map((id) => ({
         id: id,
         contentId: '',
@@ -136,7 +216,7 @@ const ChiTietBaiDang = () => {
     },
   })
 
-  const { mutate: updatePost } = useMutation({
+  const { mutate: updatePost, isPending } = useMutation({
     mutationFn: (data: UpdatePostDTO) =>
       postApi.updatePost({
         ...data,
@@ -150,27 +230,64 @@ const ChiTietBaiDang = () => {
     },
   })
 
-  const onSubmit = () => {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<CreatePostTemporaryDto>({
+    resolver: zodResolver(postSchemaTemporary),
+    defaultValues: {
+      title: title ?? 'hello',
+      description: description,
+      content: '',
+    },
+  })
+
+  useEffect(() => {
+    if (content) {
+      setValue('content', content)
+    }
+  }, [content, setValue])
+  useEffect(() => {
+    if (title) {
+      setValue('title', title)
+    }
+  }, [title, setValue])
+  useEffect(() => {
+    if (description) {
+      setValue('description', description)
+    }
+  }, [description, setValue])
+
+  const onSubmit = (data: CreatePostTemporaryDto) => {
     console.log('VAOSUBMIT')
     const contentImagesIdArr: Array<string> = contentImageIds.map((item) => item.id)
     if (postTime && data?.title) {
       let dataPost = {
         ...data,
+        categrory: SelectedCategories,
         contentImageIds: contentImagesIdArr,
         titleImageId: contentImagesIdArr[0],
         postedDate: postTime,
         _id: postId,
-        content: content,
-        description: data.description ?? '',
       }
       console.log('DATAFINAL', dataPost)
       updatePost(dataPost)
     }
   }
 
+  const handleSelectOneCategory = (category: POST_CATEGORY) => {
+    setSelectedCategories(category)
+  }
+
   return (
     <div className='w-full lg:bg-sky-600 bg-white lg:pt-8 pt-0 lg:px-2 px-0 pb-4 h-full'>
-      <div className='bg-white rounded-xl py-4 px-6 max-md:px-1 mb-4 h-full'>
+      {/* <Form {...form}> */}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className='bg-white rounded-xl py-4 px-6 max-md:px-1 mb-4 h-full'
+      >
         <div className='flex justify-between items-center mb-6'>
           <div className='flex gap-4 items-center'>
             <button onClick={backPreviousPage}>
@@ -205,11 +322,63 @@ const ChiTietBaiDang = () => {
                 {data?.showPost ? 'Ẩn' : 'Đăng'}
               </button>
               <button
-                onClick={() => onSubmit()}
+                type='submit'
+                disabled={isPending}
                 className='text-sm rounded-md px-4 py-2 text-white font-medium bg-[#0284C7] w-full'
               >
                 Lưu
               </button>
+            </div>
+          </div>
+        </div>
+        <div className='mb-8'>
+          <h3 className='text-2xl font-semibold mb-4'>Thông tin chung</h3>
+          <div className='space-y-2'>
+            <div className='w-full flex justify-between items-center'>
+              <div className='w-full'>
+                <Label htmlFor='title' className='mb-1'>
+                  Tiêu đề <span className='text-red-500'>*</span>
+                </Label>
+                <Input
+                  id='title'
+                  {...register('title')}
+                  placeholder='Nhập tiêu đề'
+                  className='w-full bg-[#F9F9F9]'
+                />
+              </div>
+              {data && (
+                <Select
+                  onValueChange={(value) => handleSelectOneCategory(value as POST_CATEGORY)}
+                  defaultValue={data?.categrory}
+                >
+                  <SelectTrigger className='w-full h-[40px] ml-3 mt-auto'>
+                    <SelectValue placeholder='Chọn danh mục'></SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Chọn danh mục</SelectLabel>
+                      {options.map((i) => (
+                        <SelectItem key={i.optionName} value={i.optionType}>
+                          {i.optionName}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              )}
+              {errors.title && <p className='text-red-500'>{errors.title.message}</p>}
+            </div>
+            <div>
+              <Label htmlFor='description' className='mb-1'>
+                Mô tả <span className='text-red-500'>*</span>
+              </Label>
+              <Textarea
+                id='description'
+                {...register('description')}
+                placeholder='Nhập mô tả'
+                className='w-full bg-[#F9F9F9]'
+              />
+              {errors.description && <p className='text-red-500'>{errors.description.message}</p>}
             </div>
           </div>
         </div>
@@ -221,19 +390,19 @@ const ChiTietBaiDang = () => {
             onModelChange={(e: string) => setContent(e)}
           />
           <Dialog open={openDialog} onOpenChange={() => setOpenDialog(!openDialog)}>
-            <DialogContent asChild>
+            <DialogContent>
               <DialogHeader className='flex flex-row items-center justify-center w-full'>
                 <DialogTitle>Bạn có đồng ý xóa ảnh?</DialogTitle>
               </DialogHeader>
               <div className='flex w-full items-center justify-center gap-4'>
                 <Button
-                  onClick={() => confirmDeleteImg()}
+                  onClick={confirmDeleteImg}
                   className='bg-green-600 px-4 py-2 text-white hover:bg-green-800'
                 >
                   Đồng ý
                 </Button>
                 <Button
-                  onClick={() => denyDeleteImg()}
+                  onClick={denyDeleteImg}
                   className='bg-red-600 px-4 py-2 text-white hover:bg-red-800'
                 >
                   Hủy bỏ
@@ -242,7 +411,8 @@ const ChiTietBaiDang = () => {
             </DialogContent>
           </Dialog>
         </div>
-      </div>
+      </form>
+      {/* </Form> */}
     </div>
   )
 }
