@@ -265,33 +265,33 @@ export default function DocumentsTable({
 
   const onFilterCategoryChange = () => {
     setColumnFilters((prev: any) => {
-      let tempArr = []
-      const categorySelect = prev.find((filter: any) => filter.id === 'category')
-      if (!categorySelect) {
-        tempArr = prev.concat({
-          id: 'category',
-          value: category,
-        })
-        console.log('tempArr', tempArr)
-      } else {
-        tempArr = prev.map((f: any) =>
-          f.id === 'category'
-            ? {
-                ...f,
-                value: category,
-              }
-            : f,
-        )
-      }
+      // let tempArr:any = []
+      // const categorySelect = prev.find((filter: any) => filter.id === 'category')
+      // if (!categorySelect) {
+      //   tempArr = prev.concat({
+      //     id: 'category',
+      //     value: category,
+      //   })
+      //   console.log('tempArr', tempArr)
+      // } else {
+      //   tempArr = prev.map((f: any) =>
+      //     f.id === 'category'
+      //       ? {
+      //           ...f,
+      //           value: category,
+      //         }
+      //       : f,
+      //   )
+      // }
       console.log('EMPTY', '')
       const searchQuery = prev.find((filter: any) => filter.id === 'title')
       if (!searchQuery) {
-        tempArr = tempArr.concat({
+        return prev.concat({
           id: 'title',
           value: query,
         })
       } else {
-        tempArr = tempArr.map((f: any) =>
+        return prev.map((f: any) =>
           f.id === 'title'
             ? {
                 ...f,
@@ -300,12 +300,32 @@ export default function DocumentsTable({
             : f,
         )
       }
-      return tempArr
     })
     // let getDataLengthFilter = tableInstance.getFilteredRowModel().rows.length;
     // setDataLength(getDataLengthFilter)
   }
-
+  useEffect(() => {
+    if (category != '') {
+      setColumnFilters((prev: any) => {
+        const categorySelect = prev.find((filter: any) => filter.id === 'category')?.value
+        if (!categorySelect) {
+          return prev.concat({
+            id: 'category',
+            value: category,
+          })
+        } else {
+          return prev.map((f: any) =>
+            f.id === 'category'
+              ? {
+                  ...f,
+                  value: category,
+                }
+              : f,
+          )
+        }
+      })
+    }
+  }, [category])
   useEffect(() => {
     setDataLength(tableInstance.getFilteredRowModel().rows.length)
   }, [tableInstance.getFilteredRowModel().rows.length, columnFilters, query, category])
