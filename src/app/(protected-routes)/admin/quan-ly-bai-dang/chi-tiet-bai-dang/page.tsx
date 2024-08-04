@@ -112,7 +112,7 @@ const TaoBaiDang = () => {
   } = useForm<CreatePostTemporaryDto>({
     resolver: zodResolver(postSchemaTemporary),
     defaultValues: {
-      title: 'hello',
+      title: '',
       description: '',
       content: '',
     },

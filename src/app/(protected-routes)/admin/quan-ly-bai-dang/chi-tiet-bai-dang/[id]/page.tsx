@@ -108,8 +108,23 @@ const ChiTietBaiDang = () => {
     mutationFn: () => postApi.updateShowPost(postId, !data?.showPost),
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.post.gen(postId),
+        queryKey: queryKeys.adminSearchPosts.gen(
+          1,
+          5,
+          '',
+          [
+            POST_CATEGORY.GIOI_THIEU,
+            POST_CATEGORY.SINH_VIEN_5_TOT,
+            POST_CATEGORY.CAU_CHUYEN_DEP,
+            POST_CATEGORY.TINH_NGUYEN,
+            POST_CATEGORY.NCKH,
+            POST_CATEGORY.HO_TRO_SINH_VIEN,
+            POST_CATEGORY.XAY_DUNG_HOI,
+          ],
+          POST_STATUS.POSTED,
+        ),
       })
+      router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
     },
   })
   const { mutate: deletePost } = useMutation({
@@ -143,7 +158,25 @@ const ChiTietBaiDang = () => {
       }),
     onSuccess: () => {
       //toast
-      backPreviousPage()
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.adminSearchPosts.gen(
+          1,
+          5,
+          '',
+          [
+            POST_CATEGORY.GIOI_THIEU,
+            POST_CATEGORY.SINH_VIEN_5_TOT,
+            POST_CATEGORY.CAU_CHUYEN_DEP,
+            POST_CATEGORY.TINH_NGUYEN,
+            POST_CATEGORY.NCKH,
+            POST_CATEGORY.HO_TRO_SINH_VIEN,
+            POST_CATEGORY.XAY_DUNG_HOI,
+          ],
+          POST_STATUS.POSTED,
+        ),
+      })
+
+      router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
     },
     onError: () => {
       //toast
