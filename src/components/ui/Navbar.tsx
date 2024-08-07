@@ -3,22 +3,46 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { GoHomeFill } from 'react-icons/go'
-import { FaUser } from 'react-icons/fa'
 import { FaBars, FaTimes } from 'react-icons/fa'
 import { useState, useEffect, useRef } from 'react'
-
+import webInfoApi from '@/apis/webinfo'
+import { useQuery } from '@tanstack/react-query'
 import { PATH_NAME, AUTH_PATH_NAME } from '@/configs'
+
+interface DataItem {
+  _id: string
+  type: string
+  value?: string
+  mediaFileId?: string
+  __v: number
+  createdAt: string
+  updatedAt: string
+}
 
 interface NavbarPropType {
   isAuth: boolean
 }
 
 const Navbar = ({ isAuth = false }: NavbarPropType) => {
+  const { data } = useQuery({
+    queryKey: ['logoavatar'],
+    queryFn: () => webInfoApi.getWebInfoByType('LOGO_AVATAR'),
+  })
+
   const pathname = usePathname()
   const navbarRef = useRef<HTMLDivElement>(null)
 
   const [isLoggin, setIsLoggin] = useState<boolean>(isAuth)
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+  const [imgId, setImgId] = useState<string>('')
+
+  useEffect(() => {
+    if (data) {
+      data.forEach((item: DataItem) => {
+        setImgId(item.mediaFileId || '')
+      })
+    }
+  }, [data])
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
@@ -79,7 +103,11 @@ const Navbar = ({ isAuth = false }: NavbarPropType) => {
                     type='button'
                     className={`block text-white text-lg px-4 items-center justify-center ${isAuth ? '' : 'hidden'}`}
                   >
-                    <FaUser />
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/file/download/${imgId}`}
+                      className='border-0.5 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.05)] w-[26px] h-[26px] object-cover rounded-full'
+                      alt=''
+                    />
                   </Link>
                 </div>
                 <div className='flex lg:hidden'>
@@ -216,9 +244,13 @@ const Navbar = ({ isAuth = false }: NavbarPropType) => {
                   <Link
                     href={AUTH_PATH_NAME.DANG_NHAP}
                     type='button'
-                    className='block text-white text-lg pl-[2.5rem] items-center justify-center max-lg:hidden max-md:hidden'
+                    className='block pl-[2.5rem] items-center justify-center max-lg:hidden max-md:hidden'
                   >
-                    <FaUser />
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/file/download/${imgId}`}
+                      className='border-0.5 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.05)] w-[26px] h-[26px] object-cover rounded-full'
+                      alt=''
+                    />
                   </Link>
                 ) : (
                   <Link

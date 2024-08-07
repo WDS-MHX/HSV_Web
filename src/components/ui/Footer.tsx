@@ -1,16 +1,61 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { TbCircleLetterC } from 'react-icons/tb'
 import { GrLocation } from 'react-icons/gr'
 import { FiPhone } from 'react-icons/fi'
 import { HiOutlineMail } from 'react-icons/hi'
+import { useQuery } from '@tanstack/react-query'
+
+import webInfoApi from '@/apis/webinfo'
+
+interface DataItem {
+  _id: string
+  type: string
+  value?: string
+  mediaFileId?: string
+  __v: number
+  createdAt: string
+  updatedAt: string
+}
 
 const Footer = () => {
+  const { data: FooterLogo } = useQuery({
+    queryKey: ['logofooter'],
+    queryFn: () => webInfoApi.getWebInfoByType('LOGO_FOOTER'),
+  })
+
+  const { data: CopyrightLogo } = useQuery({
+    queryKey: ['logocopyright'],
+    queryFn: () => webInfoApi.getWebInfoByType('LOGO_COPYRIGHT'),
+  })
+
+  const [footerImgId, setFooterImgId] = useState<string>('')
+  const [copyrightImgId, setCopyrightImgId] = useState<string>('')
+
+  useEffect(() => {
+    if (FooterLogo) {
+      FooterLogo.forEach((item: DataItem) => {
+        setFooterImgId(item.mediaFileId || '')
+      })
+    }
+  }, [FooterLogo])
+
+  useEffect(() => {
+    if (CopyrightLogo) {
+      CopyrightLogo.forEach((item: DataItem) => {
+        setCopyrightImgId(item.mediaFileId || '')
+      })
+    }
+  }, [FooterLogo])
+
   return (
     <footer className='md:flex justify-center items-center bg-sky-600 h-full p-2.5 w-full'>
       <div className='flex flex-col md:mt-[3.375rem] mt-8 mb-[0.375rem]'>
         <div className='flex gap-16 md:flex-row flex-col'>
           <Image
-            src='/assets/images/footer_logos2.png'
+            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/file/download/${footerImgId}`}
             alt='footer_logos'
             width={360}
             height={99.82}
@@ -37,7 +82,7 @@ const Footer = () => {
         </div>
         <div className='flex gap-[0.625rem] md:mt-12 mt-16 w-full items-center justify-center'>
           <Image
-            src='/assets/images/logoWDS.png'
+            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/file/download/${copyrightImgId}`}
             alt='footer_logos'
             width={51.48}
             height={40}

@@ -26,7 +26,7 @@ const AdminHeader = ({ role }: { role: String }) => {
 
   return (
     <>
-      <div className='max-md:hidden md:flex lg:hidden h-16 bg-sky-600 rounded-b-2xl py-2 px-6 w-full z-50 sticky top-0 justify-between items-center'>
+      <div className='shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] max-md:hidden md:flex lg:hidden h-16 bg-sky-600 rounded-b-2xl py-2 px-6 w-full z-50 sticky top-0 justify-between items-center'>
         <div className='flex gap-16 items-center'>
           <p className='text-white font-semibold text-xl'>{role}</p>
           <ul className='flex gap-2.5'>
@@ -65,20 +65,36 @@ const AdminHeader = ({ role }: { role: String }) => {
             )}
             {/* Superuser */}
             {role == 'Superuser' && (
-              <li
-                className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
-                ${
-                  pathname == SUPERUSER_PATH_NAME.CAP_TAI_KHOAN ||
-                  (pathname.startsWith(SUPERUSER_PATH_NAME.CAP_TAI_KHOAN) && pathname !== '/')
-                    ? 'bg-white text-primaryColor rounded-md'
-                    : 'text-slate-50'
-                }
-              `}
-              >
-                <Link href={SUPERUSER_PATH_NAME.CAP_TAI_KHOAN} className='cursor-pointer'>
-                  Cấp tài khoản
-                </Link>
-              </li>
+              <>
+                <li
+                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 hover:text-primaryColor rounded-md
+                  ${
+                    pathname == SUPERUSER_PATH_NAME.CAP_TAI_KHOAN ||
+                    (pathname.startsWith(SUPERUSER_PATH_NAME.CAP_TAI_KHOAN) && pathname !== '/')
+                      ? 'bg-white text-primaryColor rounded-md'
+                      : 'text-slate-50'
+                  }
+                `}
+                >
+                  <Link href={SUPERUSER_PATH_NAME.CAP_TAI_KHOAN} className='cursor-pointer'>
+                    Cấp tài khoản
+                  </Link>
+                </li>
+                <li
+                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 hover:text-primaryColor rounded-md
+                  ${
+                    pathname == SUPERUSER_PATH_NAME.THONG_TIN_WEBSITE ||
+                    (pathname.startsWith(SUPERUSER_PATH_NAME.THONG_TIN_WEBSITE) && pathname !== '/')
+                      ? 'bg-white text-primaryColor rounded-md'
+                      : 'text-slate-50'
+                  }
+                `}
+                >
+                  <Link href={SUPERUSER_PATH_NAME.THONG_TIN_WEBSITE} className='cursor-pointer'>
+                    Cấp tài khoản
+                  </Link>
+                </li>
+              </>
             )}
           </ul>
         </div>
@@ -167,20 +183,37 @@ const AdminHeader = ({ role }: { role: String }) => {
             )}
             {/* Superuser */}
             {role == 'Superuser' && (
-              <li
-                className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
-                  ${
-                    pathname == SUPERUSER_PATH_NAME.CAP_TAI_KHOAN ||
-                    (pathname.startsWith(SUPERUSER_PATH_NAME.CAP_TAI_KHOAN) && pathname !== '/')
-                      ? 'bg-white text-primaryColor rounded-md'
-                      : 'text-slate-50'
-                  }
-                `}
-              >
-                <Link href={SUPERUSER_PATH_NAME.CAP_TAI_KHOAN} className='cursor-pointer'>
-                  Cấp tài khoản
-                </Link>
-              </li>
+              <>
+                <li
+                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
+                    ${
+                      pathname == SUPERUSER_PATH_NAME.CAP_TAI_KHOAN ||
+                      (pathname.startsWith(SUPERUSER_PATH_NAME.CAP_TAI_KHOAN) && pathname !== '/')
+                        ? 'bg-white text-primaryColor rounded-md'
+                        : 'text-slate-50'
+                    }
+                  `}
+                >
+                  <Link href={SUPERUSER_PATH_NAME.CAP_TAI_KHOAN} className='cursor-pointer'>
+                    Cấp tài khoản
+                  </Link>
+                </li>
+                <li
+                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
+                    ${
+                      pathname == SUPERUSER_PATH_NAME.THONG_TIN_WEBSITE ||
+                      (pathname.startsWith(SUPERUSER_PATH_NAME.THONG_TIN_WEBSITE) &&
+                        pathname !== '/')
+                        ? 'bg-white text-primaryColor rounded-md'
+                        : 'text-slate-50'
+                    }
+                  `}
+                >
+                  <Link href={SUPERUSER_PATH_NAME.THONG_TIN_WEBSITE} className='cursor-pointer'>
+                    Thông tin web
+                  </Link>
+                </li>
+              </>
             )}
           </ul>
           <p

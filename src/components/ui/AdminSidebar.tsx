@@ -62,21 +62,38 @@ const AdminSidebar = ({ role }: { role: String }) => {
           )}
           {/* superuser */}
           {role == 'Superuser' && (
-            <li
-              className={
-                pathname == SUPERUSER_PATH_NAME.CAP_TAI_KHOAN ||
-                (pathname.startsWith(SUPERUSER_PATH_NAME.CAP_TAI_KHOAN) && pathname !== '/')
-                  ? 'bg-white text-primaryColor rounded-md'
-                  : 'text-slate-50'
-              }
-            >
-              <Link
-                href={SUPERUSER_PATH_NAME.CAP_TAI_KHOAN}
-                className='mt-1.5 block py-2.5 px-4 cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-slate-100'
+            <div>
+              <li
+                className={
+                  pathname == SUPERUSER_PATH_NAME.CAP_TAI_KHOAN ||
+                  (pathname.startsWith(SUPERUSER_PATH_NAME.CAP_TAI_KHOAN) && pathname !== '/')
+                    ? 'bg-white text-primaryColor rounded-md'
+                    : 'text-slate-50'
+                }
               >
-                Cấp tài khoản
-              </Link>
-            </li>
+                <Link
+                  href={SUPERUSER_PATH_NAME.CAP_TAI_KHOAN}
+                  className='mt-1.5 block py-2.5 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:text-primaryColor hover:bg-white'
+                >
+                  Cấp tài khoản
+                </Link>
+              </li>
+              <li
+                className={
+                  pathname == SUPERUSER_PATH_NAME.THONG_TIN_WEBSITE ||
+                  (pathname.startsWith(SUPERUSER_PATH_NAME.THONG_TIN_WEBSITE) && pathname !== '/')
+                    ? 'bg-white text-primaryColor rounded-md'
+                    : 'text-slate-50'
+                }
+              >
+                <div
+                  onClick={() => router.push(SUPERUSER_PATH_NAME.THONG_TIN_WEBSITE)}
+                  className='mt-1.5 block py-2.5 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:text-primaryColor hover:bg-white'
+                >
+                  Thông tin web
+                </div>
+              </li>
+            </div>
           )}
         </ul>
       </div>
