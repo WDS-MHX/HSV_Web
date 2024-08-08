@@ -271,7 +271,7 @@ const ChiTietBaiDang = () => {
   } = useForm<CreatePostTemporaryDto>({
     resolver: zodResolver(postSchemaTemporary),
     defaultValues: {
-      title: title ?? 'hello',
+      title: title,
       description: description,
       content: '',
     },
@@ -294,7 +294,6 @@ const ChiTietBaiDang = () => {
   }, [description, setValue])
 
   const onSubmit = (data: CreatePostTemporaryDto) => {
-    console.log('VAOSUBMIT')
     const contentImagesIdArr: Array<string> = contentImageIds.map((item) => item.id)
     if (postTime && data?.title) {
       let dataPost = {
@@ -305,7 +304,6 @@ const ChiTietBaiDang = () => {
         postedDate: postTime,
         _id: postId,
       }
-      console.log('DATAFINAL', dataPost)
       updatePost(dataPost)
     }
   }

@@ -29,7 +29,6 @@ function generateFroalaConfig(
 ) {
   let events: FroalaEvents = {
     'image.beforeUpload': async function (images) {
-      console.log('Before Upload: ', images)
       imageUploadPromise = new Promise(async (resolve, reject) => {
         try {
           let res = await fileApi.uploadImage(images)
@@ -38,7 +37,6 @@ function generateFroalaConfig(
             resolve()
           }
         } catch (error) {
-          console.log(error)
           reject(error)
         }
       })
@@ -62,7 +60,6 @@ function generateFroalaConfig(
         if (imageUploadPromise) {
           await imageUploadPromise
         }
-        console.log('Inserted: ', $img[0].currentSrc, response)
         let url: string = $img[0].currentSrc
         let parts: string[] = url.split('/')
         let idUrl: string = parts.pop() || ''
@@ -120,12 +117,9 @@ function generateFroalaConfig(
           await imageUploadPromise
         }
         if (imageRemovePromise) {
-          console.log('CHAYVAOIFREMOVE')
           await imageRemovePromise
         }
-        console.log('CHAYVAOLENHREMOVE')
         let confirmResult = await imageRemovePromise
-        console.log('confirmResult', confirmResult, imageRemovePromise)
         let idRemove = undefined
         let url: string = $img[0].currentSrc
         let parts: string[] = url.split('/')

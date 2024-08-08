@@ -69,7 +69,6 @@ const CapTaiKhoan = () => {
     mutationFn: adminApi.createAdmin,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['createAdmin'] })
-      console.log('success')
       setOpenDialog(false)
       toast.success('Thêm admin thành công!')
       reloadListAdmin()
@@ -79,7 +78,6 @@ const CapTaiKhoan = () => {
     },
   })
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log('VAOONSUBMIT')
     const data = {
       name: values.name,
       phoneNumber: values.phoneNumber,

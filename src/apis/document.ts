@@ -69,7 +69,6 @@ class DocumentApi {
   }
 
   async createDocument(data: CreateDocumentDTO) {
-    console.log('FILENETWORK', data.file[0])
     const formData = new FormData()
     formData.append('docJson', data.docJson)
     formData.append('file', data.file[0])

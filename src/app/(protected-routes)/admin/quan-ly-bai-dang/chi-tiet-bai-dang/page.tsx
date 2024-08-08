@@ -181,7 +181,6 @@ const TaoBaiDang = () => {
   })
 
   const onSubmit = (data: CreatePostTemporaryDto) => {
-    console.log('VAOSUBMIT')
     const contentImagesIdArr: Array<string> = contentImageIds.map((item) => item.id)
     if (postTime) {
       let dataPost = {
@@ -192,7 +191,6 @@ const TaoBaiDang = () => {
         categrory: SelectedCategories,
         showPost: true,
       }
-      console.log('DATAFINAL', dataPost)
       createPost(dataPost)
     }
   }
