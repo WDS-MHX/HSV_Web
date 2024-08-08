@@ -133,11 +133,6 @@ const AdminHeader = ({ role }: { role: String }) => {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             />
           </div>
-          {role == 'Admin' && (
-            <button className='py-2 px-8 rounded-md text-white font-medium bg-sky-600 h-full'>
-              Tạo bài viết mới
-            </button>
-          )}
         </div>
         <div
           className={`

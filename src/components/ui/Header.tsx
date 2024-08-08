@@ -29,6 +29,7 @@ const Header = ({ isAuth = false }: HeaderPropType) => {
 
   const [imgId, setImgId] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isError, setIsError] = useState<boolean>(false)
 
   useEffect(() => {
     if (data) {
@@ -41,17 +42,22 @@ const Header = ({ isAuth = false }: HeaderPropType) => {
   return (
     <header className='max-w-6xl w-full mx-auto'>
       <div className='relative w-full'>
-        {isLoading && (
-          <div className='w-full rounded-md h-[120px] bg-gray-200 animate-pulse flex items-center'>
+        {(isError || isLoading) && (
+          <div
+            className={`w-full rounded-md h-[120px] bg-gray-200 ${isError ? '' : 'animate-pulse'} flex items-center`}
+          >
             <AiFillPicture className='m-auto text-4xl text-gray-300' />
           </div>
         )}
         <img
-          src={data ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/file/download/${imgId}` : ''}
+          src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/file/download/${imgId}`}
           alt='header_banner'
           onLoad={() => setIsLoading(false)}
-          onError={() => setIsLoading(false)}
-          className={`object-cover max-h-[120px] w-full ${isLoading ? 'hidden' : ''}`}
+          onError={() => {
+            setIsLoading(true)
+            setIsError(true)
+          }}
+          className={`object-cover max-h-[120px] w-full ${isLoading || isError ? 'hidden' : ''}`}
         />
       </div>
       <Navbar isAuth={isAuth} />

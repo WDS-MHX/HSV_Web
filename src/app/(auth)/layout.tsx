@@ -29,6 +29,7 @@ export default function Layout({
   })
 
   const [imgId, setImgId] = useState<string>('')
+  const [isError, setIsError] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
@@ -49,17 +50,22 @@ export default function Layout({
       </div>
 
       <div className='items-center bg-white md:max-w-[470px] px-8 py-16 m-auto mt-[2%]'>
-        <div
-          className={`border-0.5 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.05)] w-[100px] h-[100px] rounded-full bg-gray-200 animate-pulse flex items-center m-auto ${isLoading ? '' : 'hidden'}`}
-        >
-          <AiFillPicture className='m-auto text-4xl text-gray-300' />
-        </div>
+        {(isError || isLoading) && (
+          <div
+            className={`border-0.5 bg-gray-200 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.05)] w-[100px] h-[100px] object-cover rounded-full m-auto ${isError ? '' : 'animate-pulse'} flex items-center`}
+          >
+            <AiFillPicture className='m-auto text-base text-gray-300' />
+          </div>
+        )}
         <img
           src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/file/download/${imgId}`}
           alt=''
-          className={`border-0.5 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.05)] w-[100px] h-[100px] rounded-full object-cover m-auto ${isLoading ? 'hidden' : ''}`}
+          className={`border-0.5 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.05)] w-[100px] h-[100px] rounded-full object-cover m-auto ${isError || isLoading ? 'hidden' : ''}`}
           onLoad={() => setIsLoading(false)}
-          onError={() => setIsLoading(false)}
+          onError={() => {
+            setIsError(true)
+            setIsLoading(true)
+          }}
         />
         {children}
       </div>

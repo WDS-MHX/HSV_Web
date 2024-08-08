@@ -8,6 +8,7 @@ import { useState, useEffect, useRef } from 'react'
 import webInfoApi from '@/apis/webinfo'
 import { useQuery } from '@tanstack/react-query'
 import { PATH_NAME, AUTH_PATH_NAME } from '@/configs'
+import { AiFillPicture } from 'react-icons/ai'
 
 interface DataItem {
   _id: string
@@ -34,6 +35,7 @@ const Navbar = ({ isAuth = false }: NavbarPropType) => {
 
   const [isLoggin, setIsLoggin] = useState<boolean>(isAuth)
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+  const [isError, setIsError] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [imgId, setImgId] = useState<string>('')
 
@@ -104,12 +106,22 @@ const Navbar = ({ isAuth = false }: NavbarPropType) => {
                     type='button'
                     className={`block text-white text-lg px-4 items-center justify-center ${isAuth ? '' : 'hidden'}`}
                   >
+                    {(isError || isLoading) && (
+                      <div
+                        className={`border-0.5 bg-gray-200 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.05)] w-[26px] h-[26px] object-cover rounded-full ${isError ? '' : 'animate-pulse'} flex items-center`}
+                      >
+                        <AiFillPicture className='m-auto text-base text-gray-300' />
+                      </div>
+                    )}
                     <img
                       src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/file/download/${imgId}`}
-                      className={`border-0.5 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.05)] w-[26px] h-[26px] object-cover rounded-full ${isLoading ? 'hidden' : ''}`}
+                      className={`border-0.5 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.05)] w-[26px] h-[26px] object-cover rounded-full ${isError || isLoading ? 'hidden' : ''}`}
                       alt=''
                       onLoad={() => setIsLoading(false)}
-                      onError={() => setIsLoading(false)}
+                      onError={() => {
+                        setIsError(true)
+                        setIsLoading(true)
+                      }}
                     />
                   </Link>
                 </div>
@@ -249,12 +261,22 @@ const Navbar = ({ isAuth = false }: NavbarPropType) => {
                     type='button'
                     className='block pl-[2.5rem] items-center justify-center max-lg:hidden max-md:hidden'
                   >
+                    {(isError || isLoading) && (
+                      <div
+                        className={`border-0.5 bg-gray-200 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.05)] w-[26px] h-[26px] object-cover rounded-full ${isError ? '' : 'animate-pulse'} flex items-center`}
+                      >
+                        <AiFillPicture className='m-auto text-base text-gray-300' />
+                      </div>
+                    )}
                     <img
                       src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/file/download/${imgId}`}
-                      className={`border-0.5 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.05)] w-[26px] h-[26px] object-cover rounded-full ${isLoading ? 'hidden' : ''}`}
+                      className={`border-0.5 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.05)] w-[26px] h-[26px] object-cover rounded-full ${isError || isLoading ? 'hidden' : ''}`}
                       alt=''
                       onLoad={() => setIsLoading(false)}
-                      onError={() => setIsLoading(false)}
+                      onError={() => {
+                        setIsError(true)
+                        setIsLoading(true)
+                      }}
                     />
                   </Link>
                 ) : (
