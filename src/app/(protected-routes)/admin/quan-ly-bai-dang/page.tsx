@@ -227,12 +227,6 @@ const Quanlybaidang = () => {
             handleHide={handleHide}
             className='max-md:hidden'
           />
-          <button
-            onClick={navigateToCreatePost}
-            className='py-2.5 px-8 rounded-md text-white font-medium bg-sky-600 h-full max-md:hidden'
-          >
-            Tạo bài viết mới
-          </button>
         </div>
         <ResultPage
           isAdmin={true}
@@ -250,7 +244,10 @@ const Quanlybaidang = () => {
         {/* 
           Tạo bài viết mới button and Đã đăng & Chưa đăng & Ẩn post tabs in mobile
          */}
-        <div className='group fixed right-4 bottom-[92px] p-4 rounded-full bg-white hover:bg-sky-600 border border-sky-600 shadow-[0px_2px_20px_0px_rgba(2,132,199,0.3)] cursor-pointer md:hidden'>
+        <div
+          onClick={navigateToCreatePost}
+          className='group fixed right-4 bottom-[92px] p-4 rounded-full bg-white hover:bg-sky-600 border border-sky-600 shadow-[0px_2px_20px_0px_rgba(2,132,199,0.3)] cursor-pointer md:hidden'
+        >
           <FiPlus className='text-sky-600 group-hover:text-white text-[32px]' />
         </div>
         <PostTabs

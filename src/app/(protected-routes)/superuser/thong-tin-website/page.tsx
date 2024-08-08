@@ -31,7 +31,7 @@ const ThongTinWeb = () => {
     onSuccess: () => {
       toast.success('Chỉnh sửa thông tin thành công!')
 
-      queryClient.invalidateQueries({ queryKey: ['webinfo'] })
+      queryClient.invalidateQueries({ queryKey: ['allinfo'] })
     },
     onError: (error) => {
       toast.error(error.message)

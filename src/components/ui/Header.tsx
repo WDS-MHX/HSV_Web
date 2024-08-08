@@ -51,7 +51,7 @@ const Header = ({ isAuth = false }: HeaderPropType) => {
           alt='header_banner'
           onLoad={() => setIsLoading(false)}
           onError={() => setIsLoading(false)}
-          className={`object-contain h-auto w-full ${isLoading ? 'hidden' : ''}`}
+          className={`object-cover max-h-[120px] w-full ${isLoading ? 'hidden' : ''}`}
         />
       </div>
       <Navbar isAuth={isAuth} />
