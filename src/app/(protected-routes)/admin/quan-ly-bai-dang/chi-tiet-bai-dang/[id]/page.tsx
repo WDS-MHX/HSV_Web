@@ -184,7 +184,6 @@ const ChiTietBaiDang = () => {
   })
 
   const onSubmit = () => {
-    console.log('VAOSUBMIT')
     const contentImagesIdArr: Array<string> = contentImageIds.map((item) => item.id)
     if (postTime && data?.title) {
       let dataPost = {
@@ -196,7 +195,6 @@ const ChiTietBaiDang = () => {
         content: content,
         description: data.description ?? '',
       }
-      console.log('DATAFINAL', dataPost)
       updatePost(dataPost)
     }
   }

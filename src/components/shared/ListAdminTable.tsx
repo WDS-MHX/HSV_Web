@@ -23,17 +23,13 @@ import { Button } from './button'
 import React, { useEffect, useMemo, useState } from 'react'
 import Pagination from './Pagination'
 import { Admin } from '@/models'
-import { infer, map, object, string, z } from 'zod'
+import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { X } from 'lucide-react'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { adminApi } from '@/apis'
-import { log, table } from 'console'
-import { headers } from 'next/headers'
-import { type } from 'os'
 import { toast } from 'react-toastify'
-import { min } from 'date-fns'
 const formSchema = z.object({
   name: z.string().min(1, 'Vui long nhap ho va ten'),
   phoneNumber: z
@@ -58,12 +54,10 @@ export default function ListAdminTable({
     mutationFn: adminApi.updateAdmin,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['updateAdmin'] })
-      console.log('success')
       setOpenDialog(false)
       reloadListAdmin()
       setCheckUpdate(true)
       toast.success('Cập nhật thành công!')
-      console.log('PREVIOUSPAGE', previousPage)
     },
     onError: (error) => {
       toast.error(error.message)
@@ -76,7 +70,6 @@ export default function ListAdminTable({
     }
   }, [checkUpdate])
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log('VAOONSUBMITTABLE')
     const data = {
       name: values.name,
       phoneNumber: values.phoneNumber,
@@ -227,7 +220,6 @@ export default function ListAdminTable({
             return (
               <tr className='sticky z-10 h-fit' key={header.id}>
                 {header.headers.map((column) => {
-                  console.log(column.column.columnDef.header, column.column.columnDef.size)
                   return (
                     <th
                       className={`${

@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { GoArrowLeft } from 'react-icons/go'
 import webInfoApi from '@/apis/webinfo'
 import { useQuery } from '@tanstack/react-query'
+import { AiFillPicture } from 'react-icons/ai'
 
 interface DataItem {
   _id: string
@@ -23,11 +24,12 @@ export default function Layout({
   children: React.ReactNode
 }>) {
   const { data } = useQuery({
-    queryKey: ['webinfo'],
+    queryKey: ['avatar'],
     queryFn: () => webInfoApi.getWebInfoByType('LOGO_AVATAR'),
   })
 
   const [imgId, setImgId] = useState<string>('')
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
     if (data) {
@@ -47,10 +49,17 @@ export default function Layout({
       </div>
 
       <div className='items-center bg-white md:max-w-[470px] px-8 py-16 m-auto mt-[2%]'>
+        <div
+          className={`border-0.5 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.05)] w-[100px] h-[100px] rounded-full bg-gray-200 animate-pulse flex items-center m-auto ${isLoading ? '' : 'hidden'}`}
+        >
+          <AiFillPicture className='m-auto text-4xl text-gray-300' />
+        </div>
         <img
           src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/file/download/${imgId}`}
           alt=''
-          className={`border-0.5 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.05)] w-[100px] h-[100px] rounded-full object-cover m-auto`}
+          className={`border-0.5 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.05)] w-[100px] h-[100px] rounded-full object-cover m-auto ${isLoading ? 'hidden' : ''}`}
+          onLoad={() => setIsLoading(false)}
+          onError={() => setIsLoading(false)}
         />
         {children}
       </div>

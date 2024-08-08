@@ -103,7 +103,6 @@ export default function DocumentsTable({
     mutationFn: documentApi.createDocument,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['createDocument'] })
-      console.log('success')
       toast.success('Thêm document thành công!')
       reloadDocument()
       setOpenDialog(false)
@@ -113,7 +112,6 @@ export default function DocumentsTable({
     },
   })
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log('VAOONSUBMIT', values.file)
     const dataJson = JSON.stringify({
       docNumber: Number(values.docNumber),
       title: values.title,
@@ -137,7 +135,6 @@ export default function DocumentsTable({
   const [columnFilters, setColumnFilters] = useState<any>([])
   const [category, setCategory] = useState<string>('')
   const [query, setQuery] = useState<string>('')
-  console.log('columnfilter', columnFilters)
   const columnHelper = createColumnHelper<Document>()
   const datalength = documents.length
   const searchInput = columnFilters.find((f: any) => f.id === 'title')?.value || ''
@@ -157,16 +154,12 @@ export default function DocumentsTable({
     setColumnFilters((prev: any) => {
       let tempArr = []
       const categorySelect = prev.find((filter: any) => filter.id === 'category')
-      console.log('categorySelect', categorySelect)
       if (!categorySelect) {
-        console.log('VAOcategorySelectTrue')
         tempArr = prev.concat({
           id: 'category',
           value: category,
         })
-        console.log('tempArr', tempArr)
       } else {
-        console.log('VAOcategorySelectFalse')
         tempArr = prev.map((f: any) =>
           f.id === 'category'
             ? {
@@ -176,9 +169,7 @@ export default function DocumentsTable({
             : f,
         )
       }
-      console.log('EMPTY', '')
       const searchQuery = prev.find((filter: any) => filter.id === 'title')
-      console.log('SEARCHQURYCOUT', !searchQuery)
       if (!searchQuery) {
         tempArr = tempArr.concat({
           id: 'title',
@@ -194,7 +185,6 @@ export default function DocumentsTable({
             : f,
         )
       }
-      console.log('PREVFILTER', tempArr)
       return tempArr
     })
   }
@@ -214,9 +204,6 @@ export default function DocumentsTable({
         ),
         filterFn: (row, columnId, filterCategory) => {
           const categoryRow = row.original.categrory
-          console.log('filterCategoryFILTER', filterCategory)
-          console.log('ROWFILTER', row)
-          console.log('categoryRow', categoryRow)
           if (filterCategory == '') {
             return true
           }
@@ -465,7 +452,6 @@ export default function DocumentsTable({
             return (
               <tr className='sticky z-10 h-fit' key={header.id}>
                 {header.headers.map((column) => {
-                  console.log(column.column.columnDef.header, column.column.columnDef.size)
                   return (
                     <th
                       className={`${

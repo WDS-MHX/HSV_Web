@@ -27,7 +27,6 @@ export default function ForgetPassword() {
       router.push(AUTH_PATH_NAME.RESET_MAU_KHAU)
     },
     onError: (error) => {
-      console.error('Send OTP failed!:', error)
       toast.error('Không tồn tại email')
     },
   })

@@ -34,6 +34,7 @@ const Navbar = ({ isAuth = false }: NavbarPropType) => {
 
   const [isLoggin, setIsLoggin] = useState<boolean>(isAuth)
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [imgId, setImgId] = useState<string>('')
 
   useEffect(() => {
@@ -105,8 +106,10 @@ const Navbar = ({ isAuth = false }: NavbarPropType) => {
                   >
                     <img
                       src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/file/download/${imgId}`}
-                      className='border-0.5 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.05)] w-[26px] h-[26px] object-cover rounded-full'
+                      className={`border-0.5 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.05)] w-[26px] h-[26px] object-cover rounded-full ${isLoading ? 'hidden' : ''}`}
                       alt=''
+                      onLoad={() => setIsLoading(false)}
+                      onError={() => setIsLoading(false)}
                     />
                   </Link>
                 </div>
@@ -248,8 +251,10 @@ const Navbar = ({ isAuth = false }: NavbarPropType) => {
                   >
                     <img
                       src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/file/download/${imgId}`}
-                      className='border-0.5 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.05)] w-[26px] h-[26px] object-cover rounded-full'
+                      className={`border-0.5 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.05)] w-[26px] h-[26px] object-cover rounded-full ${isLoading ? 'hidden' : ''}`}
                       alt=''
+                      onLoad={() => setIsLoading(false)}
+                      onError={() => setIsLoading(false)}
                     />
                   </Link>
                 ) : (

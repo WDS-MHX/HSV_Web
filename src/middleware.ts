@@ -14,8 +14,6 @@ export default async function middleware(request: NextRequest) {
   const mainPath = '/' + pathName.split('/')[1]
   const mainPathWithoutQuery = mainPath.split('?')[0]
 
-  console.log(pathName)
-
   let token = request.cookies.get('ACCESS_TOKEN')?.value
 
   const adminPath = Object.values(ADMIN_PATH_NAME_REGEX)

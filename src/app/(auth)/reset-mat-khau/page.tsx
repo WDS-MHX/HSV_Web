@@ -66,7 +66,6 @@ export default function ResetPassword() {
       toast.success('Đổi mật khẩu thành công, yêu cầu đăng nhập lại')
     },
     onError: (error) => {
-      console.error('Reset password failed!:', error)
       toast.error(error.message)
     },
   })
@@ -77,7 +76,6 @@ export default function ResetPassword() {
       toast.success('OTP đã được gửi lại')
     },
     onError: (error) => {
-      console.error('Resend OTP failed:', error)
       toast.error(error.message)
     },
   })

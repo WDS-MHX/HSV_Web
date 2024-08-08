@@ -26,7 +26,6 @@ function Pagination({
 }: PaginationType) {
   let pageCount = Math.ceil(notilength / itemsPerPage)
   const handlePageClick = (event: { selected: number }) => {
-    console.log('PAGESELECT', event.selected)
     if (table) {
       table.setPageIndex(event.selected)
       if (setPreviousPage) {

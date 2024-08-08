@@ -33,8 +33,9 @@ const AdminHeader = ({ role }: { role: String }) => {
             {/* Admin */}
             {role == 'Admin' && (
               <div className='flex gap-2.5'>
-                <li
-                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 hover:text-primaryColor rounded-md
+                <Link href={ADMIN_PATH_NAME.QUAN_LY_BAI_DANG} className='cursor-pointer'>
+                  <li
+                    className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 hover:text-primaryColor rounded-md
                 ${
                   pathname == ADMIN_PATH_NAME.QUAN_LY_BAI_DANG ||
                   (pathname.startsWith(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG) && pathname !== '/')
@@ -42,13 +43,13 @@ const AdminHeader = ({ role }: { role: String }) => {
                     : 'text-slate-50'
                 }
               `}
-                >
-                  <Link href={ADMIN_PATH_NAME.QUAN_LY_BAI_DANG} className='cursor-pointer'>
+                  >
                     Quản lý bài đăng
-                  </Link>
-                </li>
-                <li
-                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 hover:text-primaryColor rounded-md
+                  </li>
+                </Link>
+                <Link href={ADMIN_PATH_NAME.QUAN_LY_TAI_LIEU} className='cursor-pointer'>
+                  <li
+                    className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 hover:text-primaryColor rounded-md
                 ${
                   pathname == ADMIN_PATH_NAME.QUAN_LY_TAI_LIEU ||
                   (pathname.startsWith(ADMIN_PATH_NAME.QUAN_LY_TAI_LIEU) && pathname !== '/')
@@ -56,18 +57,18 @@ const AdminHeader = ({ role }: { role: String }) => {
                     : 'text-slate-50'
                 }
               `}
-                >
-                  <Link href={ADMIN_PATH_NAME.QUAN_LY_TAI_LIEU} className='cursor-pointer'>
+                  >
                     Quản lý tài liệu
-                  </Link>
-                </li>
+                  </li>
+                </Link>
               </div>
             )}
             {/* Superuser */}
             {role == 'Superuser' && (
               <>
-                <li
-                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 hover:text-primaryColor rounded-md
+                <Link href={SUPERUSER_PATH_NAME.CAP_TAI_KHOAN} className='cursor-pointer'>
+                  <li
+                    className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 hover:text-primaryColor rounded-md
                   ${
                     pathname == SUPERUSER_PATH_NAME.CAP_TAI_KHOAN ||
                     (pathname.startsWith(SUPERUSER_PATH_NAME.CAP_TAI_KHOAN) && pathname !== '/')
@@ -75,13 +76,13 @@ const AdminHeader = ({ role }: { role: String }) => {
                       : 'text-slate-50'
                   }
                 `}
-                >
-                  <Link href={SUPERUSER_PATH_NAME.CAP_TAI_KHOAN} className='cursor-pointer'>
+                  >
                     Cấp tài khoản
-                  </Link>
-                </li>
-                <li
-                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 hover:text-primaryColor rounded-md
+                  </li>
+                </Link>
+                <Link href={SUPERUSER_PATH_NAME.THONG_TIN_WEBSITE} className='cursor-pointer'>
+                  <li
+                    className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 hover:text-primaryColor rounded-md
                   ${
                     pathname == SUPERUSER_PATH_NAME.THONG_TIN_WEBSITE ||
                     (pathname.startsWith(SUPERUSER_PATH_NAME.THONG_TIN_WEBSITE) && pathname !== '/')
@@ -89,11 +90,10 @@ const AdminHeader = ({ role }: { role: String }) => {
                       : 'text-slate-50'
                   }
                 `}
-                >
-                  <Link href={SUPERUSER_PATH_NAME.THONG_TIN_WEBSITE} className='cursor-pointer'>
-                    Cấp tài khoản
-                  </Link>
-                </li>
+                  >
+                    Thông tin web
+                  </li>
+                </Link>
               </>
             )}
           </ul>
@@ -151,8 +151,9 @@ const AdminHeader = ({ role }: { role: String }) => {
             {/* Admin */}
             {role == 'Admin' && (
               <div className='flex flex-col gap-2.5'>
-                <li
-                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 hover:text-primaryColor rounded-md
+                <Link href={ADMIN_PATH_NAME.QUAN_LY_BAI_DANG} className='cursor-pointer'>
+                  <li
+                    className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 hover:text-primaryColor rounded-md
                   ${
                     pathname == ADMIN_PATH_NAME.QUAN_LY_BAI_DANG ||
                     (pathname.startsWith(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG) && pathname !== '/')
@@ -160,13 +161,13 @@ const AdminHeader = ({ role }: { role: String }) => {
                       : 'text-slate-50'
                   }
                 `}
-                >
-                  <Link href={ADMIN_PATH_NAME.QUAN_LY_BAI_DANG} className='cursor-pointer'>
+                  >
                     Quản lý bài đăng
-                  </Link>
-                </li>
-                <li
-                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 hover:text-primaryColor rounded-md
+                  </li>
+                </Link>
+                <Link href={ADMIN_PATH_NAME.QUAN_LY_TAI_LIEU} className='cursor-pointer'>
+                  <li
+                    className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 hover:text-primaryColor rounded-md
                   ${
                     pathname == ADMIN_PATH_NAME.QUAN_LY_TAI_LIEU ||
                     (pathname.startsWith(ADMIN_PATH_NAME.QUAN_LY_TAI_LIEU) && pathname !== '/')
@@ -174,18 +175,18 @@ const AdminHeader = ({ role }: { role: String }) => {
                       : 'text-slate-50'
                   }
                 `}
-                >
-                  <Link href={ADMIN_PATH_NAME.QUAN_LY_TAI_LIEU} className='cursor-pointer'>
+                  >
                     Quản lý tài liệu
-                  </Link>
-                </li>
+                  </li>
+                </Link>
               </div>
             )}
             {/* Superuser */}
             {role == 'Superuser' && (
               <>
-                <li
-                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
+                <Link href={SUPERUSER_PATH_NAME.CAP_TAI_KHOAN} className='cursor-pointer'>
+                  <li
+                    className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:text-primaryColor hover:bg-slate-100 rounded-md
                     ${
                       pathname == SUPERUSER_PATH_NAME.CAP_TAI_KHOAN ||
                       (pathname.startsWith(SUPERUSER_PATH_NAME.CAP_TAI_KHOAN) && pathname !== '/')
@@ -193,13 +194,13 @@ const AdminHeader = ({ role }: { role: String }) => {
                         : 'text-slate-50'
                     }
                   `}
-                >
-                  <Link href={SUPERUSER_PATH_NAME.CAP_TAI_KHOAN} className='cursor-pointer'>
+                  >
                     Cấp tài khoản
-                  </Link>
-                </li>
-                <li
-                  className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 rounded-md
+                  </li>
+                </Link>
+                <Link href={SUPERUSER_PATH_NAME.THONG_TIN_WEBSITE} className='cursor-pointer'>
+                  <li
+                    className={` py-2 px-4 transition-colors duration-300 hover:font-medium hover:bg-slate-100 hover:text-primaryColor rounded-md
                     ${
                       pathname == SUPERUSER_PATH_NAME.THONG_TIN_WEBSITE ||
                       (pathname.startsWith(SUPERUSER_PATH_NAME.THONG_TIN_WEBSITE) &&
@@ -208,11 +209,10 @@ const AdminHeader = ({ role }: { role: String }) => {
                         : 'text-slate-50'
                     }
                   `}
-                >
-                  <Link href={SUPERUSER_PATH_NAME.THONG_TIN_WEBSITE} className='cursor-pointer'>
+                  >
                     Thông tin web
-                  </Link>
-                </li>
+                  </li>
+                </Link>
               </>
             )}
           </ul>

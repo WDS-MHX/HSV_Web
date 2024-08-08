@@ -22,14 +22,13 @@ const ThongTinWeb = () => {
   const queryClient = useQueryClient()
 
   const { data } = useQuery({
-    queryKey: ['webinfo'],
+    queryKey: ['allinfo'],
     queryFn: () => webInfoApi.getAllWebInfo(),
   })
 
   const updateImgWebInfo = useMutation({
     mutationFn: webInfoApi.updateImgWebinfo,
     onSuccess: () => {
-      console.log('success')
       toast.success('Chỉnh sửa thông tin thành công!')
 
       queryClient.invalidateQueries({ queryKey: ['webinfo'] })
@@ -42,7 +41,6 @@ const ThongTinWeb = () => {
   const updateWebInfo = useMutation({
     mutationFn: webInfoApi.updateWebInfo,
     onSuccess: () => {
-      console.log('success')
       toast.success('Chỉnh sửa thông tin thành công!')
 
       queryClient.invalidateQueries({ queryKey: ['webinfo'] })

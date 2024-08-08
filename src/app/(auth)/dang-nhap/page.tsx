@@ -34,7 +34,6 @@ export default function AdminLogin() {
   const mutation = useMutation({
     mutationFn: ({ email, password }: ILoginFormInputs) => authApi.logIn(email, password),
     onSuccess: (data) => {
-      console.log('Login successful:', data)
       router.push('/admin/redirect')
     },
     onError: (error: AxiosError) => {
