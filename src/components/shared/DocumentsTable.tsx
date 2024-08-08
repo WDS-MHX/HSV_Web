@@ -179,7 +179,7 @@ export default function DocumentsTable({
           console.log('filterCategoryFILTER', filterCategory)
           console.log('ROWFILTER', row)
           console.log('categoryRow', categoryRow)
-          if (filterCategory == '') {
+          if (filterCategory == 'All') {
             return true
           }
           return filterCategory == categoryRow
@@ -198,6 +198,31 @@ export default function DocumentsTable({
         filterFn: 'includesString',
         size: 440,
         maxSize: 540,
+      }),
+      columnHelper.accessor((row) => `${row.categrory}`, {
+        id: 'categrory',
+        header: 'Danh mục',
+        cell: (info) => (
+          <span>
+            {info.getValue() == 'BAO_CAO'
+              ? 'Báo cáo'
+              : info.getValue() == 'CHUONG_TRINH'
+                ? 'Chương trình'
+                : info.getValue() == 'CONG_VAN'
+                  ? 'Công văn'
+                  : info.getValue() == 'HUONG_DAN'
+                    ? 'Hướng dẫn'
+                    : info.getValue() == 'KE_HOACH'
+                      ? 'Kế hoạch'
+                      : info.getValue() == 'KE_HOACH_LIEN_TICH'
+                        ? 'Kế hoạch liên tịch'
+                        : info.getValue() == 'QUYET_DINH'
+                          ? 'Quyết định'
+                          : info.getValue() == 'THONG_BAO'
+                            ? 'Thông báo'
+                            : 'Thư mời'}
+          </span>
+        ),
       }),
       columnHelper.accessor((row) => `${row.mediaFileId}`, {
         id: 'Download',
