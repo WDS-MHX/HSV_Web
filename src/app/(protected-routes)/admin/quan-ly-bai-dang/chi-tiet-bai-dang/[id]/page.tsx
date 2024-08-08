@@ -271,7 +271,7 @@ const ChiTietBaiDang = () => {
   } = useForm<CreatePostTemporaryDto>({
     resolver: zodResolver(postSchemaTemporary),
     defaultValues: {
-      title: title ?? 'hello',
+      title: title,
       description: description,
       content: '',
     },
