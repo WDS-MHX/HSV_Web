@@ -9,7 +9,7 @@ import {
   getPaginationRowModel,
 } from '@tanstack/react-table'
 import { PiDownloadSimpleBold, PiTrashBold } from 'react-icons/pi'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Pagination from './Pagination'
 import {
   Select,
@@ -76,7 +76,12 @@ const formSchema = z.object({
   categrory: z.string().min(1, 'Vui lòng chọn thể loại'),
   issueDate: z.date(),
   reference: z.string().min(1, 'Vui lòng nhập ký hiệu'),
-  file: typeof window === 'undefined' ? z.any() : z.instanceof(FileList),
+  file:
+    typeof window === 'undefined'
+      ? z.any()
+      : z
+          .instanceof(FileList)
+          .refine((files) => files !== null && files.length > 0, 'Tài liệu không được để trống'),
 })
 
 export default function DocumentsTable({
@@ -105,6 +110,7 @@ export default function DocumentsTable({
       queryClient.invalidateQueries({ queryKey: ['createDocument'] })
       console.log('success')
       toast.success('Thêm document thành công!')
+      form.reset()
       reloadDocument()
       setOpenDialog(false)
     },
@@ -125,13 +131,14 @@ export default function DocumentsTable({
       docJson: dataJson,
       file: values.file,
     }
+    console.log('DATA', data)
     createDocument.mutate(data)
   }
   const downloadFile = async (id: string) => {
     const res = fileApi.downloadFile(id)
   }
   const deleteDocument = async (id: string) => {
-    const res = documentApi.deleteDocument(id)
+    const res = await documentApi.deleteDocument(id)
     reloadDocument()
   }
   const [columnFilters, setColumnFilters] = useState<any>([])
@@ -139,7 +146,7 @@ export default function DocumentsTable({
   const [query, setQuery] = useState<string>('')
   console.log('columnfilter', columnFilters)
   const columnHelper = createColumnHelper<Document>()
-  const datalength = documents.length
+  const [datalength, setDataLength] = useState<number>(documents.length)
   const searchInput = columnFilters.find((f: any) => f.id === 'title')?.value || ''
   const handleInput = (event: any) => {
     setQuery(event.target.value)
@@ -153,51 +160,6 @@ export default function DocumentsTable({
           value,
         }),
     )
-  const onFilterCategoryChange = () => {
-    setColumnFilters((prev: any) => {
-      let tempArr = []
-      const categorySelect = prev.find((filter: any) => filter.id === 'category')
-      console.log('categorySelect', categorySelect)
-      if (!categorySelect) {
-        console.log('VAOcategorySelectTrue')
-        tempArr = prev.concat({
-          id: 'category',
-          value: category,
-        })
-        console.log('tempArr', tempArr)
-      } else {
-        console.log('VAOcategorySelectFalse')
-        tempArr = prev.map((f: any) =>
-          f.id === 'category'
-            ? {
-                ...f,
-                value: category,
-              }
-            : f,
-        )
-      }
-      console.log('EMPTY', '')
-      const searchQuery = prev.find((filter: any) => filter.id === 'title')
-      console.log('SEARCHQURYCOUT', !searchQuery)
-      if (!searchQuery) {
-        tempArr = tempArr.concat({
-          id: 'title',
-          value: query,
-        })
-      } else {
-        tempArr = tempArr.map((f: any) =>
-          f.id === 'title'
-            ? {
-                ...f,
-                value: query,
-              }
-            : f,
-        )
-      }
-      console.log('PREVFILTER', tempArr)
-      return tempArr
-    })
-  }
   // eslint-disable-next-line
   const columnDef = useMemo(() => {
     const columns = [
@@ -300,6 +262,74 @@ export default function DocumentsTable({
     },
     columnResizeMode: 'onChange',
   })
+
+  const onFilterCategoryChange = () => {
+    setColumnFilters((prev: any) => {
+      // let tempArr:any = []
+      // const categorySelect = prev.find((filter: any) => filter.id === 'category')
+      // if (!categorySelect) {
+      //   tempArr = prev.concat({
+      //     id: 'category',
+      //     value: category,
+      //   })
+      //   console.log('tempArr', tempArr)
+      // } else {
+      //   tempArr = prev.map((f: any) =>
+      //     f.id === 'category'
+      //       ? {
+      //           ...f,
+      //           value: category,
+      //         }
+      //       : f,
+      //   )
+      // }
+      console.log('EMPTY', '')
+      const searchQuery = prev.find((filter: any) => filter.id === 'title')
+      if (!searchQuery) {
+        return prev.concat({
+          id: 'title',
+          value: query,
+        })
+      } else {
+        return prev.map((f: any) =>
+          f.id === 'title'
+            ? {
+                ...f,
+                value: query,
+              }
+            : f,
+        )
+      }
+    })
+    // let getDataLengthFilter = tableInstance.getFilteredRowModel().rows.length;
+    // setDataLength(getDataLengthFilter)
+  }
+  useEffect(() => {
+    if (category != '') {
+      setColumnFilters((prev: any) => {
+        const categorySelect = prev.find((filter: any) => filter.id === 'category')?.value
+        if (!categorySelect) {
+          return prev.concat({
+            id: 'category',
+            value: category,
+          })
+        } else {
+          return prev.map((f: any) =>
+            f.id === 'category'
+              ? {
+                  ...f,
+                  value: category,
+                }
+              : f,
+          )
+        }
+      })
+    }
+  }, [category])
+  useEffect(() => {
+    setDataLength(tableInstance.getFilteredRowModel().rows.length)
+  }, [tableInstance.getFilteredRowModel().rows.length, columnFilters, query, category])
+
   return (
     <div className='flex flex-col w-full md:justify-center md:items-center lg:items-start'>
       <div className='flex lg:flex-row flex-col items-center lg:justify-between w-full mb-4'>
@@ -349,7 +379,13 @@ export default function DocumentsTable({
               <MdOutlineFileUpload className='text-xl mr-1' />
               Upload tài liệu
             </label> */}
-            <Dialog open={openDialog} onOpenChange={() => setOpenDialog(!openDialog)}>
+            <Dialog
+              open={openDialog}
+              onOpenChange={() => {
+                form.reset()
+                setOpenDialog(!openDialog)
+              }}
+            >
               <DialogTrigger asChild>
                 <Button className='flex items-center py-2 px-4 justify-between bg-sky-600 rounded-lg font-medium text-sm text-white cursor-pointer hover:bg-sky-900 transition-all'>
                   <MdOutlineFileUpload className='text-xl mr-1' />
@@ -371,7 +407,7 @@ export default function DocumentsTable({
                       name='docNumber'
                       placeholder='Nhập Số /Ký hiệu'
                       autoFocus
-                      inputClassName='mb-4 text-base font-normal text-placeHolder'
+                      inputClassName='text-base font-normal text-placeHolder'
                     />
                     <FormTextAreaGroup
                       control={form.control}
@@ -380,13 +416,13 @@ export default function DocumentsTable({
                       inputClassName='resize-none text-base font-normal text-placeHolder'
                       placeholder='Nhập title'
                     />
-                    <div className='flex w-full items-center justify-between gap-2'>
+                    <div className='flex w-full items-center justify-between gap-2 mt-4 mb-4'>
                       <FormGroup
                         control={form.control}
                         label='Ký hiệu'
                         name='reference'
                         placeholder='Nhập Ký hiệu'
-                        inputClassName='mb-4 text-base font-normal text-placeHolder'
+                        inputClassName='text-base font-normal text-placeHolder'
                       />
                       <DateFormGroup
                         control={form.control}
@@ -399,7 +435,7 @@ export default function DocumentsTable({
                       control={form.control}
                       name='categrory'
                       render={({ field }) => (
-                        <FormItem className='w-full'>
+                        <FormItem className='w-full mb-4'>
                           <FormLabel className='text-sm font-medium text-black'>Danh mục</FormLabel>
                           <Select onValueChange={field.onChange}>
                             <FormControl>
@@ -431,16 +467,19 @@ export default function DocumentsTable({
                     <FormField
                       control={form.control}
                       name='file'
-                      render={({ field }) => (
+                      render={({ field, fieldState }) => (
                         <FormItem className='w-full'>
                           <FormLabel className='text-sm font-medium text-black'>file</FormLabel>
                           <FormControl>
                             <Input
-                              className='mb-4 text-base font-normal text-placeHolder placeholder:text-base cursor-pointer'
+                              className=' text-base font-normal text-placeHolder placeholder:text-base cursor-pointer'
                               type='file'
                               {...fileRef}
                             ></Input>
                           </FormControl>
+                          {fieldState.error && (
+                            <p className='text-red-600 text-sm'>{fieldState.error.message}</p>
+                          )}
                         </FormItem>
                       )}
                     />

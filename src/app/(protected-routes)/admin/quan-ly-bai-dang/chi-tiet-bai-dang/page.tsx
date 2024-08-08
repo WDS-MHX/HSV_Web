@@ -83,6 +83,7 @@ const TaoBaiDang = () => {
   const [SelectedCategories, setSelectedCategories] = useState<POST_CATEGORY>(
     POST_CATEGORY.GIOI_THIEU,
   )
+  console.log('CONTENTIMAGEIDS', contentImageIds)
   useEffect(() => {
     contentImageIdsRef.current = contentImageIds
   }, [contentImageIds])

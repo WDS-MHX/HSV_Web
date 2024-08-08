@@ -1,8 +1,9 @@
 // src/configs/froala.config.ts
 
 import { fileApi } from '@/apis'
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import { imgContent } from '@/models/post'
+
 // import { clientInstance } from '~/services/axios'
 // import blogEndpoint from '~/services/axios/endpoints/blog.endpoint'
 
@@ -12,16 +13,19 @@ export interface FroalaEvents {
   'image.inserted': ($img: any, response: any) => void
   'image.replaced': ($img: any, response: any) => void
   'image.error': (error: any, response: any) => void
+  'image.beforeRemove': ($img: any, editor: any) => Promise<boolean | undefined>
   'image.removed': ($img: any, response: any) => void
 }
 let idImageGlobal: string = 'Froala'
 let imageUploadPromise: Promise<void> | undefined
+let imageRemovePromise: Promise<boolean> | undefined
 function generateFroalaConfig(
   setContentImageIds: React.Dispatch<React.SetStateAction<imgContent[]>>,
   contentImageIds: imgContent[],
   setIdImageRemoved: React.Dispatch<React.SetStateAction<string | undefined>>,
   setCheckExistImage?: React.Dispatch<React.SetStateAction<string | undefined>>,
   setOpenDialog?: React.Dispatch<React.SetStateAction<boolean>>,
+  setDeleteConfirmed?: React.Dispatch<React.SetStateAction<((confirm: boolean) => void) | null>>,
 ) {
   let events: FroalaEvents = {
     'image.beforeUpload': async function (images) {
@@ -84,27 +88,66 @@ function generateFroalaConfig(
     'image.error': function (error, response) {
       console.log('Error: ', error, response)
     },
+    'image.beforeRemove': async function ($img, editor) {
+      if (setCheckExistImage && setOpenDialog && setDeleteConfirmed) {
+        if (imageUploadPromise) {
+          await imageUploadPromise
+        }
+        imageRemovePromise = new Promise((resolve, reject) => {
+          try {
+            console.log('CHAYVAOBEFOREREMOVE')
+            setOpenDialog(true)
+            setDeleteConfirmed(() => (confirm: any) => {
+              console.log('CONFIRM', confirm)
+              if (confirm) {
+                resolve(confirm)
+              } else {
+                console.log('EDITOR', editor, $img)
+                resolve(confirm)
+              }
+            })
+          } catch (error) {
+            console.log(error)
+            reject()
+          }
+        })
+        return imageRemovePromise
+      }
+    },
     'image.removed': async function ($img, response) {
       try {
         if (imageUploadPromise) {
           await imageUploadPromise
         }
-        console.log('removed: ', $img[0].currentSrc)
+        if (imageRemovePromise) {
+          console.log('CHAYVAOIFREMOVE')
+          await imageRemovePromise
+        }
+        console.log('CHAYVAOLENHREMOVE')
+        let confirmResult = await imageRemovePromise
+        console.log('confirmResult', confirmResult, imageRemovePromise)
         let idRemove = undefined
         let url: string = $img[0].currentSrc
         let parts: string[] = url.split('/')
         let idUrl: string = parts.pop() || ''
+        console.log('IDURL', idUrl)
         setContentImageIds((prev) => {
           let tempArr = prev
-          let itemRemove = prev.find((item) => item.contentId === idUrl)
+          console.log('TEMPARR', tempArr)
+          let itemRemove = prev.find((item) => item.id === idUrl)
+          console.log('ITEMREMOVE1', itemRemove)
           idRemove = itemRemove ? itemRemove.id : undefined
-          setIdImageRemoved(idRemove)
-          if (setCheckExistImage && setOpenDialog && idRemove == undefined) {
-            setCheckExistImage(idUrl)
-            setOpenDialog(true)
-            return (tempArr = prev.filter((item) => item.id !== idUrl))
+          console.log('idRemove', idRemove)
+          if (setCheckExistImage && setOpenDialog) {
+            if (confirmResult) {
+              setCheckExistImage(idUrl)
+              return (tempArr = prev.filter((item) => item.id !== idUrl))
+            } else {
+              return tempArr
+            }
           }
-          return (tempArr = prev.filter((item) => item.contentId !== idUrl))
+          setIdImageRemoved(idRemove)
+          return (tempArr = prev.filter((item) => item.id !== idUrl))
         })
       } catch (error) {
         console.log(error)

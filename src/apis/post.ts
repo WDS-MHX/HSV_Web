@@ -17,6 +17,7 @@ class PostApi {
   }
 
   async updatePost(body: UpdatePostDTO) {
+    console.log('VAOUPDATEPOST')
     const res = await handleResponse<Post>(() => httpClient.put<Post>('/post/update-post', body))
     return res
   }
