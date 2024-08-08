@@ -34,7 +34,7 @@ export default function FormGroup({
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className='w-full flex flex-col items-start mb-3'>
+        <FormItem className='w-full flex flex-col items-start'>
           <FormLabel className='text-sm font-medium text-black'>{label}</FormLabel>
           <Popover>
             <PopoverTrigger asChild>
@@ -42,14 +42,14 @@ export default function FormGroup({
                 <Button
                   variant={'outline'}
                   className={cn(
-                    'w-full pl-3 h-10 text-left font-normal border-[1.5px] bg-white border-slate-300 rounded-md',
+                    'w-full pl-3 h-10 !mt-3 text-left font-normal border-[1.5px] text-[1rem] bg-white border-slate-300 rounded-md',
                     !field.value && 'text-muted-foreground',
                   )}
                 >
                   {field.value ? (
                     format(field.value, 'PPP')
                   ) : (
-                    <span className='text-base text-placeHolder'>{placeholder}</span>
+                    <span className='!text-base text-placeHolder'>{placeholder}</span>
                   )}
                   <CalendarIcon className='ml-auto h-5 w-5 opacity-50' />
                 </Button>

@@ -7,6 +7,10 @@ export interface Category {
 
 export const documentFilterOptions: Category[] = [
   {
+    key: 'All',
+    name: 'Tất cả',
+  },
+  {
     key: DOC_CATEGORY.BAO_CAO,
     name: 'Báo cáo',
   },
