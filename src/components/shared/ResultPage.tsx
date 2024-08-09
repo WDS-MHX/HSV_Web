@@ -81,7 +81,8 @@ const ResultPage = ({
   searchPosts,
 }: ResultPageType) => {
   const [currentItems, setCurrentItems] = useState<Array<SearchPostType>>(searchResults)
-  const [searchText, setSearchText] = useState<string>('')
+  const [searchText, setSearchText] = useState<string>(searchValue)
+  const [isSearch, setIsSearch] = useState<boolean>(false)
 
   const handleSelectCategory = (category: POST_CATEGORY) => {
     if (selectedCategories.includes(category)) {
@@ -114,6 +115,7 @@ const ResultPage = ({
   const handleSearchPosts = useCallback(() => {
     setSearchValue(searchText)
     searchPosts()
+    setIsSearch(true)
   }, [searchText, searchPosts, setSearchValue])
 
   useEffect(() => {
@@ -322,6 +324,8 @@ const ResultPage = ({
             itemsPerPage={itemsPerPage}
             selectPage={selectPage}
             totalItemsInAllPages={totalSearchItems}
+            isSearch={isSearch}
+            onSearch={() => setIsSearch(false)}
           />
         </div>
       </div>
