@@ -83,7 +83,6 @@ const TaoBaiDang = () => {
   const [SelectedCategories, setSelectedCategories] = useState<POST_CATEGORY>(
     POST_CATEGORY.GIOI_THIEU,
   )
-  console.log('CONTENTIMAGEIDS', contentImageIds)
   useEffect(() => {
     contentImageIdsRef.current = contentImageIds
   }, [contentImageIds])
@@ -170,8 +169,15 @@ const TaoBaiDang = () => {
     },
     onError: () => {
       if (toastId.current) {
+        let errorMes = ''
+
+        if (content === '') {
+          errorMes = 'Nội dung bài viết không được để trống!'
+        } else if (contentImageIds.length === 0) {
+          errorMes = 'Thêm ít nhất một hình vào bài viết!'
+        }
         toast.update(toastId.current, {
-          render: 'Tạo bài viết thất bại!',
+          render: errorMes,
           type: 'error',
           isLoading: false,
           autoClose: 5000,
