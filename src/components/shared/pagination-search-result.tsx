@@ -4,21 +4,36 @@ import ReactPaginate from 'react-paginate'
 
 import { IoChevronForwardOutline } from 'react-icons/io5'
 import { IoChevronBackOutline } from 'react-icons/io5'
+import { useEffect, useState } from 'react'
 
 interface PaginationType {
   totalItemsInAllPages: number
   itemsPerPage: number
   selectPage: (page: number) => void
+  isSearch?: boolean
+  onSearch?: () => void
 }
 
 function PaginationSearchResult({
   totalItemsInAllPages,
   itemsPerPage,
   selectPage,
+  isSearch,
+  onSearch,
 }: PaginationType) {
   const pageCount = Math.ceil(totalItemsInAllPages / itemsPerPage)
 
+  const [currentPage, setCurrentPage] = useState(0)
+
+  useEffect(() => {
+    if (isSearch === true && onSearch) {
+      setCurrentPage(0)
+      onSearch()
+    }
+  }, [isSearch])
+
   const handlePageClick = (event: { selected: number }) => {
+    setCurrentPage(event.selected)
     selectPage(event.selected + 1)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -32,6 +47,7 @@ function PaginationSearchResult({
             <span className='text-black text-sm'>Previous</span>
           </div>
         }
+        forcePage={currentPage}
         onPageChange={handlePageClick}
         pageRangeDisplayed={3}
         marginPagesDisplayed={1}

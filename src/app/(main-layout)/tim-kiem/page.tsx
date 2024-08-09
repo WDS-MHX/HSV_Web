@@ -8,9 +8,13 @@ import { useQuery } from '@tanstack/react-query'
 import { queryKeys } from '@/configs/queryKeys'
 import postApi from '@/apis/post'
 import { SearchPostType } from '@/types/post'
+import { useSearchParams } from 'next/navigation'
 
 const TimKiemPage = () => {
-  const [searchValue, setSearchValue] = useState<string>('')
+  const searchParams = useSearchParams()
+  const value = searchParams.get('value')
+
+  const [searchValue, setSearchValue] = useState<string>(value || '')
   const [categrories, setCategrories] = useState<POST_CATEGORY[]>([
     POST_CATEGORY.GIOI_THIEU,
     POST_CATEGORY.SINH_VIEN_5_TOT,
@@ -42,6 +46,11 @@ const TimKiemPage = () => {
     setPagination({ ...pagination, page: page })
   }
 
+  const resetAndSearchPosts = () => {
+    setPagination({ ...pagination, page: 1 })
+    searchPosts()
+  }
+
   const postResult: SearchPostType[] =
     data?.data.map((post) => ({
       id: post._id,
@@ -67,7 +76,7 @@ const TimKiemPage = () => {
         itemsPerPage={pagination.limit}
         selectPage={selectPage}
         totalSearchItems={data?.pagination.total ?? 0}
-        searchPosts={searchPosts}
+        searchPosts={resetAndSearchPosts}
       />
     </div>
   )

@@ -339,11 +339,13 @@ const ChiTietBaiDang = () => {
               >
                 Gỡ
               </RemoveAlert>
-              <PostTimer datetime={postTime} selectDatetime={setPostTime}>
-                <button className='text-sm rounded-md p-2 text-[#0F172A] font-medium bg-[#E2E8F0] w-full transition-colors whitespace-nowrap'>
-                  Hẹn giờ đăng
-                </button>
-              </PostTimer>
+              {data?.showPost && (
+                <PostTimer datetime={postTime} selectDatetime={setPostTime}>
+                  <button className='text-sm rounded-md p-2 text-[#0F172A] font-medium bg-[#E2E8F0] w-full transition-colors whitespace-nowrap'>
+                    Hẹn giờ đăng
+                  </button>
+                </PostTimer>
+              )}
             </div>
             <div className='flex gap-1.5 px-4'>
               <button
