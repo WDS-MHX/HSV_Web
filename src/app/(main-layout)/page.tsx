@@ -7,7 +7,7 @@ import { queryKeys } from '@/configs/queryKeys'
 import postApi from '@/apis/post'
 import { PostReviewType } from '@/types/post'
 import { useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { PATH_NAME } from '@/configs'
 
 export default function Home() {
@@ -47,9 +47,9 @@ export default function Home() {
     setValue(e.target.value)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     router.push(`${PATH_NAME.TIM_KIEM}?value=${value}`)
-  }
+  }, [router, value])
 
   useEffect(() => {
     const input = document.getElementById('search-bar')

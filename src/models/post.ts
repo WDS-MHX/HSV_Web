@@ -36,7 +36,7 @@ export interface Post {
   contentImageIds?: string[]
   content?: string
   showPost: boolean
-  postedDate?: Date
+  postedDate?: string
   categrory?: POST_CATEGORY
   creator?: Admin
 }

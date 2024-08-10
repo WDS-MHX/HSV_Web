@@ -76,6 +76,7 @@ const TimKiemPage = () => {
         itemsPerPage={pagination.limit}
         selectPage={selectPage}
         totalSearchItems={data?.pagination.total ?? 0}
+        currentPage={pagination.page}
         searchPosts={resetAndSearchPosts}
       />
     </div>

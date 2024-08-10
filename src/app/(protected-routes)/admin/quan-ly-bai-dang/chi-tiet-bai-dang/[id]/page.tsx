@@ -45,6 +45,7 @@ import { Textarea } from '@/components/shared/textArea'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import FroalaEditor from 'react-froala-wysiwyg'
+import { toast } from 'react-toastify'
 
 const FroalaEditorComponent = dynamic(() => import('@/components/shared/FroalaEditorComponent'), {
   ssr: false,
@@ -129,11 +130,9 @@ const ChiTietBaiDang = () => {
       ),
     [setContentImageIds],
   )
-  console.log('CONTENTIMAGEID', contentImageIds)
 
   function confirmDeleteImg() {
     if (deleteConfirmed) {
-      console.log('CHAYVAOCONFIRMDELET')
       deleteConfirmed(true)
     }
     setOpenDialog(false)
@@ -148,7 +147,6 @@ const ChiTietBaiDang = () => {
 
   function denyDeleteImg() {
     if (deleteConfirmed) {
-      console.log('CHAYVAOCONFIRMDENY')
       deleteConfirmed(false)
     }
     setConfirmDelete(false)
@@ -158,18 +156,25 @@ const ChiTietBaiDang = () => {
   const [content, setContent] = useState<string>('')
   const [title, setTitle] = useState<string>('')
   const [description, setDescription] = useState<string>('')
-  const [postTime, setPostTime] = useState<Date | undefined>(new Date())
-  console.log('LAYDATA', title, content, description, postTime)
+  const [postTime, setPostTime] = useState<Date | undefined>(undefined)
   const router = useRouter()
   const queryClient = useQueryClient()
+
+  const badge =
+    data && data.postedDate
+      ? data.showPost
+        ? new Date(data.postedDate) <= new Date()
+          ? 'Đã đăng'
+          : 'Chưa đăng'
+        : 'Đã ẩn'
+      : ''
 
   useEffect(() => {
     if (data) {
       setContent(data.content ?? '')
-      setPostTime(data.postedDate ?? new Date())
+      setPostTime(data.postedDate ? new Date(data.postedDate) : undefined)
       setDescription(data.description ?? '')
       setTitle(data.title ?? '')
-      console.log('CHAYVAOUSEEFFECTDATA')
       setSelectedCategories(data.categrory ?? POST_CATEGORY.SINH_VIEN_5_TOT)
       let newContentImageIds = data.contentImageIds?.map((id) => ({
         id: id,
@@ -186,7 +191,10 @@ const ChiTietBaiDang = () => {
 
   const { mutate: updateShowPost } = useMutation({
     mutationFn: () => postApi.updateShowPost(postId, !data?.showPost),
-    onSettled: () => {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.post.gen(postId),
+      })
       queryClient.invalidateQueries({
         queryKey: queryKeys.adminSearchPosts.gen(
           1,
@@ -202,6 +210,40 @@ const ChiTietBaiDang = () => {
             POST_CATEGORY.XAY_DUNG_HOI,
           ],
           POST_STATUS.POSTED,
+        ),
+      })
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.adminSearchPosts.gen(
+          1,
+          5,
+          '',
+          [
+            POST_CATEGORY.GIOI_THIEU,
+            POST_CATEGORY.SINH_VIEN_5_TOT,
+            POST_CATEGORY.CAU_CHUYEN_DEP,
+            POST_CATEGORY.TINH_NGUYEN,
+            POST_CATEGORY.NCKH,
+            POST_CATEGORY.HO_TRO_SINH_VIEN,
+            POST_CATEGORY.XAY_DUNG_HOI,
+          ],
+          POST_STATUS.NOT_POSTED,
+        ),
+      })
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.adminSearchPosts.gen(
+          1,
+          5,
+          '',
+          [
+            POST_CATEGORY.GIOI_THIEU,
+            POST_CATEGORY.SINH_VIEN_5_TOT,
+            POST_CATEGORY.CAU_CHUYEN_DEP,
+            POST_CATEGORY.TINH_NGUYEN,
+            POST_CATEGORY.NCKH,
+            POST_CATEGORY.HO_TRO_SINH_VIEN,
+            POST_CATEGORY.XAY_DUNG_HOI,
+          ],
+          POST_STATUS.HIDE,
         ),
       })
       router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
@@ -209,25 +251,72 @@ const ChiTietBaiDang = () => {
   })
   const { mutate: deletePost } = useMutation({
     mutationFn: () => postApi.deletePost(postId),
-    onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.adminSearchPosts.gen(
-          1,
-          5,
-          '',
-          [
-            POST_CATEGORY.GIOI_THIEU,
-            POST_CATEGORY.SINH_VIEN_5_TOT,
-            POST_CATEGORY.CAU_CHUYEN_DEP,
-            POST_CATEGORY.TINH_NGUYEN,
-            POST_CATEGORY.NCKH,
-            POST_CATEGORY.HO_TRO_SINH_VIEN,
-            POST_CATEGORY.XAY_DUNG_HOI,
-          ],
-          POST_STATUS.POSTED,
-        ),
-      })
+    onSuccess: () => {
+      if (
+        data?.showPost &&
+        (data.postedDate ? new Date(data.postedDate) : new Date()) <= new Date()
+      ) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.adminSearchPosts.gen(
+            1,
+            5,
+            '',
+            [
+              POST_CATEGORY.GIOI_THIEU,
+              POST_CATEGORY.SINH_VIEN_5_TOT,
+              POST_CATEGORY.CAU_CHUYEN_DEP,
+              POST_CATEGORY.TINH_NGUYEN,
+              POST_CATEGORY.NCKH,
+              POST_CATEGORY.HO_TRO_SINH_VIEN,
+              POST_CATEGORY.XAY_DUNG_HOI,
+            ],
+            POST_STATUS.POSTED,
+          ),
+        })
+      } else if (
+        data?.showPost &&
+        (data.postedDate ? new Date(data.postedDate) : new Date()) > new Date()
+      ) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.adminSearchPosts.gen(
+            1,
+            5,
+            '',
+            [
+              POST_CATEGORY.GIOI_THIEU,
+              POST_CATEGORY.SINH_VIEN_5_TOT,
+              POST_CATEGORY.CAU_CHUYEN_DEP,
+              POST_CATEGORY.TINH_NGUYEN,
+              POST_CATEGORY.NCKH,
+              POST_CATEGORY.HO_TRO_SINH_VIEN,
+              POST_CATEGORY.XAY_DUNG_HOI,
+            ],
+            POST_STATUS.NOT_POSTED,
+          ),
+        })
+      } else {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.adminSearchPosts.gen(
+            1,
+            5,
+            '',
+            [
+              POST_CATEGORY.GIOI_THIEU,
+              POST_CATEGORY.SINH_VIEN_5_TOT,
+              POST_CATEGORY.CAU_CHUYEN_DEP,
+              POST_CATEGORY.TINH_NGUYEN,
+              POST_CATEGORY.NCKH,
+              POST_CATEGORY.HO_TRO_SINH_VIEN,
+              POST_CATEGORY.XAY_DUNG_HOI,
+            ],
+            POST_STATUS.HIDE,
+          ),
+        })
+      }
       router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
+    },
+    onError: () => {
+      toast.error('Đã có lỗi xảy ra, vui lòng thử lại sau')
     },
   })
 
@@ -236,30 +325,54 @@ const ChiTietBaiDang = () => {
       postApi.updatePost({
         ...data,
       }),
-    onSuccess: () => {
-      //toast
+    onSuccess: (response) => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.adminSearchPosts.gen(
-          1,
-          5,
-          '',
-          [
-            POST_CATEGORY.GIOI_THIEU,
-            POST_CATEGORY.SINH_VIEN_5_TOT,
-            POST_CATEGORY.CAU_CHUYEN_DEP,
-            POST_CATEGORY.TINH_NGUYEN,
-            POST_CATEGORY.NCKH,
-            POST_CATEGORY.HO_TRO_SINH_VIEN,
-            POST_CATEGORY.XAY_DUNG_HOI,
-          ],
-          POST_STATUS.POSTED,
-        ),
+        queryKey: queryKeys.post.gen(postId),
       })
+      if (response && response.postedDate) {
+        if ((response.postedDate ? new Date(response.postedDate) : new Date()) <= new Date()) {
+          queryClient.invalidateQueries({
+            queryKey: queryKeys.adminSearchPosts.gen(
+              1,
+              5,
+              '',
+              [
+                POST_CATEGORY.GIOI_THIEU,
+                POST_CATEGORY.SINH_VIEN_5_TOT,
+                POST_CATEGORY.CAU_CHUYEN_DEP,
+                POST_CATEGORY.TINH_NGUYEN,
+                POST_CATEGORY.NCKH,
+                POST_CATEGORY.HO_TRO_SINH_VIEN,
+                POST_CATEGORY.XAY_DUNG_HOI,
+              ],
+              POST_STATUS.POSTED,
+            ),
+          })
+        } else {
+          queryClient.invalidateQueries({
+            queryKey: queryKeys.adminSearchPosts.gen(
+              1,
+              5,
+              '',
+              [
+                POST_CATEGORY.GIOI_THIEU,
+                POST_CATEGORY.SINH_VIEN_5_TOT,
+                POST_CATEGORY.CAU_CHUYEN_DEP,
+                POST_CATEGORY.TINH_NGUYEN,
+                POST_CATEGORY.NCKH,
+                POST_CATEGORY.HO_TRO_SINH_VIEN,
+                POST_CATEGORY.XAY_DUNG_HOI,
+              ],
+              POST_STATUS.NOT_POSTED,
+            ),
+          })
+        }
+      }
 
       router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
     },
     onError: () => {
-      //toast
+      toast.error('Đã có lỗi xảy ra, vui lòng thử lại sau')
     },
   })
 
@@ -321,13 +434,11 @@ const ChiTietBaiDang = () => {
       >
         <div className='flex justify-between items-center mb-6'>
           <div className='flex gap-4 items-center'>
-            <button onClick={backPreviousPage}>
+            <div onClick={backPreviousPage} className='cursor-pointer'>
               <GrLinkPrevious className='text-black' />
-            </button>
+            </div>
             <div className='flex items-center py-0.5 px-2.5 rounded-full bg-slate-100'>
-              <span className='font-semibold text-xs text-primary'>
-                {data?.showPost ? 'Đã đăng' : 'Chưa đăng'}
-              </span>
+              <span className='font-semibold text-xs text-primary'>{badge}</span>
             </div>
           </div>
           <div className='flex divide-x'>
@@ -350,6 +461,7 @@ const ChiTietBaiDang = () => {
             <div className='flex gap-1.5 px-4'>
               <button
                 onClick={() => updateShowPost()}
+                type='button'
                 className='text-sm rounded-md px-4 py-2 text-[#0F172A] font-medium bg-[#E2E8F0] w-full'
               >
                 {data?.showPost ? 'Ẩn' : 'Đăng'}

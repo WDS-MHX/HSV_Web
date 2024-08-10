@@ -181,20 +181,23 @@ const Quanlybaidang = () => {
     placeholderData: (previousData) => previousData,
   })
 
+  const selectPage = (page: number) => {
+    setPagination({ ...pagination, page: page })
+  }
+
   const handleIsOpen = () => {
     setPostStatus(POST_STATUS.POSTED)
+    selectPage(1)
   }
 
   const handleNotIsOpen = () => {
     setPostStatus(POST_STATUS.NOT_POSTED)
+    selectPage(1)
   }
 
   const handleHide = () => {
     setPostStatus(POST_STATUS.HIDE)
-  }
-
-  const selectPage = (page: number) => {
-    setPagination({ ...pagination, page: page })
+    selectPage(1)
   }
 
   const postResult: SearchPostType[] =
@@ -249,6 +252,7 @@ const Quanlybaidang = () => {
           itemsPerPage={pagination.limit}
           selectPage={selectPage}
           totalSearchItems={data?.pagination.total ?? 0}
+          currentPage={pagination.page}
           searchPosts={resetAndSearchPosts}
         />
 

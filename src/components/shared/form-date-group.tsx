@@ -47,7 +47,7 @@ export default function FormGroup({
                   )}
                 >
                   {field.value ? (
-                    format(field.value, 'PPP')
+                    format(field.value, 'dd/MM/yyyy')
                   ) : (
                     <span className='!text-base text-placeHolder'>{placeholder}</span>
                   )}
@@ -55,7 +55,7 @@ export default function FormGroup({
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className='w-auto p-0'>
+            <PopoverContent className='w-auto p-0' side='top'>
               <Calendar
                 mode='single'
                 selected={field.value}
