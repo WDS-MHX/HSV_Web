@@ -138,6 +138,7 @@ export default function DocumentsTable({
     const res = await documentApi.deleteDocument(id)
     reloadDocument()
   }
+  const [checkFiltered, setCheckFiltered] = useState<number | undefined>(undefined)
   const [columnFilters, setColumnFilters] = useState<any>([])
   const [category, setCategory] = useState<string>('')
   const [query, setQuery] = useState<string>('')
@@ -320,6 +321,7 @@ export default function DocumentsTable({
     })
     // let getDataLengthFilter = tableInstance.getFilteredRowModel().rows.length;
     // setDataLength(getDataLengthFilter)
+    setCheckFiltered(0)
   }
   useEffect(() => {
     if (category != '') {
@@ -341,8 +343,10 @@ export default function DocumentsTable({
           )
         }
       })
+      setCheckFiltered(0)
     }
   }, [category])
+
   useEffect(() => {
     setDataLength(tableInstance.getFilteredRowModel().rows.length)
   }, [tableInstance.getFilteredRowModel().rows.length, columnFilters, query, category])
@@ -574,7 +578,13 @@ export default function DocumentsTable({
         </tbody>
       </table>
       <div className='w-full justify-center'>
-        <Pagination itemsPerPage={10} table={tableInstance} notilength={datalength}></Pagination>
+        <Pagination
+          itemsPerPage={10}
+          table={tableInstance}
+          notilength={datalength}
+          setCheckFiltered={setCheckFiltered}
+          checkFiltered={checkFiltered}
+        ></Pagination>
       </div>
     </div>
   )
