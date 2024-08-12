@@ -282,7 +282,7 @@ export default function DocumentsTable({
     columnResizeMode: 'onChange',
   })
 
-  const onFilterCategoryChange = () => {
+  const onFilterSearchChange = () => {
     setColumnFilters((prev: any) => {
       // let tempArr:any = []
       // const categorySelect = prev.find((filter: any) => filter.id === 'category')
@@ -348,8 +348,20 @@ export default function DocumentsTable({
   }, [category])
 
   useEffect(() => {
+    if (query == '') {
+      onFilterSearchChange()
+    }
+  }, [query])
+
+  useEffect(() => {
     setDataLength(tableInstance.getFilteredRowModel().rows.length)
   }, [tableInstance.getFilteredRowModel().rows.length, columnFilters, query, category])
+
+  const handleKeyDown = (event: any) => {
+    if (event.key === 'Enter') {
+      onFilterSearchChange()
+    }
+  }
 
   return (
     <div className='flex flex-col w-full md:justify-center md:items-center lg:items-start'>
@@ -382,10 +394,11 @@ export default function DocumentsTable({
                 className='border-none rounded-md mr-2 py-2 px-3 w-full focus:outline-none bg-white text-black text-sm font-normal leading-5'
                 placeholder='Gõ tên tài liệu vào đây'
                 value={query}
+                onKeyDown={handleKeyDown}
                 onChange={handleInput}
               ></input>
             </div>
-            <button onClick={onFilterCategoryChange} className='button-primary md:ml-0 ml-2'>
+            <button onClick={onFilterSearchChange} className='button-primary md:ml-0 ml-2'>
               <p className='font-medium text-sm leading-6 text-white'>Tìm</p>
             </button>
           </div>
