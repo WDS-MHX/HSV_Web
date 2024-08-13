@@ -138,6 +138,7 @@ export default function DocumentsTable({
     const res = await documentApi.deleteDocument(id)
     reloadDocument()
   }
+  const [checkFiltered, setCheckFiltered] = useState<number | undefined>(undefined)
   const [columnFilters, setColumnFilters] = useState<any>([])
   const [category, setCategory] = useState<string>('')
   const [query, setQuery] = useState<string>('')
@@ -281,7 +282,7 @@ export default function DocumentsTable({
     columnResizeMode: 'onChange',
   })
 
-  const onFilterCategoryChange = () => {
+  const onFilterSearchChange = () => {
     setColumnFilters((prev: any) => {
       // let tempArr:any = []
       // const categorySelect = prev.find((filter: any) => filter.id === 'category')
@@ -320,6 +321,7 @@ export default function DocumentsTable({
     })
     // let getDataLengthFilter = tableInstance.getFilteredRowModel().rows.length;
     // setDataLength(getDataLengthFilter)
+    setCheckFiltered(0)
   }
   useEffect(() => {
     if (category != '') {
@@ -341,11 +343,25 @@ export default function DocumentsTable({
           )
         }
       })
+      setCheckFiltered(0)
     }
   }, [category])
+
+  useEffect(() => {
+    if (query == '') {
+      onFilterSearchChange()
+    }
+  }, [query])
+
   useEffect(() => {
     setDataLength(tableInstance.getFilteredRowModel().rows.length)
   }, [tableInstance.getFilteredRowModel().rows.length, columnFilters, query, category])
+
+  const handleKeyDown = (event: any) => {
+    if (event.key === 'Enter') {
+      onFilterSearchChange()
+    }
+  }
 
   return (
     <div className='flex flex-col w-full md:justify-center md:items-center lg:items-start'>
@@ -378,10 +394,11 @@ export default function DocumentsTable({
                 className='border-none rounded-md mr-2 py-2 px-3 w-full focus:outline-none bg-white text-black text-sm font-normal leading-5'
                 placeholder='Gõ tên tài liệu vào đây'
                 value={query}
+                onKeyDown={handleKeyDown}
                 onChange={handleInput}
               ></input>
             </div>
-            <button onClick={onFilterCategoryChange} className='button-primary md:ml-0 ml-2'>
+            <button onClick={onFilterSearchChange} className='button-primary md:ml-0 ml-2'>
               <p className='font-medium text-sm leading-6 text-white'>Tìm</p>
             </button>
           </div>
@@ -574,7 +591,13 @@ export default function DocumentsTable({
         </tbody>
       </table>
       <div className='w-full justify-center'>
-        <Pagination itemsPerPage={10} table={tableInstance} notilength={datalength}></Pagination>
+        <Pagination
+          itemsPerPage={10}
+          table={tableInstance}
+          notilength={datalength}
+          setCheckFiltered={setCheckFiltered}
+          checkFiltered={checkFiltered}
+        ></Pagination>
       </div>
     </div>
   )
