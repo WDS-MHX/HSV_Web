@@ -11,6 +11,7 @@ interface PaginationType {
   itemsPerPage: number
   selectPage: (page: number) => void
   isSearch?: boolean
+  currentPageNumber: number
   onSearch?: () => void
 }
 
@@ -19,24 +20,29 @@ function PaginationSearchResult({
   itemsPerPage,
   selectPage,
   isSearch,
+  currentPageNumber,
   onSearch,
 }: PaginationType) {
   const pageCount = Math.ceil(totalItemsInAllPages / itemsPerPage)
 
-  const [currentPage, setCurrentPage] = useState(0)
+  const [currentPage, setCurrentPage] = useState(currentPageNumber - 1)
 
   useEffect(() => {
     if (isSearch === true && onSearch) {
       setCurrentPage(0)
       onSearch()
     }
-  }, [isSearch])
+  }, [isSearch, onSearch])
 
   const handlePageClick = (event: { selected: number }) => {
     setCurrentPage(event.selected)
     selectPage(event.selected + 1)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
+
+  useEffect(() => {
+    setCurrentPage(currentPageNumber - 1)
+  }, [currentPageNumber])
 
   return (
     <div>

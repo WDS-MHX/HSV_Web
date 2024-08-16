@@ -7,7 +7,7 @@ export interface SearchPostType {
   description: string
   content: string
   img?: string
-  date?: Date
+  date?: string
   isAuth?: boolean
 }
 

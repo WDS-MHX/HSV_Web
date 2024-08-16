@@ -8,6 +8,7 @@ import { IoChevronBackOutline } from 'react-icons/io5'
 import documentType from '@/models/document'
 import { Table } from '@tanstack/react-table'
 import { Admin } from '@/models'
+import { number } from 'zod'
 
 interface PaginationType {
   itemsPerPage: number
@@ -15,6 +16,8 @@ interface PaginationType {
   notilength: number
   table?: Table<documentType> | Table<Admin> | undefined
   setPreviousPage?: (offset: number) => void
+  checkFiltered?: number | undefined
+  setCheckFiltered?: (offset: number | undefined) => void
 }
 
 function Pagination({
@@ -23,9 +26,12 @@ function Pagination({
   notilength,
   table,
   setPreviousPage,
+  checkFiltered,
+  setCheckFiltered,
 }: PaginationType) {
+  const [forcePage, setForcePage] = useState<number | undefined>(checkFiltered)
   let pageCount = Math.ceil(notilength / itemsPerPage)
-  console.log('PAGECOUNT', notilength, itemsPerPage, pageCount)
+
   const handlePageClick = (event: { selected: number }) => {
     if (table) {
       table.setPageIndex(event.selected)
@@ -39,11 +45,15 @@ function Pagination({
 
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
+    if (setCheckFiltered) setCheckFiltered(undefined)
   }
-
+  useEffect(() => {
+    setForcePage(checkFiltered)
+  }, [checkFiltered])
   return (
     <div>
       <ReactPaginate
+        forcePage={forcePage}
         previousLabel={
           <div className='flex items-center justify-center py-[0.625rem] px-4 hover:bg-slate-100 focus:bg-slate-100'>
             <IoChevronBackOutline className='text-black mr-[0.625rem]' />

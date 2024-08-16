@@ -7,7 +7,7 @@ import { queryKeys } from '@/configs/queryKeys'
 import postApi from '@/apis/post'
 import { PostReviewType } from '@/types/post'
 import { useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { PATH_NAME } from '@/configs'
 
 export default function Home() {
@@ -47,26 +47,9 @@ export default function Home() {
     setValue(e.target.value)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     router.push(`${PATH_NAME.TIM_KIEM}?value=${value}`)
-  }
-
-  useEffect(() => {
-    const input = document.getElementById('search-bar')
-
-    if (input) {
-      const handleSearchEvent = (event: KeyboardEvent) => {
-        if (event.key === 'Enter') {
-          event.preventDefault()
-          handleSubmit()
-        }
-      }
-      input.addEventListener('keypress', handleSearchEvent)
-      return () => {
-        input.removeEventListener('keypress', handleSearchEvent)
-      }
-    }
-  }, [value, handleSubmit])
+  }, [router, value])
 
   return (
     <div className='grid lg:grid-cols-4 gap-4 md:grid-cols-1'>
@@ -120,6 +103,12 @@ export default function Home() {
               placeholder='Search'
               value={value}
               onChange={handleSearchChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  handleSubmit()
+                }
+              }}
             ></input>
           </div>
           <button className='button-primary' onClick={handleSubmit}>

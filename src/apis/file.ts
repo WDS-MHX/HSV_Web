@@ -1,16 +1,17 @@
 import { handleError, httpClient } from '@/services'
+import axios from 'axios'
 
 class FileApi {
   async downloadFile(id: string) {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/file/download/${id}`, {
-        method: 'GET',
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/file/download/${id}`, {
+        responseType: 'blob',
+        withCredentials: true,
       })
+      const fileName =
+        res.headers['content-disposition']?.replace('attachment; filename=', '') ?? ''
 
-      let fileName = 'downloaded-file'
-      const blob = await res.blob()
-
-      const url = window.URL.createObjectURL(blob)
+      const url = window.URL.createObjectURL(res.data)
       const link = document.createElement('a')
       link.href = url
       link.setAttribute('download', fileName)
@@ -21,7 +22,7 @@ class FileApi {
       return res
     } catch (error) {
       handleError(error, (res) => {
-        throw new res.data.message()
+        throw new Error('Đã có lỗi xảy ra, vui lòng thử lại sau')
       })
     }
   }

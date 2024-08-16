@@ -137,7 +137,6 @@ const ChiTietBaiDang = () => {
 
   function confirmDeleteImg() {
     if (deleteConfirmed) {
-      // console.log('CHAYVAOCONFIRMDELET')
       deleteConfirmed(true)
     }
     setOpenDialog(false)
@@ -153,7 +152,6 @@ const ChiTietBaiDang = () => {
 
   function denyDeleteImg() {
     if (deleteConfirmed) {
-      // console.log('CHAYVAOCONFIRMDENY')
       deleteConfirmed(false)
     }
     setConfirmDelete(false)
@@ -163,7 +161,7 @@ const ChiTietBaiDang = () => {
   const [content, setContent] = useState<string>('')
   const [title, setTitle] = useState<string>('')
   const [description, setDescription] = useState<string>('')
-  const [postTime, setPostTime] = useState<Date | undefined>(new Date())
+  const [postTime, setPostTime] = useState<Date | undefined>(undefined)
   const [titleImgId, setTitleImgId] = useState<string>('')
   const [titleImg, setTitleImg] = useState<string>('')
   const [updateTriggered, setUpdateTriggered] = useState(false)
@@ -208,7 +206,10 @@ const ChiTietBaiDang = () => {
 
   const { mutate: updateShowPost } = useMutation({
     mutationFn: () => postApi.updateShowPost(postId, !data?.showPost),
-    onSettled: () => {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.post.gen(postId),
+      })
       queryClient.invalidateQueries({
         queryKey: queryKeys.adminSearchPosts.gen(
           1,
@@ -226,9 +227,47 @@ const ChiTietBaiDang = () => {
           POST_STATUS.POSTED,
         ),
       })
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.adminSearchPosts.gen(
+          1,
+          5,
+          '',
+          [
+            POST_CATEGORY.GIOI_THIEU,
+            POST_CATEGORY.SINH_VIEN_5_TOT,
+            POST_CATEGORY.CAU_CHUYEN_DEP,
+            POST_CATEGORY.TINH_NGUYEN,
+            POST_CATEGORY.NCKH,
+            POST_CATEGORY.HO_TRO_SINH_VIEN,
+            POST_CATEGORY.XAY_DUNG_HOI,
+          ],
+          POST_STATUS.NOT_POSTED,
+        ),
+      })
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.adminSearchPosts.gen(
+          1,
+          5,
+          '',
+          [
+            POST_CATEGORY.GIOI_THIEU,
+            POST_CATEGORY.SINH_VIEN_5_TOT,
+            POST_CATEGORY.CAU_CHUYEN_DEP,
+            POST_CATEGORY.TINH_NGUYEN,
+            POST_CATEGORY.NCKH,
+            POST_CATEGORY.HO_TRO_SINH_VIEN,
+            POST_CATEGORY.XAY_DUNG_HOI,
+          ],
+          POST_STATUS.HIDE,
+        ),
+      })
       router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
     },
+    onError: () => {
+      toast.error('Đã có lỗi xảy ra, vui lòng thử lại sau')
+    },
   })
+
   const { mutate: deletePost } = useMutation({
     mutationFn: () => postApi.deletePost(postId),
     onSuccess: () => {
@@ -366,7 +405,7 @@ const ChiTietBaiDang = () => {
       toast.success('Chỉnh sửa hình ảnh tiêu đề thành công!')
     },
     onError: () => {
-      //toast
+      toast.error('Đã có lỗi xảy ra, vui lòng thử lại sau')
     },
   })
 
@@ -453,7 +492,7 @@ const ChiTietBaiDang = () => {
         categrory: data.categrory,
         contentImageIds: data.contentImageIds,
         titleImageId: titleImgId,
-        postedDate: data.postedDate,
+        postedDate: new Date(data.postedDate),
         _id: postId,
       }
       updateNewTitleImg(dataPost)
@@ -479,9 +518,9 @@ const ChiTietBaiDang = () => {
       >
         <div className='flex justify-between items-center mb-6'>
           <div className='flex gap-4 items-center'>
-            <button onClick={backPreviousPage}>
+            <div onClick={backPreviousPage} className='cursor-pointer'>
               <GrLinkPrevious className='text-black' />
-            </button>
+            </div>
             <div className='flex items-center py-0.5 px-2.5 rounded-full bg-slate-100'>
               <span className='font-semibold text-xs text-primary'>{badge}</span>
             </div>
@@ -572,24 +611,25 @@ const ChiTietBaiDang = () => {
               {errors.description && <p className='text-red-500'>{errors.description.message}</p>}
             </div>
 
-            <RemoveAlert
-              title='Bạn có chắc chắn muốn thay đổi ảnh tiêu đề, hành động này là không thể hoàn tác'
-              action={() => document.getElementById('titleimg')?.click()}
-              className='mt-3 cursor-pointer'
-            >
-              <div className='mb-4 flex gap-4'>
-                Hình ảnh tiêu đề <span className='text-red-500'>*</span>
+            <div className='mb-4 flex gap-4 items-center'>
+              Hình ảnh tiêu đề <span className='text-red-500'>*</span>
+              <RemoveAlert
+                title='Bạn có chắc chắn muốn thay đổi ảnh tiêu đề, hành động này là không thể hoàn tác'
+                action={() => document.getElementById('titleimg')?.click()}
+                className='cursor-pointer'
+                isChange
+              >
                 <FiEdit className='text-[#0284C7] font-bold cursor-poniter' />
-              </div>
-              <div className='mt-3 cursor-pointer'>
-                <img
-                  src={titleImg}
-                  alt=''
-                  className='h-[150px] w-[300px] object-contain'
-                  onError={() => setTitleImg('/assets/images/picture-placeholder.png')}
-                />
-              </div>
-            </RemoveAlert>
+              </RemoveAlert>
+            </div>
+            <div className='mt-3'>
+              <img
+                src={titleImg}
+                alt=''
+                className='h-[150px] w-[300px] object-contain'
+                onError={() => setTitleImg('/assets/images/picture-placeholder.png')}
+              />
+            </div>
             <input
               id='titleimg'
               type='file'
