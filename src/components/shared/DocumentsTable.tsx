@@ -163,12 +163,6 @@ export default function DocumentsTable({
   const searchInput = columnFilters.find((f: any) => f.id === 'title')?.value || ''
   const handleInput = (event: any) => {
     setQuery(event.target.value)
-    const handleSearchBlank = () => {
-      if (event.target.value === '') {
-        onFilterCategoryChange(event.target.value)
-      }
-    }
-    setTimeout(handleSearchBlank, 300)
   }
   const onFilterChange = (id: any, value: any) =>
     setColumnFilters((prev: any) =>
