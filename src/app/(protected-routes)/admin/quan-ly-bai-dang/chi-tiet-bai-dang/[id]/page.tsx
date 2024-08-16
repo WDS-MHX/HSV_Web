@@ -45,6 +45,9 @@ import { Textarea } from '@/components/shared/textArea'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import FroalaEditor from 'react-froala-wysiwyg'
+import Image from 'next/image'
+import { FiEdit } from 'react-icons/fi'
+import { toast } from 'react-toastify'
 
 const FroalaEditorComponent = dynamic(() => import('@/components/shared/FroalaEditorComponent'), {
   ssr: false,
@@ -91,6 +94,7 @@ const ChiTietBaiDang = () => {
   const { data } = useQuery({
     queryKey: queryKeys.post.gen(postId),
     queryFn: () => postApi.getPostById(postId),
+    refetchOnMount: 'always',
   })
 
   const [SelectedCategories, setSelectedCategories] = useState<POST_CATEGORY>(
@@ -117,6 +121,7 @@ const ChiTietBaiDang = () => {
       removeImage(idImageRemoved)
     }
   }, [idImageRemoved])
+
   const froalaConfig = useMemo(
     () =>
       generateFroalaConfig(
@@ -129,15 +134,15 @@ const ChiTietBaiDang = () => {
       ),
     [setContentImageIds],
   )
-  console.log('CONTENTIMAGEID', contentImageIds)
 
   function confirmDeleteImg() {
     if (deleteConfirmed) {
-      console.log('CHAYVAOCONFIRMDELET')
+      // console.log('CHAYVAOCONFIRMDELET')
       deleteConfirmed(true)
     }
     setOpenDialog(false)
   }
+
   useEffect(() => {
     if (checkExistImage) {
       removeImage(checkExistImage)
@@ -148,7 +153,7 @@ const ChiTietBaiDang = () => {
 
   function denyDeleteImg() {
     if (deleteConfirmed) {
-      console.log('CHAYVAOCONFIRMDENY')
+      // console.log('CHAYVAOCONFIRMDENY')
       deleteConfirmed(false)
     }
     setConfirmDelete(false)
@@ -159,7 +164,11 @@ const ChiTietBaiDang = () => {
   const [title, setTitle] = useState<string>('')
   const [description, setDescription] = useState<string>('')
   const [postTime, setPostTime] = useState<Date | undefined>(new Date())
-  console.log('LAYDATA', title, content, description, postTime)
+  const [titleImgId, setTitleImgId] = useState<string>('')
+  const [titleImg, setTitleImg] = useState<string>('')
+  const [updateTriggered, setUpdateTriggered] = useState(false)
+
+  // console.log('LAYDATA', title, content, description, postTime)
   const router = useRouter()
   const queryClient = useQueryClient()
 
@@ -177,8 +186,13 @@ const ChiTietBaiDang = () => {
       }))
       if (newContentImageIds && newContentImageIds?.length > 0)
         setContentImageIds(newContentImageIds)
+      setTitleImgId(data.titleImageId ?? '')
     }
   }, [data])
+
+  useEffect(() => {
+    setTitleImg(process.env.NEXT_PUBLIC_API_BASE_URL + '/file/download/' + titleImgId ?? '')
+  }, [titleImgId])
 
   const backPreviousPage = () => {
     router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
@@ -187,6 +201,10 @@ const ChiTietBaiDang = () => {
   const { mutate: updateShowPost } = useMutation({
     mutationFn: () => postApi.updateShowPost(postId, !data?.showPost),
     onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.post.gen(postId),
+      })
+
       queryClient.invalidateQueries({
         queryKey: queryKeys.adminSearchPosts.gen(
           1,
@@ -207,6 +225,7 @@ const ChiTietBaiDang = () => {
       router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
     },
   })
+
   const { mutate: deletePost } = useMutation({
     mutationFn: () => postApi.deletePost(postId),
     onSettled: () => {
@@ -263,6 +282,41 @@ const ChiTietBaiDang = () => {
     },
   })
 
+  const { mutate: updateNewTitleImg } = useMutation({
+    mutationFn: (data: UpdatePostDTO) =>
+      postApi.updatePost({
+        ...data,
+      }),
+    onSuccess: () => {
+      //toast
+      toast.success('Chỉnh sửa hình ảnh tiêu đề thành công!')
+    },
+    onError: () => {
+      //toast
+    },
+  })
+
+  const uploadTitleImage = useMutation({
+    mutationFn: fileApi.uploadImage,
+    onSuccess: (res) => {
+      setIdImageRemoved(titleImgId)
+      setTitleImgId(res || '')
+
+      setUpdateTriggered(true)
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+  })
+
+  useEffect(() => {
+    if (updateTriggered) {
+      onUpdatePost()
+
+      setUpdateTriggered(false)
+    }
+  }, [titleImgId, updateTriggered])
+
   const {
     register,
     handleSubmit,
@@ -300,7 +354,7 @@ const ChiTietBaiDang = () => {
         ...data,
         categrory: SelectedCategories,
         contentImageIds: contentImagesIdArr,
-        titleImageId: contentImagesIdArr[0],
+        titleImageId: titleImgId,
         postedDate: postTime,
         _id: postId,
       }
@@ -308,8 +362,38 @@ const ChiTietBaiDang = () => {
     }
   }
 
+  const onUpdatePost = () => {
+    if (
+      postTime &&
+      data?.title &&
+      data?.description &&
+      data?.content &&
+      data?.categrory &&
+      data?.contentImageIds &&
+      data?.postedDate
+    ) {
+      let dataPost = {
+        title: data.title,
+        description: data.description,
+        content: data.content,
+        categrory: data.categrory,
+        contentImageIds: data.contentImageIds,
+        titleImageId: titleImgId,
+        postedDate: data.postedDate,
+        _id: postId,
+      }
+      updateNewTitleImg(dataPost)
+    }
+  }
+
   const handleSelectOneCategory = (category: POST_CATEGORY) => {
     setSelectedCategories(category)
+  }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      uploadTitleImage.mutate(e.target.files)
+    }
   }
 
   return (
@@ -321,9 +405,9 @@ const ChiTietBaiDang = () => {
       >
         <div className='flex justify-between items-center mb-6'>
           <div className='flex gap-4 items-center'>
-            <button onClick={backPreviousPage}>
-              <GrLinkPrevious className='text-black' />
-            </button>
+            <div onClick={backPreviousPage}>
+              <GrLinkPrevious className='text-black cursor-pointer' />
+            </div>
             <div className='flex items-center py-0.5 px-2.5 rounded-full bg-slate-100'>
               <span className='font-semibold text-xs text-primary'>
                 {data?.showPost ? 'Đã đăng' : 'Chưa đăng'}
@@ -401,6 +485,7 @@ const ChiTietBaiDang = () => {
               )}
               {errors.title && <p className='text-red-500'>{errors.title.message}</p>}
             </div>
+
             <div>
               <Label htmlFor='description' className='mb-1'>
                 Mô tả <span className='text-red-500'>*</span>
@@ -413,8 +498,35 @@ const ChiTietBaiDang = () => {
               />
               {errors.description && <p className='text-red-500'>{errors.description.message}</p>}
             </div>
+
+            <RemoveAlert
+              title='Bạn có chắc chắn muốn thay đổi ảnh tiêu đề, hành động này là không thể hoàn tác'
+              action={() => document.getElementById('titleimg')?.click()}
+              className='mt-3 cursor-pointer'
+            >
+              <div className='mb-4 flex gap-4'>
+                Hình ảnh tiêu đề <span className='text-red-500'>*</span>
+                <FiEdit className='text-[#0284C7] font-bold cursor-poniter' />
+              </div>
+              <div className='mt-3 cursor-pointer'>
+                <img
+                  src={titleImg}
+                  alt=''
+                  className='h-[150px] w-[300px] object-contain'
+                  onError={() => setTitleImg('/assets/images/picture-placeholder.png')}
+                />
+              </div>
+            </RemoveAlert>
+            <input
+              id='titleimg'
+              type='file'
+              accept='.png, .jpg, .jpeg'
+              className='hidden'
+              onChange={handleImageChange}
+            />
           </div>
         </div>
+
         <div className='h-auto'>
           <FroalaEditorComponent
             tag='textarea'

@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Image, { StaticImageData } from 'next/image'
 import { useState } from 'react'
 import { GrLinkNext } from 'react-icons/gr'
@@ -24,6 +24,12 @@ const PostReview = ({
 }: Partial<PostReviewType> & { hasCategoryBadge?: boolean }) => {
   const [imgSrc, setImgSrc] = useState(img || '/assets/images/picture-placeholder.png')
   const router = useRouter()
+
+  useEffect(() => {
+    console.log(img)
+
+    setImgSrc(img || '/assets/images/picture-placeholder.png')
+  }, [img])
 
   return (
     <div className='flex gap-2 p-4 md:flex-row flex-col'>

@@ -179,6 +179,7 @@ const Quanlybaidang = () => {
         categrories,
       }),
     placeholderData: (previousData) => previousData,
+    refetchOnMount: 'always',
   })
 
   const handleIsOpen = () => {
