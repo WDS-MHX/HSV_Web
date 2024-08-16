@@ -9,7 +9,7 @@ import {
   getPaginationRowModel,
 } from '@tanstack/react-table'
 import { PiDownloadSimpleBold, PiTrashBold } from 'react-icons/pi'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Pagination from './Pagination'
 import {
   Select,
@@ -34,13 +34,18 @@ import {
   DialogClose,
   DialogContent,
   DialogTrigger,
+  DialogDescription,
 } from './dialog'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './form'
 import FormGroup from './form-group'
 import FormTextAreaGroup from './form-textarea-group'
 import { Document } from '@/models'
 import { formatISOtime } from '@/helpers'
-import { documentFilterOptions } from '@/configs/categoryFilters'
+import {
+  documentFilterOptions,
+  documentNameMap,
+  documentSelectOptions,
+} from '@/configs/categoryFilters'
 import { documentApi, fileApi } from '@/apis'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
@@ -71,11 +76,16 @@ import { RemoveAlert } from '../ui'
 //   },
 // ]
 const formSchema = z.object({
-  docNumber: z.string().min(1, 'Vui lòng nhập Số/ Ký hiệu'),
+  docNumber: z
+    .string({ required_error: 'Vui lòng nhập số văn bản' })
+    .min(1, 'Vui lòng nhập số văn bản')
+    .refine((val) => Number.isInteger(Number(val)), { message: 'Số văn bản phải là số' }),
   title: z.string().min(1, 'Vui lòng nhập tiêu đề'),
   categrory: z.string().min(1, 'Vui lòng chọn thể loại'),
-  issueDate: z.date(),
-  reference: z.string().min(1, 'Vui lòng nhập ký hiệu'),
+  issueDate: z.date({ required_error: 'Vui lòng nhập ngày ban hành' }),
+  reference: z
+    .string({ required_error: 'Vui lòng nhập ký hiệu văn bản' })
+    .min(1, 'Vui lòng nhập ký hiệu văn bản'),
   file:
     typeof window === 'undefined'
       ? z.any()
@@ -98,7 +108,6 @@ export default function DocumentsTable({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      docNumber: '',
       title: '',
       categrory: '',
     },
@@ -108,7 +117,7 @@ export default function DocumentsTable({
     mutationFn: documentApi.createDocument,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['createDocument'] })
-      toast.success('Thêm document thành công!')
+      toast.success('Thêm văn bản thành công!')
       form.reset()
       reloadDocument()
       setOpenDialog(false)
@@ -131,13 +140,20 @@ export default function DocumentsTable({
     }
     createDocument.mutate(data)
   }
-  const downloadFile = async (id: string) => {
-    const res = fileApi.downloadFile(id)
-  }
-  const deleteDocument = async (id: string) => {
-    const res = await documentApi.deleteDocument(id)
-    reloadDocument()
-  }
+
+  const { mutate: downloadFile } = useMutation({
+    mutationFn: (id: string) => fileApi.downloadFile(id),
+    onError: (error) => {
+      toast.error(error.message)
+    },
+  })
+
+  const { mutate: deleteDocument } = useMutation({
+    mutationFn: (id: string) => documentApi.deleteDocument(id),
+    onSuccess: () => {
+      reloadDocument()
+    },
+  })
   const [checkFiltered, setCheckFiltered] = useState<number | undefined>(undefined)
   const [columnFilters, setColumnFilters] = useState<any>([])
   const [category, setCategory] = useState<string>('')
@@ -188,7 +204,7 @@ export default function DocumentsTable({
       }),
       columnHelper.accessor((row) => `${row.title}`, {
         id: 'title',
-        header: 'Title',
+        header: 'Tên',
         filterFn: 'includesString',
         size: 440,
         maxSize: 540,
@@ -261,7 +277,7 @@ export default function DocumentsTable({
       )
     }
     return columns
-  }, [])
+  }, [columnHelper, deleteDocument, isAdmin, downloadFile])
   const finalData = React.useMemo(() => documents, [documents])
   const tableInstance = useReactTable({
     columns: columnDef,
@@ -396,6 +412,7 @@ export default function DocumentsTable({
                 value={query}
                 onKeyDown={handleKeyDown}
                 onChange={handleInput}
+                id='document-search'
               ></input>
             </div>
             <button onClick={onFilterSearchChange} className='button-primary md:ml-0 ml-2'>
@@ -429,6 +446,7 @@ export default function DocumentsTable({
               <DialogContent>
                 <DialogHeader className='flex flex-row items-center justify-between'>
                   <DialogTitle className='text-2xl'>Upload tài liệu</DialogTitle>
+                  <DialogDescription />
                   <DialogClose>
                     <X className='h-6 w-6 mb-2' />
                   </DialogClose>
@@ -437,32 +455,32 @@ export default function DocumentsTable({
                   <form onSubmit={form.handleSubmit(onSubmit)}>
                     <FormGroup
                       control={form.control}
-                      label='Số / Ký hiệu'
+                      label='Số văn bản'
                       name='docNumber'
-                      placeholder='Nhập Số /Ký hiệu'
+                      placeholder='Nhập số văn bản'
                       autoFocus
-                      inputClassName='text-base font-normal text-placeHolder'
+                      inputClassName='text-base font-normal text-placeHolder text-black'
                     />
                     <FormTextAreaGroup
                       control={form.control}
-                      label='Title'
+                      label='Tên'
                       name='title'
-                      inputClassName='resize-none text-base font-normal text-placeHolder'
-                      placeholder='Nhập title'
+                      inputClassName='resize-none text-base font-normal text-placeHolder text-black'
+                      placeholder='Nhập tên'
                     />
                     <div className='flex w-full items-center justify-between gap-2 mt-4 mb-4'>
                       <FormGroup
                         control={form.control}
                         label='Ký hiệu'
                         name='reference'
-                        placeholder='Nhập Ký hiệu'
-                        inputClassName='text-base font-normal text-placeHolder'
+                        placeholder='Nhập ký hiệu văn bản'
+                        inputClassName='text-base font-normal text-placeHolder text-black'
                       />
                       <DateFormGroup
                         control={form.control}
-                        label='Ngày phát hành'
+                        label='Ngày ban hành'
                         name='issueDate'
-                        placeholder='Nhập ngày phát'
+                        placeholder='Nhập ngày ban hành'
                       />
                     </div>
                     <FormField
@@ -475,12 +493,16 @@ export default function DocumentsTable({
                             <FormControl>
                               <div className='flex space-x-3 w-full'>
                                 <SelectTrigger className='bg-white !w-full h-10 text-base text-placeHolder !font-normal border-slate-300 border-[1.5px] rounded-md !cursor-pointer '>
-                                  <SelectValue placeholder='Chọn danh mục' />
+                                  <SelectValue placeholder='Chọn danh mục'>
+                                    <span className='text-black'>
+                                      {documentNameMap[field.value]}
+                                    </span>
+                                  </SelectValue>
                                 </SelectTrigger>
                               </div>
                             </FormControl>
                             <SelectContent>
-                              {documentFilterOptions.map((i) => (
+                              {documentSelectOptions.map((i) => (
                                 <SelectItem key={i.key} value={i.key}>
                                   {i.name}
                                 </SelectItem>
@@ -503,7 +525,7 @@ export default function DocumentsTable({
                       name='file'
                       render={({ field, fieldState }) => (
                         <FormItem className='w-full'>
-                          <FormLabel className='text-sm font-medium text-black'>file</FormLabel>
+                          <FormLabel className='text-sm font-medium text-black'>File</FormLabel>
                           <FormControl>
                             <Input
                               className=' text-base font-normal text-placeHolder placeholder:text-base cursor-pointer'

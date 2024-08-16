@@ -4,12 +4,13 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 interface PostTimerProps {
   children: React.ReactNode
@@ -24,12 +25,17 @@ export default function PostTimer({ children, datetime, selectDatetime }: PostTi
     selectDatetime(date)
   }
 
+  useEffect(() => {
+    setDate(datetime)
+  }, [datetime])
+
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className='sm:max-w-[513px] max-sm:max-w-[328px]'>
         <DialogHeader>
           <DialogTitle className='text-2xl'>Hẹn giờ đăng</DialogTitle>
+          <DialogDescription />
         </DialogHeader>
         <div className='flex gap-4 flex-col'>
           <DateTimePicker date={date} setDate={setDate} />

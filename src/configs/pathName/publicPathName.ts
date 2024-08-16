@@ -9,6 +9,7 @@ export const PATH_NAME = {
   XAY_DUNG_HOI: '/xay-dung-hoi',
   HE_THONG_VAN_BAN: '/he-thong-van-ban',
   BAI_VIET: '/bai-viet',
+  TIM_KIEM: '/tim-kiem',
 }
 
 export default PATH_NAME

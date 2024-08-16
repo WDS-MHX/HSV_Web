@@ -51,7 +51,13 @@ const UploadImg: React.FC<UploadImageProps> = ({
         alt='Uploaded image'
         className={`border-0.5 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.1)] max-h-full max-w-full ${avatar ? 'w-[100px] h-[100px] rounded-full object-cover' : 'object-contain'}`}
       />
-      <input id={id} type='file' className='hidden' onChange={handleImageChange} />
+      <input
+        id={id}
+        type='file'
+        accept='.png, .jpg, .jpeg'
+        className='hidden'
+        onChange={handleImageChange}
+      />
     </div>
   )
 }

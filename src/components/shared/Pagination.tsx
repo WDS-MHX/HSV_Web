@@ -31,7 +31,7 @@ function Pagination({
 }: PaginationType) {
   const [forcePage, setForcePage] = useState<number | undefined>(checkFiltered)
   let pageCount = Math.ceil(notilength / itemsPerPage)
-  console.log('PAGECOUNT', notilength, itemsPerPage, pageCount)
+
   const handlePageClick = (event: { selected: number }) => {
     if (table) {
       table.setPageIndex(event.selected)

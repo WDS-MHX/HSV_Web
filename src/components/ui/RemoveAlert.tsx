@@ -20,10 +20,13 @@ interface RemoveAlertProps {
 export default function RemoveAlert({ children, title, action, className }: RemoveAlertProps) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger className={className}>{children}</AlertDialogTrigger>
+      <AlertDialogTrigger asChild className={className}>
+        {children}
+      </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className='font-semibold'>{title}</AlertDialogTitle>
+          <AlertDialogDescription />
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel className='hover:bg-slate-200'>Không</AlertDialogCancel>

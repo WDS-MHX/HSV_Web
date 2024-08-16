@@ -65,6 +65,7 @@ interface ResultPageType {
   selectPage: (page: number) => void
   totalSearchItems: number
   isAdmin: boolean
+  currentPage: number
   searchPosts: () => void
 }
 
@@ -78,10 +79,12 @@ const ResultPage = ({
   selectPage,
   totalSearchItems,
   isAdmin,
+  currentPage,
   searchPosts,
 }: ResultPageType) => {
   const [currentItems, setCurrentItems] = useState<Array<SearchPostType>>(searchResults)
-  const [searchText, setSearchText] = useState<string>('')
+  const [searchText, setSearchText] = useState<string>(searchValue)
+  const [isSearch, setIsSearch] = useState<boolean>(false)
 
   const handleSelectCategory = (category: POST_CATEGORY) => {
     if (selectedCategories.includes(category)) {
@@ -89,6 +92,7 @@ const ResultPage = ({
     } else {
       setSelectedCategories([...selectedCategories, category])
     }
+    selectPage(1)
   }
 
   const handleSelectOneCategory = (category: POST_CATEGORY) => {
@@ -105,16 +109,28 @@ const ResultPage = ({
         POST_CATEGORY.XAY_DUNG_HOI,
       ])
     }
+    selectPage(1)
   }
 
   const handleChangeSearch = (e: { target: { value: string } }) => {
     setSearchText(e.target.value)
+    const handleSearchBlank = () => {
+      if (e.target.value === '') {
+        handleSearchPosts(e.target.value)
+      }
+    }
+    setTimeout(handleSearchBlank, 300)
   }
 
-  const handleSearchPosts = useCallback(() => {
-    setSearchValue(searchText)
-    searchPosts()
-  }, [searchText, searchPosts, setSearchValue])
+  const handleSearchPosts = useCallback(
+    (searchValue?: string) => {
+      setSearchValue(searchValue ?? searchText)
+      searchPosts()
+      setIsSearch(true)
+      selectPage(1)
+    },
+    [searchText, searchPosts, setSearchValue, selectPage],
+  )
 
   useEffect(() => {
     const input = document.getElementById('search-bar')
@@ -127,6 +143,7 @@ const ResultPage = ({
         }
       }
       input.addEventListener('keypress', handleSearchEvent)
+
       return () => {
         input.removeEventListener('keypress', handleSearchEvent)
       }
@@ -267,7 +284,10 @@ const ResultPage = ({
               onChange={handleChangeSearch}
             />
           </div>
-          <button onClick={handleSearchPosts} className='px-8 bg-sky-900 text-white rounded-md'>
+          <button
+            onClick={() => handleSearchPosts()}
+            className='px-8 bg-sky-900 text-white rounded-md'
+          >
             Tìm
           </button>
         </div>
@@ -322,6 +342,9 @@ const ResultPage = ({
             itemsPerPage={itemsPerPage}
             selectPage={selectPage}
             totalItemsInAllPages={totalSearchItems}
+            isSearch={isSearch}
+            currentPageNumber={currentPage}
+            onSearch={() => setIsSearch(false)}
           />
         </div>
       </div>

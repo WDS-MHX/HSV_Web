@@ -181,20 +181,23 @@ const Quanlybaidang = () => {
     placeholderData: (previousData) => previousData,
   })
 
+  const selectPage = (page: number) => {
+    setPagination({ ...pagination, page: page })
+  }
+
   const handleIsOpen = () => {
     setPostStatus(POST_STATUS.POSTED)
+    selectPage(1)
   }
 
   const handleNotIsOpen = () => {
     setPostStatus(POST_STATUS.NOT_POSTED)
+    selectPage(1)
   }
 
   const handleHide = () => {
     setPostStatus(POST_STATUS.HIDE)
-  }
-
-  const selectPage = (page: number) => {
-    setPagination({ ...pagination, page: page })
+    selectPage(1)
   }
 
   const postResult: SearchPostType[] =
@@ -216,6 +219,11 @@ const Quanlybaidang = () => {
     router.push(ADMIN_PATH_NAME.TAO_BAI_DANG)
   }
 
+  const resetAndSearchPosts = () => {
+    setPagination({ ...pagination, page: 1 })
+    searchPosts()
+  }
+
   return (
     <div className='w-full lg:bg-sky-600 bg-white lg:pt-8 lg:px-2 px-0 pt-0 pb-4 h-fit'>
       <div className='bg-white rounded-xl py-4 px-6 max-md:px-1 mb-4'>
@@ -227,6 +235,12 @@ const Quanlybaidang = () => {
             handleHide={handleHide}
             className='max-md:hidden'
           />
+          <button
+            onClick={navigateToCreatePost}
+            className='py-2.5 px-8 rounded-md text-white font-medium bg-sky-600 h-full max-md:hidden'
+          >
+            Tạo bài viết mới
+          </button>
         </div>
         <ResultPage
           isAdmin={true}
@@ -238,7 +252,8 @@ const Quanlybaidang = () => {
           itemsPerPage={pagination.limit}
           selectPage={selectPage}
           totalSearchItems={data?.pagination.total ?? 0}
-          searchPosts={searchPosts}
+          currentPage={pagination.page}
+          searchPosts={resetAndSearchPosts}
         />
 
         {/* 
