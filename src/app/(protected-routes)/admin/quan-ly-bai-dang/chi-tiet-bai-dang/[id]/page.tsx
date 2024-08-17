@@ -532,7 +532,7 @@ const ChiTietBaiDang = () => {
                 action={() => deletePost()}
                 className='text-sm rounded-md px-4 py-2 text-white font-medium bg-[#BF202E] w-full transition-colors cursor-pointer'
               >
-                Gỡ
+                <button>Gỡ</button>
               </RemoveAlert>
               {data?.showPost && (
                 <PostTimer datetime={postTime} selectDatetime={setPostTime}>
