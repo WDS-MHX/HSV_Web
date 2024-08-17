@@ -10,6 +10,8 @@ import { useState, useEffect } from 'react'
 import { ADMIN_PATH_NAME, PATH_NAME } from '@/configs'
 import '@/configs/froala.config'
 import postApi from '@/apis/post'
+import { notFound } from 'next/navigation'
+import axios from 'axios'
 
 const FroalaEditorView = dynamic(() => import('@/components/shared/FroalaViewComponent'), {
   ssr: false,
@@ -25,10 +27,16 @@ const PostDetail = ({ id, isAuth }: PostDetailType) => {
   const [value, setValue] = useState<string>('')
   const [posted, setPosted] = useState<boolean>(true)
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error, isError } = useQuery({
     queryKey: queryKeys.post.gen(id),
     queryFn: () => postApi.getPostById(id),
   })
+
+  useEffect(() => {
+    if (isError) {
+      notFound()
+    }
+  }, [isError])
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value)
