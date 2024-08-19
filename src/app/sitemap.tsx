@@ -15,10 +15,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const response = await postApi.getAllPosts(1, 99999)
     const posts: Post[] = response?.data || []
 
-    const dynamicRoutes = posts.map((post) => ({
-      url: `${clientUrl}/bai-viet/${post._id}`,
-      lastModified: new Date().toISOString(),
-    }))
+    const dynamicRoutes = posts
+      .filter(
+        (post) =>
+          post.showPost &&
+          post.postedDate &&
+          post.updatedDate &&
+          new Date(post.postedDate) <= new Date(),
+      )
+      .map((post) => ({
+        url: `${clientUrl}/bai-viet/${post._id}`,
+        lastModified: post.updatedDate,
+      }))
 
     const allRoutes = [...staticRoutes, ...dynamicRoutes]
 
