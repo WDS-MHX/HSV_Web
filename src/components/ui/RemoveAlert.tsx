@@ -15,9 +15,16 @@ interface RemoveAlertProps {
   title: string
   className?: string
   action: () => void
+  isChange?: boolean
 }
 
-export default function RemoveAlert({ children, title, action, className }: RemoveAlertProps) {
+export default function RemoveAlert({
+  children,
+  title,
+  action,
+  className,
+  isChange = false,
+}: RemoveAlertProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild className={className}>
@@ -30,7 +37,12 @@ export default function RemoveAlert({ children, title, action, className }: Remo
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel className='hover:bg-slate-200'>Không</AlertDialogCancel>
-          <AlertDialogAction onClick={action} className='bg-red-500 hover:bg-red-500/90'>
+          <AlertDialogAction
+            onClick={action}
+            className={
+              isChange ? 'bg-sky-600 hover:bg-sky-600/90' : 'bg-red-500 hover:bg-red-500/90'
+            }
+          >
             Có
           </AlertDialogAction>
         </AlertDialogFooter>

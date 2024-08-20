@@ -35,6 +35,9 @@ import {
 import { POST_CATEGORY, POST_STATUS } from '@/configs/enum'
 import { queryKeys } from '@/configs/queryKeys'
 import { toast } from 'react-toastify'
+import Image from 'next/image'
+import { FiEdit } from 'react-icons/fi'
+import { CiImageOn } from 'react-icons/ci'
 
 const FroalaEditorComponent = dynamic(() => import('@/components/shared/FroalaEditorComponent'), {
   ssr: false,
@@ -76,6 +79,10 @@ const options: readonly {
 const TaoBaiDang = () => {
   const queryClient = useQueryClient()
 
+  const [updateTriggered, setUpdateTriggered] = useState(false)
+  const [imageReview, setImageReview] = useState<FileList | null>(null)
+  const [dataCreatePost, setDataCreatePost] = useState<CreatePostTemporaryDto>()
+  const [titleImgId, setTitleImgId] = useState<string>('')
   const [isPost, setIsPost] = useState<boolean>(true)
   const [contentImageIds, setContentImageIds] = useState<imgContent[]>([])
   const contentImageIdsRef = useRef(contentImageIds)
@@ -186,13 +193,38 @@ const TaoBaiDang = () => {
     },
   })
 
+  const uploadTitleImage = useMutation({
+    mutationFn: fileApi.uploadImage,
+    onSuccess: (res) => {
+      setTitleImgId(res || '')
+
+      setUpdateTriggered(true)
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+  })
+
+  useEffect(() => {
+    if (updateTriggered && dataCreatePost) {
+      onSubmit(dataCreatePost)
+
+      setUpdateTriggered(false)
+    }
+  }, [titleImgId, updateTriggered])
+
+  const onSubmitTitleImg = (data: CreatePostTemporaryDto) => {
+    setDataCreatePost(data)
+    if (imageReview) uploadTitleImage.mutate(imageReview)
+  }
+
   const onSubmit = (data: CreatePostTemporaryDto) => {
     const contentImagesIdArr: Array<string> = contentImageIds.map((item) => item.id)
     if (postTime) {
       let dataPost = {
         ...data,
         contentImageIds: contentImagesIdArr,
-        titleImageId: contentImagesIdArr[0],
+        titleImageId: titleImgId,
         postedDate: postTime,
         categrory: SelectedCategories,
         showPost: true,
@@ -205,17 +237,23 @@ const TaoBaiDang = () => {
     setSelectedCategories(category)
   }
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setImageReview(e.target.files)
+    }
+  }
+
   return (
     <div className='w-full lg:bg-sky-600 bg-white lg:pt-8 pt-0 lg:px-2 px-0 pb-4 h-full'>
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onSubmitTitleImg)}
         className='bg-white rounded-xl py-4 px-6 max-md:px-1 mb-4 h-full'
       >
         <div className='flex justify-between items-center mb-6'>
           <div className='flex gap-4 items-center'>
-            <button onClick={backPreviousPage}>
-              <GrLinkPrevious className='text-black' />
-            </button>
+            <div onClick={backPreviousPage}>
+              <GrLinkPrevious className='text-black cursor-pointer' />
+            </div>
             <div className='flex items-center py-0.5 px-2.5 rounded-full bg-slate-100'>
               <span className='font-semibold text-xs text-primary'>Chưa đăng</span>
             </div>
@@ -286,8 +324,46 @@ const TaoBaiDang = () => {
               />
               {errors.description && <p className='text-red-500'>{errors.description.message}</p>}
             </div>
+
+            <div>
+              <div className='flex gap-4'>
+                <Label htmlFor='titleimg' className='mb-4'>
+                  Hình ảnh tiêu đề <span className='text-red-500'>*</span>
+                </Label>
+                <FiEdit className='text-[#0284C7] font-bold' />
+              </div>
+              <div className='h-[150px] w-[300px]'>
+                <label htmlFor='titleimg' className='mt-3 cursor-pointer'>
+                  {imageReview && imageReview[0] ? (
+                    <img
+                      src={
+                        URL.createObjectURL(imageReview[0]) ||
+                        '/assets/images/picture-placeholder.png'
+                      }
+                      alt=''
+                      className='h-[150px] w-[300px] object-contain'
+                    />
+                  ) : (
+                    <div className='flex flex-col items-center justify-center pb-6 pt-5 h-[150px] w-[300px] border border-gray-500 rounded-xl bg-slate-200'>
+                      <CiImageOn size={30} className='text-gray-500' />
+                      <p className='my-2 text-sm text-gray-500 dark:text-gray-400'>
+                        <span className='font-semibold'>Click to upload</span> or drag and drop
+                      </p>
+                    </div>
+                  )}
+                  <input
+                    id='titleimg'
+                    type='file'
+                    accept='.png, .jpg, .jpeg'
+                    className='hidden'
+                    onChange={handleImageChange}
+                  />
+                </label>
+              </div>
+            </div>
           </div>
         </div>
+
         <div className='h-auto'>
           <h3 className='text-2xl font-semibold mb-4'>
             Nội dung <span className='text-red-500'>*</span>

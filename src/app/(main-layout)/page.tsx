@@ -51,23 +51,6 @@ export default function Home() {
     router.push(`${PATH_NAME.TIM_KIEM}?value=${value}`)
   }, [router, value])
 
-  useEffect(() => {
-    const input = document.getElementById('search-bar')
-
-    if (input) {
-      const handleSearchEvent = (event: KeyboardEvent) => {
-        if (event.key === 'Enter') {
-          event.preventDefault()
-          handleSubmit()
-        }
-      }
-      input.addEventListener('keypress', handleSearchEvent)
-      return () => {
-        input.removeEventListener('keypress', handleSearchEvent)
-      }
-    }
-  }, [value, handleSubmit])
-
   return (
     <div className='grid lg:grid-cols-4 gap-4 md:grid-cols-1'>
       <div className='w-full lg:col-span-3 md:col-span-1'>
@@ -120,6 +103,12 @@ export default function Home() {
               placeholder='Search'
               value={value}
               onChange={handleSearchChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  handleSubmit()
+                }
+              }}
             ></input>
           </div>
           <button className='button-primary' onClick={handleSubmit}>

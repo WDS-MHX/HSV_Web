@@ -39,6 +39,7 @@ export interface Post {
   postedDate?: string
   categrory?: POST_CATEGORY
   creator?: Admin
+  updatedDate?: Date | undefined
 }
 export interface imgContent {
   id: string
