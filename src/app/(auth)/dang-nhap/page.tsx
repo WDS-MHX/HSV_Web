@@ -38,7 +38,7 @@ export default function AdminLogin() {
     },
     onError: (error: AxiosError) => {
       if (error.response && error.response.data) {
-        toast.error((error.response.data as { message: string }).message)
+        toast.error('Email hoặc mật khẩu không chính xác')
       } else {
         toast.error('Đã xảy ra lỗi, hãy đăng nhập lại')
       }
