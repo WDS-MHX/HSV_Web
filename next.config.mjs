@@ -9,7 +9,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'https://hsv-web-fafeefftc5e6fucq.southeastasia-01.azurewebsites.net',
+        hostname: 'hsv-web-fafeefftc5e6fucq.southeastasia-01.azurewebsites.net',
       },
     ],
   },

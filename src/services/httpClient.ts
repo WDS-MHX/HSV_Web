@@ -10,6 +10,7 @@ class HttpClient {
     this.baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || ''
     this.instance = axios.create({
       baseURL: this.baseUrl,
+      timeout: 10000,
       withCredentials: true,
     })
   }
