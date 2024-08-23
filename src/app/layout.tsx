@@ -7,9 +7,9 @@ import Providers from '@/components/Providers'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Hội sinh viên',
+  title: 'Hội sinh viên Trường Đại học Công nghệ Thông tin',
   description:
-    'Trang web cung cấp những thông tin hữu ích về hội sinh viên tại trường đại học Công Nghệ Thông Tin.',
+    'Trang web cung cấp những thông tin hữu ích về hội sinh viên tại Trường Đại học Công nghệ Thông tin.',
 }
 
 export default function RootLayout({
