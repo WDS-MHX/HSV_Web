@@ -38,7 +38,16 @@ export default function AdminLogin() {
     },
     onError: (error: AxiosError) => {
       if (error.response && error.response.data) {
-        toast.error((error.response.data as { message: string }).message)
+        let message = 'Đã xảy ra lỗi, thử lại sau'
+        if (
+          (error.response.data as { message: string }).message === 'Email or password is incorrect'
+        )
+          message = 'Mật khât hoặc email không chính xác'
+        else if (
+          (error.response.data as { message: string }).message === 'Your account has been blocked'
+        )
+          message = 'Tài khoản đã bị khóa'
+        toast.error(message)
       } else {
         toast.error('Đã xảy ra lỗi, hãy đăng nhập lại')
       }

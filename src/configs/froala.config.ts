@@ -75,16 +75,10 @@ function generateFroalaConfig(
           }
           setContentImageIds((prevIds) => [...prevIds, obj])
         }
-      } catch (error) {
-        console.log(error)
-      }
+      } catch (error) {}
     },
-    'image.replaced': function ($img, response) {
-      console.log('Replaced: ', $img, response)
-    },
-    'image.error': function (error, response) {
-      console.log('Error: ', error, response)
-    },
+    'image.replaced': function ($img, response) {},
+    'image.error': function (error, response) {},
     'image.beforeRemove': async function ($img, editor) {
       if (setCheckExistImage && setOpenDialog && setDeleteConfirmed) {
         if (imageUploadPromise) {
@@ -92,19 +86,15 @@ function generateFroalaConfig(
         }
         imageRemovePromise = new Promise((resolve, reject) => {
           try {
-            console.log('CHAYVAOBEFOREREMOVE')
             setOpenDialog(true)
             setDeleteConfirmed(() => (confirm: any) => {
-              console.log('CONFIRM', confirm)
               if (confirm) {
                 resolve(confirm)
               } else {
-                console.log('EDITOR', editor, $img)
                 resolve(confirm)
               }
             })
           } catch (error) {
-            console.log(error)
             reject()
           }
         })
@@ -124,14 +114,10 @@ function generateFroalaConfig(
         let url: string = $img[0].currentSrc
         let parts: string[] = url.split('/')
         let idUrl: string = parts.pop() || ''
-        console.log('IDURL', idUrl)
         setContentImageIds((prev) => {
           let tempArr = prev
-          console.log('TEMPARR', tempArr)
           let itemRemove = prev.find((item) => item.id === idUrl)
-          console.log('ITEMREMOVE1', itemRemove)
           idRemove = itemRemove ? itemRemove.id : undefined
-          console.log('idRemove', idRemove)
           if (setCheckExistImage && setOpenDialog) {
             if (confirmResult) {
               setCheckExistImage(idUrl)
@@ -143,9 +129,7 @@ function generateFroalaConfig(
           setIdImageRemoved(idRemove)
           return (tempArr = prev.filter((item) => item.id !== idUrl))
         })
-      } catch (error) {
-        console.log(error)
-      }
+      } catch (error) {}
       // let idRemove = itemRemove ? itemRemove.contentId : undefined
       // console.log("IDREMOVE",idRemove)
       // if (idRemove) {

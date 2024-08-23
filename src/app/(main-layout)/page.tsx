@@ -62,6 +62,12 @@ export default function Home() {
               placeholder='Search'
               value={value}
               onChange={handleSearchChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  handleSubmit()
+                }
+              }}
             ></input>
           </div>
           <button className='w-[5.625rem] button-primary' onClick={handleSubmit}>

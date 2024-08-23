@@ -7,6 +7,8 @@ import { FaBars } from 'react-icons/fa'
 import { authApi } from '@/apis'
 import { httpClient } from '@/services'
 import { AUTH_PATH_NAME } from '@/configs'
+import { toast } from 'react-toastify'
+import { useMutation } from '@tanstack/react-query'
 
 import { ADMIN_PATH_NAME, PATH_NAME } from '@/configs'
 import SUPERUSER_PATH_NAME from '@/configs/pathName/superuserPathName'
@@ -18,6 +20,17 @@ const AdminHeader = ({ role }: { role: String }) => {
       window.location.href = AUTH_PATH_NAME.DANG_NHAP
     })
   }, [])
+
+  const { mutate: logOut } = useMutation({
+    mutationFn: () => authApi.logOut(),
+    onSuccess: () => {
+      toast.success('Đăng xuất thành công!')
+      window.location.href = '/'
+    },
+    onError: () => {
+      toast.error('Đã có lỗi xảy ra, thử lại sau')
+    },
+  })
 
   const router = useRouter()
 
@@ -109,10 +122,7 @@ const AdminHeader = ({ role }: { role: String }) => {
           </p>
           <p
             className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-slate-50 hover:text-primaryColor'
-            onClick={async () => {
-              await authApi.logOut()
-              window.location.href = '/'
-            }}
+            onClick={() => logOut()}
           >
             Đăng xuất
           </p>
@@ -221,10 +231,7 @@ const AdminHeader = ({ role }: { role: String }) => {
           </p>
           <p
             className='py-2 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-slate-50 hover:text-primaryColor'
-            onClick={async () => {
-              await authApi.logOut()
-              window.location.href = '/'
-            }}
+            onClick={() => logOut()}
           >
             Đăng xuất
           </p>

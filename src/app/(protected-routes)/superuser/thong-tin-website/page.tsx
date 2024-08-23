@@ -34,7 +34,7 @@ const ThongTinWeb = () => {
       queryClient.invalidateQueries({ queryKey: ['allinfo'] })
     },
     onError: (error) => {
-      toast.error(error.message)
+      toast.error('Đã có lỗi xảy ra, thử lại sau')
     },
   })
 
@@ -46,7 +46,7 @@ const ThongTinWeb = () => {
       queryClient.invalidateQueries({ queryKey: ['webinfo'] })
     },
     onError: (error) => {
-      toast.error(error.message)
+      toast.error('Đã có lỗi xảy ra, thử lại sau')
     },
   })
 
