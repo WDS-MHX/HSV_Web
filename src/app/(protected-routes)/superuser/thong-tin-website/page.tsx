@@ -91,6 +91,13 @@ const ThongTinWeb = () => {
   }, [data])
 
   const handleUploadImg = (type: string, file: File) => {
+    const MAX_FILE_SIZE = 100 * 1024 * 1024
+
+    if (file && file.size > MAX_FILE_SIZE) {
+      toast.error('Kích thước tệp vượt quá 100MB!')
+      return
+    }
+
     const webInfoJson = JSON.stringify({ type: type })
     const data = { webInfoJson: webInfoJson, image: file }
 

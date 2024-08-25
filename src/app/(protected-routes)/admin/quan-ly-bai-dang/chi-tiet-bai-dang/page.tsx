@@ -238,7 +238,14 @@ const TaoBaiDang = () => {
   }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const MAX_FILE_SIZE = 100 * 1024 * 1024
+
     if (e.target.files) {
+      if (e.target.files[0].size > MAX_FILE_SIZE) {
+        toast.error('Kích thước tệp vượt quá 100MB!')
+        return
+      }
+
       setImageReview(e.target.files)
     }
   }
