@@ -7,8 +7,14 @@ import { queryKeys } from '@/configs/queryKeys'
 import postApi from '@/apis/post'
 import { PostReviewType } from '@/types/post'
 import { POST_CATEGORY } from '@/configs/enum'
+import { useRouter } from 'next/navigation'
+import { useState, useEffect, useCallback } from 'react'
+import { PATH_NAME } from '@/configs'
 
 export default function TinhNguyen() {
+  const router = useRouter()
+
+  const [value, setValue] = useState<string>('')
   const { data, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: queryKeys.allPosts.gen(POST_CATEGORY.TINH_NGUYEN),
     queryFn: ({ pageParam }) =>
@@ -38,17 +44,36 @@ export default function TinhNguyen() {
     })
   })
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value)
+  }
+
+  const handleSubmit = useCallback(() => {
+    router.push(`${PATH_NAME.TIM_KIEM}?value=${value}`)
+  }, [router, value])
+
   return (
     <div className='grid lg:grid-cols-4 gap-4 md:grid-cols-1'>
       <div className='w-full lg:col-span-3 md:col-span-1'>
         <div className='flex items-center py-[0.625rem] lg:hidden md:mx-[3.438rem] mx-4 my-4'>
           <div className='border-2 rounded-md mr-2 p-0.5 w-full'>
             <input
+              id='search-bar'
               className='border-none w-full focus:outline-none bg-white text-black text-sm font-normal leading-5'
               placeholder='Search'
+              value={value}
+              onChange={handleSearchChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  handleSubmit()
+                }
+              }}
             ></input>
           </div>
-          <button className='w-[5.625rem] button-primary'>Tìm</button>
+          <button className='w-[5.625rem] button-primary' onClick={handleSubmit}>
+            Tìm
+          </button>
         </div>
 
         <div className='flex flex-col mt-6'>
@@ -80,11 +105,22 @@ export default function TinhNguyen() {
         <div className='flex items-center py-[0.625rem]'>
           <div className='border-[1px] border-slate-300 rounded-md w-full ml-0 mr-2'>
             <input
+              id='search-bar'
               className='border-none rounded-md mr-2 py-2 px-3 w-full focus:outline-none bg-white text-black text-sm font-normal leading-5'
               placeholder='Search'
+              value={value}
+              onChange={handleSearchChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  handleSubmit()
+                }
+              }}
             ></input>
           </div>
-          <button className='button-primary'>Tìm</button>
+          <button className='button-primary' onClick={handleSubmit}>
+            Tìm
+          </button>
         </div>
       </div>
     </div>

@@ -74,7 +74,7 @@ const CapTaiKhoan = () => {
       reloadListAdmin()
     },
     onError: (error) => {
-      toast.error(error.message)
+      toast.error('Đã xảy ra lỗi, thử lại sau')
     },
   })
   function onSubmit(values: z.infer<typeof formSchema>) {

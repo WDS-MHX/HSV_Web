@@ -3,9 +3,11 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '8080',
+        protocol: 'https',
+        // protocol: 'http',
+        hostname: 'hsv-web-fafeefftc5e6fucq.southeastasia-01.azurewebsites.net',
+        // hostname: 'localhost',
+        // port: '8080',
       },
       {
         protocol: 'https',

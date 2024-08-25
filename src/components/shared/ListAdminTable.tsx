@@ -60,7 +60,7 @@ export default function ListAdminTable({
       toast.success('Cập nhật thành công!')
     },
     onError: (error) => {
-      toast.error(error.message)
+      toast.error('Đã có lỗi xảy ra, thử lại sau')
     },
   })
   useEffect(() => {

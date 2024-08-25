@@ -201,7 +201,7 @@ const TaoBaiDang = () => {
       setUpdateTriggered(true)
     },
     onError: (error) => {
-      toast.error(error.message)
+      toast.error('Đã xảy ra lỗi, thử lại sau')
     },
   })
 

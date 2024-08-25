@@ -166,7 +166,6 @@ const ChiTietBaiDang = () => {
   const [titleImg, setTitleImg] = useState<string>('')
   const [updateTriggered, setUpdateTriggered] = useState(false)
 
-  // console.log('LAYDATA', title, content, description, postTime)
   const router = useRouter()
   const queryClient = useQueryClient()
 
@@ -401,7 +400,6 @@ const ChiTietBaiDang = () => {
         ...data,
       }),
     onSuccess: () => {
-      //toast
       toast.success('Chỉnh sửa hình ảnh tiêu đề thành công!')
     },
     onError: () => {
@@ -418,7 +416,7 @@ const ChiTietBaiDang = () => {
       setUpdateTriggered(true)
     },
     onError: (error) => {
-      toast.error(error.message)
+      toast.error('Đã xảy ra lỗi, thử lại sau')
     },
   })
 

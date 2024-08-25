@@ -35,9 +35,6 @@ class AuthApi {
     try {
       await httpClient.get<{ message: string }>(`/auth/otp-code?email=${email}`)
     } catch (error) {
-      if ((error as any).response.status === 500) {
-        console.log('Email không tồn tại')
-      }
       handleError(error, (res) => {
         throw new Error(res.data.message)
       })

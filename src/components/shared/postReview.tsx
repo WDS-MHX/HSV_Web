@@ -26,8 +26,6 @@ const PostReview = ({
   const router = useRouter()
 
   useEffect(() => {
-    console.log(img)
-
     setImgSrc(img || '/assets/images/picture-placeholder.png')
   }, [img])
 

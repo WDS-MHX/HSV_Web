@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { httpClient } from '@/services'
+import { useMutation } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
 
 import { authApi } from '@/apis'
 import { ADMIN_PATH_NAME, PATH_NAME, AUTH_PATH_NAME } from '@/configs'
@@ -18,6 +20,17 @@ const AdminSidebar = ({ role }: { role: String }) => {
       window.location.href = AUTH_PATH_NAME.DANG_NHAP
     })
   }, [])
+
+  const { mutate: logOut } = useMutation({
+    mutationFn: () => authApi.logOut(),
+    onSuccess: () => {
+      toast.success('Đăng xuất thành công!')
+      window.location.href = '/'
+    },
+    onError: () => {
+      toast.error('Đã có lỗi xảy ra, thử lại sau')
+    },
+  })
 
   return (
     <div className='flex h-[100vh] flex-col bg-sky-600 py-8 px-4 w-60 justify-between sticky top-0 max-lg:hidden'>
@@ -108,10 +121,7 @@ const AdminSidebar = ({ role }: { role: String }) => {
         </p>
         <p
           className='mt-1.5 py-2.5 px-4 rounded-md cursor-pointer transition-colors duration-300 hover:font-medium hover:bg-white text-slate-50 hover:text-primaryColor'
-          onClick={async () => {
-            await authApi.logOut()
-            window.location.href = '/'
-          }}
+          onClick={() => logOut()}
         >
           Đăng xuất
         </p>

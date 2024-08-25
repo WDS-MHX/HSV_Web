@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { queryKeys } from '@/configs/queryKeys'
 import { getPostCategoryTitle } from '@/helpers'
 import { useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 import { ADMIN_PATH_NAME, PATH_NAME } from '@/configs'
 import '@/configs/froala.config'
@@ -42,26 +42,26 @@ const PostDetail = ({ id, isAuth }: PostDetailType) => {
     setValue(e.target.value)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     router.push(`${PATH_NAME.TIM_KIEM}?value=${value}`)
-  }
+  }, [router, value])
 
-  useEffect(() => {
-    const input = document.getElementById('search-bar')
+  // useEffect(() => {
+  //   const input = document.getElementById('search-bar')
 
-    if (input) {
-      const handleSearchEvent = (event: KeyboardEvent) => {
-        if (event.key === 'Enter') {
-          event.preventDefault()
-          handleSubmit()
-        }
-      }
-      input.addEventListener('keypress', handleSearchEvent)
-      return () => {
-        input.removeEventListener('keypress', handleSearchEvent)
-      }
-    }
-  }, [value, handleSubmit])
+  //   if (input) {
+  //     const handleSearchEvent = (event: KeyboardEvent) => {
+  //       if (event.key === 'Enter') {
+  //         event.preventDefault()
+  //         handleSubmit()
+  //       }
+  //     }
+  //     input.addEventListener('keypress', handleSearchEvent)
+  //     return () => {
+  //       input.removeEventListener('keypress', handleSearchEvent)
+  //     }
+  //   }
+  // }, [value, handleSubmit])
 
   useEffect(() => {
     if (data) {
@@ -83,6 +83,12 @@ const PostDetail = ({ id, isAuth }: PostDetailType) => {
               placeholder='Search'
               value={value}
               onChange={handleSearchChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  handleSubmit()
+                }
+              }}
             ></input>
           </div>
           <button className='w-[5.625rem] button-primary' onClick={handleSubmit}>
@@ -107,7 +113,7 @@ const PostDetail = ({ id, isAuth }: PostDetailType) => {
             <p
               className={`text-center items-center flex mx-auto py-5 justify-center w-full ${isLoading ? 'hidden' : ''}`}
             >
-              This content is not available!
+              Nội dung này không khả dụng!
             </p>
 
             <div className={`text-center my-16 ${isLoading ? '' : 'hidden'}`}>
@@ -151,6 +157,12 @@ const PostDetail = ({ id, isAuth }: PostDetailType) => {
               placeholder='Search'
               value={value}
               onChange={handleSearchChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  handleSubmit()
+                }
+              }}
             ></input>
           </div>
           <button className='button-primary' onClick={handleSubmit}>
