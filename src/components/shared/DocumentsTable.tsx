@@ -123,7 +123,7 @@ export default function DocumentsTable({
       setOpenDialog(false)
     },
     onError: (error) => {
-      toast.error('Đã có lỗi xảy ra, thử lại sau')
+      toast.error('Đã xảy ra lỗi, thử lại sau')
     },
   })
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -144,7 +144,7 @@ export default function DocumentsTable({
   const { mutate: downloadFile } = useMutation({
     mutationFn: (id: string) => fileApi.downloadFile(id),
     onError: (error) => {
-      toast.error('Đã có lỗi xảy ra, thử lại sau')
+      toast.error('Đã xảy ra lỗi, thử lại sau')
     },
   })
 

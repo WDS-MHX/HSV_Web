@@ -32,7 +32,12 @@ const UploadImg: React.FC<UploadImageProps> = ({
   }
 
   return (
-    <div className={cn('lg:max-w-[70%] lg:h-[100px] lg:flex mb-6 w-full max-h-[370px]', className)}>
+    <div
+      className={cn(
+        'lg:max-w-[70%] lg:h-[100px] h-[200px] lg:flex mb-6 w-full max-h-[370px]',
+        className,
+      )}
+    >
       <div className='flex max-lg:mb-2'>
         <div className='min-w-[120px] mr-3'>{label}</div>
         <label
@@ -49,7 +54,7 @@ const UploadImg: React.FC<UploadImageProps> = ({
             : '/assets/images/picture-placeholder.png'
         }
         alt='Uploaded image'
-        className={`border-0.5 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.1)] max-h-full max-w-full ${avatar ? 'w-[100px] h-[100px] rounded-full object-cover' : 'object-contain'}`}
+        className={`border-0.5 border-sky-600 shadow-[0_3px_10px_rgb(0,0,0,0.1)] max-h-full max-w-full ${avatar ? 'w-[200px] h-[200px] rounded-full object-cover' : 'object-contain'}`}
       />
       <input
         id={id}

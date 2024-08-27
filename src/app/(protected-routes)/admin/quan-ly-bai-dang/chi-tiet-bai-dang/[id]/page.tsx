@@ -204,7 +204,18 @@ const ChiTietBaiDang = () => {
   }
 
   const { mutate: updateShowPost } = useMutation({
-    mutationFn: () => postApi.updateShowPost(postId, !data?.showPost),
+    mutationFn: () =>
+      toast.promise(
+        postApi.updateShowPost(postId, !data?.showPost),
+        {
+          pending: 'Đang cập nhật trạng thái bài viết...',
+          success: 'Cập nhật trạng thái bài viết thành công!',
+          error: 'Đã xảy ra lỗi, thử lại sau.',
+        },
+        {
+          autoClose: 5000,
+        },
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.post.gen(postId),
@@ -263,7 +274,7 @@ const ChiTietBaiDang = () => {
       router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
     },
     onError: () => {
-      toast.error('Đã có lỗi xảy ra, vui lòng thử lại sau')
+      toast.error('Đã xảy ra lỗi thử lại sau')
     },
   })
 
@@ -334,7 +345,7 @@ const ChiTietBaiDang = () => {
       router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
     },
     onError: () => {
-      toast.error('Đã có lỗi xảy ra, vui lòng thử lại sau')
+      toast.error('Đã xảy ra lỗi thử lại sau')
     },
   })
 
@@ -390,7 +401,7 @@ const ChiTietBaiDang = () => {
       router.push(ADMIN_PATH_NAME.QUAN_LY_BAI_DANG)
     },
     onError: () => {
-      toast.error('Đã có lỗi xảy ra, vui lòng thử lại sau')
+      toast.error('Đã xảy ra lỗi thử lại sau')
     },
   })
 
@@ -403,7 +414,7 @@ const ChiTietBaiDang = () => {
       toast.success('Chỉnh sửa hình ảnh tiêu đề thành công!')
     },
     onError: () => {
-      toast.error('Đã có lỗi xảy ra, vui lòng thử lại sau')
+      toast.error('Đã xảy ra lỗi thử lại sau')
     },
   })
 
@@ -502,7 +513,14 @@ const ChiTietBaiDang = () => {
   }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const MAX_FILE_SIZE = 100 * 1024 * 1024
+
     if (e.target.files) {
+      if (e.target.files[0].size > MAX_FILE_SIZE) {
+        toast.error('Kích thước tệp vượt quá 100MB!')
+        return
+      }
+
       uploadTitleImage.mutate(e.target.files)
     }
   }

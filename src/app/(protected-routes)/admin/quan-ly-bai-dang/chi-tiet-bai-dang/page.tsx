@@ -140,20 +140,25 @@ const TaoBaiDang = () => {
   const toastId = useRef<ReturnType<typeof toast.loading> | null>(null)
 
   const { mutate: createPost, isPending } = useMutation({
-    onMutate: () => {
-      toastId.current = toast.loading('Đang tạo bài viết...')
-    },
-    mutationFn: (data: CreatePostDto) => postApi.createPost({ ...data }),
-    onSuccess: () => {
-      if (toastId.current) {
-        toast.update(toastId.current, {
-          render: 'Tạo bài viết thành công!',
-          type: 'success',
-          isLoading: false,
+    mutationFn: (data: CreatePostDto) => {
+      return toast.promise(
+        postApi.createPost({ ...data }),
+        {
+          pending: 'Đang tạo bài viết...',
+          success: 'Tạo bài viết thành công!',
+          error:
+            content === ''
+              ? 'Nội dung bài viết không được để trống!'
+              : contentImageIds.length === 0
+                ? 'Thêm ít nhất một hình vào bài viết!'
+                : 'Có lỗi xảy ra!',
+        },
+        {
           autoClose: 5000,
-        })
-      }
-
+        },
+      )
+    },
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.adminSearchPosts.gen(
           1,
@@ -173,23 +178,6 @@ const TaoBaiDang = () => {
       })
 
       backPreviousPage()
-    },
-    onError: () => {
-      if (toastId.current) {
-        let errorMes = ''
-
-        if (content === '') {
-          errorMes = 'Nội dung bài viết không được để trống!'
-        } else if (contentImageIds.length === 0) {
-          errorMes = 'Thêm ít nhất một hình vào bài viết!'
-        }
-        toast.update(toastId.current, {
-          render: errorMes,
-          type: 'error',
-          isLoading: false,
-          autoClose: 5000,
-        })
-      }
     },
   })
 
@@ -238,7 +226,14 @@ const TaoBaiDang = () => {
   }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const MAX_FILE_SIZE = 100 * 1024 * 1024
+
     if (e.target.files) {
+      if (e.target.files[0].size > MAX_FILE_SIZE) {
+        toast.error('Kích thước tệp vượt quá 100MB!')
+        return
+      }
+
       setImageReview(e.target.files)
     }
   }
