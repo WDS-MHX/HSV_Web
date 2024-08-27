@@ -123,7 +123,7 @@ export default function DocumentsTable({
       setOpenDialog(false)
     },
     onError: (error) => {
-      toast.error('Đã có lỗi xảy ra, thử lại sau')
+      toast.error('Đã xảy ra lỗi, thử lại sau')
     },
   })
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -144,7 +144,7 @@ export default function DocumentsTable({
   const { mutate: downloadFile } = useMutation({
     mutationFn: (id: string) => fileApi.downloadFile(id),
     onError: (error) => {
-      toast.error('Đã có lỗi xảy ra, thử lại sau')
+      toast.error('Đã xảy ra lỗi, thử lại sau')
     },
   })
 
@@ -240,14 +240,16 @@ export default function DocumentsTable({
         minSize: 77,
         maxSize: 77,
         cell: (info) => (
-          <Button
-            onClick={() => downloadFile(info.getValue())}
-            variant='outline'
-            size='icon'
-            className='rounded-full bg-white'
-          >
-            <PiDownloadSimpleBold size={16}></PiDownloadSimpleBold>
-          </Button>
+          <div className='w-full items-center justify-center flex'>
+            <Button
+              onClick={() => downloadFile(info.getValue())}
+              variant='outline'
+              size='icon'
+              className='rounded-full bg-white md:size-9 size-6'
+            >
+              <PiDownloadSimpleBold className='md:size-4 size-3'></PiDownloadSimpleBold>
+            </Button>
+          </div>
         ),
       }),
     ]
@@ -264,13 +266,15 @@ export default function DocumentsTable({
               title='Bạn có chắc chắn muốn xóa tài liệu này?'
               action={() => deleteDocument(info.getValue())}
             >
-              <Button
-                variant='outline'
-                size='icon'
-                className='rounded-full text-red-600 hover:text-red-600 bg-white'
-              >
-                <PiTrashBold size={16}></PiTrashBold>
-              </Button>
+              <div className='w-full items-center justify-center flex'>
+                <Button
+                  variant='outline'
+                  size='icon'
+                  className='rounded-full text-red-600 hover:text-red-600 bg-white md:size-9 size-6'
+                >
+                  <PiTrashBold className='md:size-4 size-3'></PiTrashBold>
+                </Button>
+              </div>
             </RemoveAlert>
           ),
         }),
@@ -571,7 +575,7 @@ export default function DocumentsTable({
                               ? 'lg:w-[27.5rem] w-auto'
                               : 'lg:w-[12rem] md:w-[6.5rem] w-[4.813rem]'
                       } 
-                      md:text-sm sticky md:top-0 top-0 bg-sky-600 leading-6 text-white border-2 p-4 text-left font-bold text-xs`}
+                      md:text-sm sticky md:top-0  top-0 bg-sky-600 leading-6 text-white border-2 p-4 md:px-4 px-1 text-left font-bold text-[0.5rem]`}
                       key={column.id}
                       colSpan={column.colSpan}
                       // style={{
@@ -595,7 +599,7 @@ export default function DocumentsTable({
                 {row.getVisibleCells().map((cell) => {
                   return (
                     <td
-                      className='p-4 border-2 md:text-sm leading-6 text-slate-900 font-normal text-xs'
+                      className='p-4 md:px-4 px-1 border-2 md:text-sm leading-6 text-slate-900 font-normal text-[0.5rem]'
                       key={cell.id}
                       // style={{
                       //   width: cell.column.columnDef.size,

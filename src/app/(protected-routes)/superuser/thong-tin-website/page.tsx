@@ -34,7 +34,7 @@ const ThongTinWeb = () => {
       queryClient.invalidateQueries({ queryKey: ['allinfo'] })
     },
     onError: (error) => {
-      toast.error('Đã có lỗi xảy ra, thử lại sau')
+      toast.error('Đã xảy ra lỗi, thử lại sau')
     },
   })
 
@@ -46,7 +46,7 @@ const ThongTinWeb = () => {
       queryClient.invalidateQueries({ queryKey: ['webinfo'] })
     },
     onError: (error) => {
-      toast.error('Đã có lỗi xảy ra, thử lại sau')
+      toast.error('Đã xảy ra lỗi, thử lại sau')
     },
   })
 
@@ -126,7 +126,7 @@ const ThongTinWeb = () => {
         </p>
 
         <span className='mt-6 text-xl font-medium'>Hình ảnh</span>
-        <div className='flex flex-col border border-[#CBD5E1] rounded-xl py-4 px-8 mb-6 mt-2'>
+        <div className='flex flex-col border border-[#CBD5E1] rounded-xl py-4 px-8 mb-6 mt-2 max-lg: gap-5'>
           <UploadImg
             imgId={avatar}
             id='avatar'

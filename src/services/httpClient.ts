@@ -10,6 +10,7 @@ class HttpClient {
     this.baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || ''
     this.instance = axios.create({
       baseURL: this.baseUrl,
+      timeout: 10000,
       withCredentials: true,
     })
   }
@@ -67,15 +68,15 @@ export function handleError(error: any, onError?: (error: AxiosResponse) => void
   if (axios.isAxiosError(error)) {
     if (error.response) {
       if (error.response.status >= 500 && error.response.status < 600) {
-        throw new Error('Đã có lỗi xãy ra. Vui lòng thử lại sau.')
+        throw new Error('Đã xảy ra lỗi, thử lại sau')
       }
 
       onError?.(error.response)
     } else {
-      throw new Error('Đã có lỗi xãy ra. Vui lòng thử lại sau.')
+      throw new Error('Đã xảy ra lỗi, thử lại sau')
     }
   } else {
-    throw new Error('Đã có lỗi xãy ra. Vui lòng thử lại sau.')
+    throw new Error('Đã xảy ra lỗi, thử lại sau')
   }
 }
 

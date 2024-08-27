@@ -22,7 +22,7 @@ class FileApi {
       return res
     } catch (error) {
       handleError(error, (res) => {
-        throw new Error('Đã có lỗi xảy ra, vui lòng thử lại sau')
+        throw new Error('Đã xảy ra lỗi, vui lòng thử lại sau')
       })
     }
   }

@@ -42,7 +42,7 @@ export default function AdminLogin() {
         if (
           (error.response.data as { message: string }).message === 'Email or password is incorrect'
         )
-          message = 'Mật khât hoặc email không chính xác'
+          message = 'Mật khẩu hoặc email không chính xác'
         else if (
           (error.response.data as { message: string }).message === 'Your account has been blocked'
         )

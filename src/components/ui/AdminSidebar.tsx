@@ -24,11 +24,10 @@ const AdminSidebar = ({ role }: { role: String }) => {
   const { mutate: logOut } = useMutation({
     mutationFn: () => authApi.logOut(),
     onSuccess: () => {
-      toast.success('Đăng xuất thành công!')
       window.location.href = '/'
     },
     onError: () => {
-      toast.error('Đã có lỗi xảy ra, thử lại sau')
+      toast.error('Đã xảy ra lỗi, thử lại sau')
     },
   })
 
