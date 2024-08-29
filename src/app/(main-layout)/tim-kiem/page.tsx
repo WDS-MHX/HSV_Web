@@ -1,20 +1,25 @@
 'use client'
 
 import { ResultPage } from '@/components/shared'
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { POST_CATEGORY } from '@/configs/enum'
 import { Pagination } from '@/types/pagination'
 import { useQuery } from '@tanstack/react-query'
 import { queryKeys } from '@/configs/queryKeys'
 import postApi from '@/apis/post'
 import { SearchPostType } from '@/types/post'
-import { useSearchParams } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useCreateQueryString } from '@/hooks'
 
 const TimKiemPage = () => {
+  const router = useRouter()
+  const pathname = usePathname()
   const searchParams = useSearchParams()
   const value = searchParams.get('value')
+  const createQueryString = useCreateQueryString(searchParams)
 
   const [searchValue, setSearchValue] = useState<string>(value || '')
+
   const [categrories, setCategrories] = useState<POST_CATEGORY[]>([
     POST_CATEGORY.GIOI_THIEU,
     POST_CATEGORY.SINH_VIEN_5_TOT,
@@ -25,7 +30,12 @@ const TimKiemPage = () => {
     POST_CATEGORY.XAY_DUNG_HOI,
   ])
   const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 5 })
-  const { data, refetch: searchPosts } = useQuery({
+  const {
+    data,
+    refetch: searchPosts,
+    isFetching,
+    isRefetching,
+  } = useQuery({
     queryKey: queryKeys.viewerSearchPosts.gen(
       pagination.page,
       pagination.limit,
@@ -41,6 +51,13 @@ const TimKiemPage = () => {
       }),
     placeholderData: (previousData) => previousData,
   })
+
+  const search = (text: string) => {
+    const link = text !== '' ? pathname + '?' + createQueryString('value', text) : pathname
+    setSearchValue(text)
+    selectPage(1)
+    router.push(link)
+  }
 
   const selectPage = (page: number) => {
     setPagination({ ...pagination, page: page })
@@ -67,17 +84,18 @@ const TimKiemPage = () => {
   return (
     <div className='py-2 flex'>
       <ResultPage
+        isLoading={isFetching || isRefetching}
         isAdmin={false}
         selectedCategories={categrories}
         setSelectedCategories={setCategrories}
         searchValue={searchValue}
-        setSearchValue={setSearchValue}
         searchResults={postResult}
         itemsPerPage={pagination.limit}
         selectPage={selectPage}
         totalSearchItems={data?.pagination.total ?? 0}
         currentPage={pagination.page}
         searchPosts={resetAndSearchPosts}
+        handleSearch={search}
       />
     </div>
   )

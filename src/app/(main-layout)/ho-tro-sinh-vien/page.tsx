@@ -13,16 +13,17 @@ import { PATH_NAME } from '@/configs'
 
 export default function HoTroSinhVien() {
   const router = useRouter()
+  const itemsPerPage = 4
 
   const [value, setValue] = useState<string>('')
   const { data, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: queryKeys.allPosts.gen(POST_CATEGORY.HO_TRO_SINH_VIEN),
     queryFn: ({ pageParam }) =>
-      postApi.getAllPostsByCategory(pageParam, 4, POST_CATEGORY.HO_TRO_SINH_VIEN),
+      postApi.getAllPostsByCategory(pageParam, itemsPerPage, POST_CATEGORY.HO_TRO_SINH_VIEN),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
-      const totalPages = Math.floor(lastPage?.pagination.total ?? 0 / 4)
-      const actualPage = lastPage?.pagination.currentPage ?? 0
+      const totalPages = Math.floor((lastPage?.pagination.total ?? 0) / itemsPerPage) + 1
+      const actualPage = Number(lastPage?.pagination.currentPage ?? 0)
       return actualPage < totalPages ? actualPage + 1 : undefined
     },
   })
@@ -86,6 +87,7 @@ export default function HoTroSinhVien() {
               title={post.title}
               content={shortenText(post.content, 50)}
               date={post.date}
+              description={post.description}
             />
           ))}
           <div className='flex justify-center items-center w-full'>

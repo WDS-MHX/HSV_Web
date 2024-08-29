@@ -38,7 +38,7 @@ export default function PostTimer({ children, datetime, selectDatetime }: PostTi
           <DialogDescription />
         </DialogHeader>
         <div className='flex gap-4 flex-col'>
-          <DateTimePicker date={date} setDate={setDate} />
+          <DateTimePicker date={date} setDate={setDate} disableBeforeDate={new Date()} />
         </div>
         <DialogFooter>
           <DialogClose asChild>
