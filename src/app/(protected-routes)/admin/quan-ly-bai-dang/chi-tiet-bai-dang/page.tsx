@@ -39,6 +39,11 @@ import Image from 'next/image'
 import { FiEdit } from 'react-icons/fi'
 import { CiImageOn } from 'react-icons/ci'
 
+interface CreatePostWithImg {
+  postJson: CreatePostDto
+  titleImage: File
+}
+
 const FroalaEditorComponent = dynamic(() => import('@/components/shared/FroalaEditorComponent'), {
   ssr: false,
 })
@@ -79,10 +84,8 @@ const options: readonly {
 const TaoBaiDang = () => {
   const queryClient = useQueryClient()
 
-  const [updateTriggered, setUpdateTriggered] = useState(false)
   const [imageReview, setImageReview] = useState<FileList | null>(null)
   const [dataCreatePost, setDataCreatePost] = useState<CreatePostTemporaryDto>()
-  const [titleImgId, setTitleImgId] = useState<string>('')
   const [isPost, setIsPost] = useState<boolean>(true)
   const [contentImageIds, setContentImageIds] = useState<imgContent[]>([])
   const contentImageIdsRef = useRef(contentImageIds)
@@ -125,22 +128,14 @@ const TaoBaiDang = () => {
     },
   })
 
-  // useEffect(() => {
-  //   if (postTime) {
-  //     setValue('postedDate', postTime)
-  //   }
-  // }, [postTime, setValue])
-
   useEffect(() => {
     if (content) {
       setValue('content', content)
     }
   }, [content, setValue])
 
-  const toastId = useRef<ReturnType<typeof toast.loading> | null>(null)
-
   const { mutate: createPost, isPending } = useMutation({
-    mutationFn: (data: CreatePostDto) => {
+    mutationFn: (data: CreatePostWithImg) => {
       return toast.promise(
         postApi.createPost({ ...data }),
         {
@@ -181,43 +176,24 @@ const TaoBaiDang = () => {
     },
   })
 
-  const uploadTitleImage = useMutation({
-    mutationFn: fileApi.uploadImage,
-    onSuccess: (res) => {
-      setTitleImgId(res || '')
-
-      setUpdateTriggered(true)
-    },
-    onError: (error) => {
-      toast.error('Đã xảy ra lỗi, thử lại sau')
-    },
-  })
-
-  useEffect(() => {
-    if (updateTriggered && dataCreatePost) {
-      onSubmit(dataCreatePost)
-
-      setUpdateTriggered(false)
-    }
-  }, [titleImgId, updateTriggered])
-
-  const onSubmitTitleImg = (data: CreatePostTemporaryDto) => {
-    setDataCreatePost(data)
-    if (imageReview) uploadTitleImage.mutate(imageReview)
-  }
-
   const onSubmit = (data: CreatePostTemporaryDto) => {
     const contentImagesIdArr: Array<string> = contentImageIds.map((item) => item.id)
     if (postTime) {
       let dataPost = {
         ...data,
         contentImageIds: contentImagesIdArr,
-        titleImageId: titleImgId,
         postedDate: postTime,
         categrory: SelectedCategories,
         showPost: true,
       }
-      createPost(dataPost)
+
+      if (!imageReview) {
+        toast.error('Hình tiêu đề không được để trống!')
+        return
+      }
+
+      const dataWithTitleImg: CreatePostWithImg = { postJson: dataPost, titleImage: imageReview[0] }
+      createPost(dataWithTitleImg)
     }
   }
 
@@ -241,7 +217,7 @@ const TaoBaiDang = () => {
   return (
     <div className='w-full lg:bg-sky-600 bg-white lg:pt-8 pt-0 lg:px-2 px-0 pb-4 h-full'>
       <form
-        onSubmit={handleSubmit(onSubmitTitleImg)}
+        onSubmit={handleSubmit(onSubmit)}
         className='bg-white rounded-xl py-4 px-6 max-md:px-1 mb-4 h-full'
       >
         <div className='flex justify-between items-center mb-6'>

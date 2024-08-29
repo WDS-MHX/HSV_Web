@@ -4,7 +4,6 @@ import { z } from 'zod'
 
 export const postSchema = z.object({
   title: z.string({ required_error: 'Tiêu đề không được để trống' }),
-  titleImageId: z.string(),
   description: z.string({ required_error: 'Mô tả không được để trống' }),
   contentImageIds: z.array(z.string()),
   content: z.string({ required_error: 'Nội dung không được để trống' }),

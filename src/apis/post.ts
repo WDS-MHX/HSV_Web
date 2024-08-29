@@ -10,14 +10,32 @@ import {
 } from '@/models/post'
 import { handleError, httpClient } from '@/services'
 
+interface CreatePostWithImg {
+  postJson: CreatePostDto
+  titleImage: File
+}
+
+interface UpdatePostWithImg {
+  postJson: UpdatePostDTO
+  titleImage: File | null
+}
+
 class PostApi {
-  async createPost(body: CreatePostDto) {
-    const res = await handleResponse<Post>(() => httpClient.post<Post>('/post/new-post', body))
+  async createPost(data: CreatePostWithImg) {
+    const formData = new FormData()
+    formData.append('postJson', JSON.stringify(data.postJson))
+    formData.append('titleImage', data.titleImage)
+    const res = await handleResponse<Post>(() => httpClient.post<Post>('/post/new-post', formData))
     return res
   }
 
-  async updatePost(body: UpdatePostDTO) {
-    const res = await handleResponse<Post>(() => httpClient.put<Post>('/post/update-post', body))
+  async updatePost(data: UpdatePostWithImg) {
+    const formData = new FormData()
+    formData.append('postJson', JSON.stringify(data.postJson))
+    if (data.titleImage !== null) formData.append('titleImage', data.titleImage)
+    const res = await handleResponse<Post>(() =>
+      httpClient.put<Post>('/post/update-post', formData),
+    )
     return res
   }
 

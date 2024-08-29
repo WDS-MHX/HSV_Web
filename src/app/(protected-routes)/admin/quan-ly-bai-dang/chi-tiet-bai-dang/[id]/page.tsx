@@ -53,6 +53,11 @@ const FroalaEditorComponent = dynamic(() => import('@/components/shared/FroalaEd
   ssr: false,
 })
 
+interface UpdatePostWithImg {
+  postJson: UpdatePostDTO
+  titleImage: File | null
+}
+
 const options: readonly {
   optionType: POST_CATEGORY
   optionName: string
@@ -164,7 +169,7 @@ const ChiTietBaiDang = () => {
   const [postTime, setPostTime] = useState<Date | undefined>(undefined)
   const [titleImgId, setTitleImgId] = useState<string>('')
   const [titleImg, setTitleImg] = useState<string>('')
-  const [updateTriggered, setUpdateTriggered] = useState(false)
+  const [imageReview, setImageReview] = useState<FileList | null>(null)
 
   const router = useRouter()
   const queryClient = useQueryClient()
@@ -350,10 +355,20 @@ const ChiTietBaiDang = () => {
   })
 
   const { mutate: updatePost, isPending } = useMutation({
-    mutationFn: (data: UpdatePostDTO) =>
-      postApi.updatePost({
-        ...data,
-      }),
+    mutationFn: (data: UpdatePostWithImg) =>
+      toast.promise(
+        postApi.updatePost({
+          ...data,
+        }),
+        {
+          pending: 'Đang cập nhật bài viết...',
+          success: 'Cập nhật bài viết thành công!',
+          error: 'Đã xảy ra lỗi, thử lại sau.',
+        },
+        {
+          autoClose: 5000,
+        },
+      ),
     onSuccess: (response) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.post.gen(postId),
@@ -405,40 +420,6 @@ const ChiTietBaiDang = () => {
     },
   })
 
-  const { mutate: updateNewTitleImg } = useMutation({
-    mutationFn: (data: UpdatePostDTO) =>
-      postApi.updatePost({
-        ...data,
-      }),
-    onSuccess: () => {
-      toast.success('Chỉnh sửa hình ảnh tiêu đề thành công!')
-    },
-    onError: () => {
-      toast.error('Đã xảy ra lỗi thử lại sau')
-    },
-  })
-
-  const uploadTitleImage = useMutation({
-    mutationFn: fileApi.uploadImage,
-    onSuccess: (res) => {
-      setIdImageRemoved(titleImgId)
-      setTitleImgId(res || '')
-
-      setUpdateTriggered(true)
-    },
-    onError: (error) => {
-      toast.error('Đã xảy ra lỗi, thử lại sau')
-    },
-  })
-
-  useEffect(() => {
-    if (updateTriggered) {
-      onUpdatePost()
-
-      setUpdateTriggered(false)
-    }
-  }, [titleImgId, updateTriggered])
-
   const {
     register,
     handleSubmit,
@@ -476,35 +457,20 @@ const ChiTietBaiDang = () => {
         ...data,
         categrory: SelectedCategories,
         contentImageIds: contentImagesIdArr,
-        titleImageId: titleImgId,
         postedDate: postTime,
         _id: postId,
       }
-      updatePost(dataPost)
-    }
-  }
 
-  const onUpdatePost = () => {
-    if (
-      postTime &&
-      data?.title &&
-      data?.description &&
-      data?.content &&
-      data?.categrory &&
-      data?.contentImageIds &&
-      data?.postedDate
-    ) {
-      let dataPost = {
-        title: data.title,
-        description: data.description,
-        content: data.content,
-        categrory: data.categrory,
-        contentImageIds: data.contentImageIds,
-        titleImageId: titleImgId,
-        postedDate: new Date(data.postedDate),
-        _id: postId,
+      if (!imageReview) {
+        const dataWithTitleImg: UpdatePostWithImg = { postJson: dataPost, titleImage: null }
+        updatePost(dataWithTitleImg)
+      } else {
+        const dataWithTitleImg: UpdatePostWithImg = {
+          postJson: dataPost,
+          titleImage: imageReview[0],
+        }
+        updatePost(dataWithTitleImg)
       }
-      updateNewTitleImg(dataPost)
     }
   }
 
@@ -521,7 +487,7 @@ const ChiTietBaiDang = () => {
         return
       }
 
-      uploadTitleImage.mutate(e.target.files)
+      setImageReview(e.target.files)
     }
   }
 
@@ -629,22 +595,27 @@ const ChiTietBaiDang = () => {
 
             <div className='mb-4 flex gap-4 items-center'>
               Hình ảnh tiêu đề <span className='text-red-500'>*</span>
-              <RemoveAlert
-                title='Bạn có chắc chắn muốn thay đổi ảnh tiêu đề, hành động này là không thể hoàn tác'
-                action={() => document.getElementById('titleimg')?.click()}
-                className='cursor-pointer'
-                isChange
-              >
+              <label className='cursor-pointer' htmlFor='titleimg'>
                 <FiEdit className='text-[#0284C7] font-bold cursor-poniter' />
-              </RemoveAlert>
+              </label>
             </div>
             <div className='mt-3'>
-              <img
-                src={titleImg}
-                alt=''
-                className='h-[150px] w-[300px] object-contain'
-                onError={() => setTitleImg('/assets/images/picture-placeholder.png')}
-              />
+              {imageReview && imageReview[0] ? (
+                <img
+                  src={
+                    URL.createObjectURL(imageReview[0]) || '/assets/images/picture-placeholder.png'
+                  }
+                  alt=''
+                  className='h-[150px] w-[300px] object-contain'
+                />
+              ) : (
+                <img
+                  src={titleImg}
+                  alt=''
+                  className='h-[150px] w-[300px] object-contain'
+                  onError={() => setTitleImg('/assets/images/picture-placeholder.png')}
+                />
+              )}
             </div>
             <input
               id='titleimg'
