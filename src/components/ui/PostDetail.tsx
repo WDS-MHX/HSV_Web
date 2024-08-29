@@ -12,6 +12,7 @@ import '@/configs/froala.config'
 import postApi from '@/apis/post'
 import { notFound } from 'next/navigation'
 import axios from 'axios'
+import { format } from 'date-fns'
 
 const FroalaEditorView = dynamic(() => import('@/components/shared/FroalaViewComponent'), {
   ssr: false,
@@ -104,6 +105,15 @@ const PostDetail = ({ id, isAuth }: PostDetailType) => {
                   {getPostCategoryTitle(data?.categrory)}
                 </p>
               </div>
+            </div>
+
+            <div className='space-y-2 mb-2'>
+              <h1 className='text-slate-800 font-semibold text-2xl'>{data.title}</h1>
+              {data.updatedDate && (
+                <p className='text-slate-500 font-medium text-xs'>
+                  {format(data.updatedDate, 'dd/MM/yyyy')}
+                </p>
+              )}
             </div>
 
             <FroalaEditorView model={data?.content} />

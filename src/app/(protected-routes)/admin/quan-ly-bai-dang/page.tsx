@@ -12,7 +12,8 @@ import postApi from '@/apis/post'
 import { POST_CATEGORY, POST_STATUS } from '@/configs/enum'
 import { SearchPostType } from '@/types/post'
 import { ADMIN_PATH_NAME } from '@/configs'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useCreateQueryString } from '@/hooks'
 
 interface SearchData {
   id: string
@@ -143,6 +144,10 @@ const PostTabs = ({
 }
 
 const Quanlybaidang = () => {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const value = searchParams.get('value')
+  const createQueryString = useCreateQueryString(searchParams)
   /**
    * Get all posts with options
    * - isPosted: true => get all posted posts & false => get all not posted posts
@@ -151,7 +156,7 @@ const Quanlybaidang = () => {
    * - pagination: pagination for posts
    */
   const [postStatus, setPostStatus] = useState<POST_STATUS>(POST_STATUS.POSTED)
-  const [searchValue, setSearchValue] = useState<string>('')
+  const [searchValue, setSearchValue] = useState<string>(value || '')
   const [categrories, setCategrories] = useState<POST_CATEGORY[]>([
     POST_CATEGORY.GIOI_THIEU,
     POST_CATEGORY.SINH_VIEN_5_TOT,
@@ -162,7 +167,12 @@ const Quanlybaidang = () => {
     POST_CATEGORY.XAY_DUNG_HOI,
   ])
   const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 5 })
-  const { data, refetch: searchPosts } = useQuery({
+  const {
+    data,
+    refetch: searchPosts,
+    isFetching,
+    isRefetching,
+  } = useQuery({
     queryKey: queryKeys.adminSearchPosts.gen(
       pagination.page,
       pagination.limit,
@@ -181,6 +191,13 @@ const Quanlybaidang = () => {
     placeholderData: (previousData) => previousData,
     refetchOnMount: 'always',
   })
+
+  const search = (text: string) => {
+    const link = text !== '' ? pathname + '?' + createQueryString('value', text) : pathname
+    setSearchValue(text)
+    selectPage(1)
+    router.push(link)
+  }
 
   const selectPage = (page: number) => {
     setPagination({ ...pagination, page: page })
@@ -244,17 +261,18 @@ const Quanlybaidang = () => {
           </button>
         </div>
         <ResultPage
+          isLoading={isFetching || isRefetching}
           isAdmin={true}
           selectedCategories={categrories}
           setSelectedCategories={setCategrories}
           searchValue={searchValue}
-          setSearchValue={setSearchValue}
           searchResults={postResult}
           itemsPerPage={pagination.limit}
           selectPage={selectPage}
           totalSearchItems={data?.pagination.total ?? 0}
           currentPage={pagination.page}
           searchPosts={resetAndSearchPosts}
+          handleSearch={search}
         />
 
         {/* 

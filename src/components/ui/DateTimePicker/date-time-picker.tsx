@@ -12,9 +12,14 @@ import { Popover, PopoverContent, PopoverTrigger } from '../popover'
 import { TimePicker } from './time-picker'
 
 export function DateTimePicker({
+  disableBeforeDate,
   date,
   setDate,
 }: {
+  /**
+   * The date before which all days are disabled.
+   */
+  disableBeforeDate?: Date
   date?: Date
   setDate: (date: Date | undefined) => void
 }) {
@@ -49,7 +54,13 @@ export function DateTimePicker({
         </Button>
       </PopoverTrigger>
       <PopoverContent className='w-auto p-0' side='left' align='center'>
-        <Calendar mode='single' selected={date} onSelect={(d) => handleSelect(d)} initialFocus />
+        <Calendar
+          mode='single'
+          selected={date}
+          onSelect={(d) => handleSelect(d)}
+          initialFocus
+          disabled={disableBeforeDate ? { before: disableBeforeDate } : undefined}
+        />
         <div className='p-3 border-t border-border'>
           <TimePicker setDate={setDate} date={date} />
         </div>
