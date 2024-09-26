@@ -31,8 +31,6 @@ const AdminHeader = ({ role }: { role: String }) => {
     },
   })
 
-  const router = useRouter()
-
   const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
