@@ -66,6 +66,9 @@ class HttpClient {
 
 export function handleError(error: any, onError?: (error: AxiosResponse) => void) {
   if (axios.isAxiosError(error)) {
+    if (error.code === 'ECONNABORTED') {
+      throw new Error('request/timeout')
+    }
     if (error.response) {
       if (error.response.status >= 500 && error.response.status < 600) {
         throw new Error('Đã xảy ra lỗi, thử lại sau')

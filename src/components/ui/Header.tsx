@@ -25,6 +25,8 @@ const Header = ({ isAuth = false }: HeaderPropType) => {
   const { data } = useQuery({
     queryKey: ['webinfo'],
     queryFn: () => webInfoApi.getWebInfoByType('LOGO_BANNER'),
+    retry: (failureCount, error) => failureCount < 3 && error.message === 'request/timeout',
+    retryDelay: 1000,
   })
 
   const [imgId, setImgId] = useState<string>('')
