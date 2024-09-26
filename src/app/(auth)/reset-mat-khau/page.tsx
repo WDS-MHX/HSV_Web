@@ -3,13 +3,15 @@
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'react-toastify'
 import { LiaEyeSlashSolid, LiaEyeSolid } from 'react-icons/lia'
 
 import { authApi } from '@/apis'
 import { AUTH_PATH_NAME } from '@/configs'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 interface IResetPasswordFormInputs {
   email: string
@@ -18,12 +20,27 @@ interface IResetPasswordFormInputs {
   otpCode: string
 }
 
+const formSchema = z.object({
+  email: z.string().email('Email không hợp lệ'),
+  newPassword: z
+    .string()
+    .min(1, 'Vui lòng nhập mật khẩu của bạn')
+    .min(8, 'Mật khẩu phải có ít nhất 8 ký tự')
+    .regex(
+      /(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/,
+      'Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường và 1 số',
+    ),
+  rePassword: z.string().min(1, 'Vui lòng nhập lại mật khẩu mới'),
+  otpCode: z.string().min(6, 'Vui lòng nhập mã OTP'),
+})
+
 export default function ResetPassword() {
   const router = useRouter()
 
   const [otpCode, setOtpCode] = useState<string>('')
   const [countdown, setCountdown] = useState(0)
   const [isShow, setIsShow] = useState(false)
+  const email = useSearchParams().get('email')
 
   const handleShow = () => {
     setIsShow(!isShow)
@@ -57,7 +74,15 @@ export default function ResetPassword() {
     formState: { errors },
     setValue,
     getValues,
-  } = useForm<IResetPasswordFormInputs>()
+  } = useForm<IResetPasswordFormInputs>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: email || '',
+      newPassword: '',
+      rePassword: '',
+      otpCode: '',
+    },
+  })
 
   const mutation = useMutation({
     mutationFn: ({ email, otpCode, newPassword }: IResetPasswordFormInputs) =>
@@ -66,7 +91,15 @@ export default function ResetPassword() {
       toast.success('Đổi mật khẩu thành công, yêu cầu đăng nhập lại')
     },
     onError: (error) => {
-      toast.error('Đã xảy ra lỗi, thử lại sau')
+      let errorMessage = 'Đã xảy ra lỗi, thử lại sau'
+      if (error.message === 'email/not-exist') {
+        errorMessage = 'Email không tồn tại'
+      } else if (error.message === 'otp/incorrect') {
+        errorMessage = 'Mã OTP không chính xác'
+      } else if (error.message === 'otp/expired') {
+        errorMessage = 'Mã OTP đã hết hạn'
+      }
+      toast.error(errorMessage)
     },
   })
 
@@ -81,13 +114,17 @@ export default function ResetPassword() {
   })
 
   const onSubmit = (data: IResetPasswordFormInputs) => {
+    if (errors.email) {
+      return toast.error(errors.email.message)
+    }
+
     if (data.newPassword !== data.rePassword) {
       return toast.error('Mật khẩu mới và xác minh mật khẩu không khớp')
     }
 
     data.otpCode = otpCode
     mutation.mutate(data)
-    router.push(AUTH_PATH_NAME.RESET_MAU_KHAU)
+    router.push(AUTH_PATH_NAME.RESET_MAU_KHAU + `?email=${data.email}`)
   }
 
   useEffect(() => {
@@ -102,22 +139,6 @@ export default function ResetPassword() {
         className='container text-black block md:px-4 py-2 space-y-4 m-auto'
       >
         <div className='space-y-1'>
-          <label htmlFor='email' className='block'>
-            Email
-          </label>
-          <input
-            type='email'
-            {...register('email', {
-              required: 'Email is required',
-              pattern: { value: /^\S+@\S+$/i, message: 'Invalid email address' },
-            })}
-            className='w-full rounded-md border border-[#CBD5E1] px-[12px] py-[8px]'
-            placeholder='Email'
-          />
-          {errors.email && <p className='text-red-600'>{errors.email.message}</p>}
-        </div>
-
-        <div className='space-y-1'>
           <label htmlFor='newPassword' className='block'>
             Mật khẩu
           </label>
@@ -125,7 +146,7 @@ export default function ResetPassword() {
             <input
               type={isShow ? 'text' : 'password'}
               {...register('newPassword', {
-                required: 'New password is required',
+                required: 'Hãy nhập mật khẩu mới',
               })}
               className='w-full rounded-md border border-[#CBD5E1] px-[12px] py-[8px]'
               placeholder='Mật khẩu mới'
@@ -153,7 +174,7 @@ export default function ResetPassword() {
             <input
               type={isShow ? 'text' : 'password'}
               {...register('rePassword', {
-                required: 'Verify password is required',
+                required: 'Hãy nhập lại mật khẩu mới',
               })}
               className='w-full rounded-md border border-[#CBD5E1] px-[12px] py-[8px]'
               placeholder='Xác minh mật khẩu'

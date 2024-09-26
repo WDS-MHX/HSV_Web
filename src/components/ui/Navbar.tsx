@@ -28,6 +28,8 @@ const Navbar = ({ isAuth = false }: NavbarPropType) => {
   const { data } = useQuery({
     queryKey: ['logoavatar'],
     queryFn: () => webInfoApi.getWebInfoByType('LOGO_AVATAR'),
+    retry: (failureCount, error) => failureCount < 3 && error.message === 'request/timeout',
+    retryDelay: 1000,
   })
 
   const pathname = usePathname()

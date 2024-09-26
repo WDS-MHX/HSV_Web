@@ -23,8 +23,8 @@ export default function ForgetPassword() {
 
   const mutation = useMutation({
     mutationFn: ({ email }: IForgotPasswordFormInputs) => authApi.forgotPassword(email),
-    onSuccess: () => {
-      router.push(AUTH_PATH_NAME.RESET_MAU_KHAU)
+    onSuccess: (_, { email }) => {
+      router.push(AUTH_PATH_NAME.RESET_MAU_KHAU + `?email=${email}`)
     },
     onError: (error) => {
       toast.error('Không tồn tại email')
