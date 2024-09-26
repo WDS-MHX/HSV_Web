@@ -61,8 +61,8 @@ const Footer = () => {
 
   return (
     <footer className='md:flex justify-center items-center bg-sky-600 h-full p-2.5 w-full'>
-      <div className='flex flex-col md:mt-[3.375rem] mt-8 mb-[0.375rem]'>
-        <div className={`flex gap-16 md:flex-row flex-col ${isLoading ? 'hidden' : ''}`}>
+      <div className='flex flex-col md:mt-8 mb-[0.375rem]'>
+        <div className={`flex md:gap-16 gap-8 md:flex-row flex-col ${isLoading ? 'hidden' : ''}`}>
           <img
             src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/file/download/${footerLogo}`}
             alt='footer_logos'
@@ -89,7 +89,7 @@ const Footer = () => {
             </li>
           </ul>
         </div>
-        <div className='flex gap-[0.625rem] md:mt-12 mt-16 w-full items-center justify-center'>
+        <div className='flex gap-[0.625rem] mt-10 w-full items-center justify-center'>
           <img
             src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/file/download/${copyrightLogo}`}
             alt='footer_logos'
