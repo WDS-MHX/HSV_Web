@@ -1,13 +1,14 @@
 // src/configs/froala.config.ts
 
 import { fileApi } from '@/apis'
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, MutableRefObject, Ref, SetStateAction } from 'react'
 import { imgContent } from '@/models/post'
 
 // import { clientInstance } from '~/services/axios'
 // import blogEndpoint from '~/services/axios/endpoints/blog.endpoint'
-
+type FroalaEditorInstance = any
 export interface FroalaEvents {
+  initialized: any
   'image.beforeUpload': (images: FileList) => Promise<void>
   // 'image.uploaded': (response: string) => boolean;
   'image.inserted': ($img: any, response: any) => void
@@ -26,8 +27,14 @@ function generateFroalaConfig(
   setCheckExistImage?: React.Dispatch<React.SetStateAction<string | undefined>>,
   setOpenDialog?: React.Dispatch<React.SetStateAction<boolean>>,
   setDeleteConfirmed?: React.Dispatch<React.SetStateAction<((confirm: boolean) => void) | null>>,
+  editorRef?: MutableRefObject<FroalaEditorInstance | null>,
 ) {
   let events: FroalaEvents = {
+    initialized: function () {
+      if (editorRef) {
+        editorRef.current = this // Gán instance của Froala editor vào editorRef
+      }
+    },
     'image.beforeUpload': async function (images) {
       imageUploadPromise = new Promise(async (resolve, reject) => {
         try {

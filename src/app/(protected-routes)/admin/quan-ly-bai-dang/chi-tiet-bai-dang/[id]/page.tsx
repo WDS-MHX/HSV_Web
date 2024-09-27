@@ -42,12 +42,13 @@ import {
   SelectValue,
 } from '@/components/shared/SelectOption'
 import { Textarea } from '@/components/shared/textArea'
-import { useForm } from 'react-hook-form'
+import { get, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import FroalaEditor from 'react-froala-wysiwyg'
 import Image from 'next/image'
 import { FiEdit } from 'react-icons/fi'
 import { toast } from 'react-toastify'
+import { log } from 'console'
 
 const FroalaEditorComponent = dynamic(() => import('@/components/shared/FroalaEditorComponent'), {
   ssr: false,
@@ -92,7 +93,7 @@ const options: readonly {
     optionName: 'Xây dựng hội',
   },
 ]
-
+type FroalaEditorInstance = any
 const ChiTietBaiDang = () => {
   const { id: postId } = useParams<{ id: string }>()
 
@@ -109,7 +110,7 @@ const ChiTietBaiDang = () => {
   )
 
   // const editorRef = useRef<FroalaEditor | null>(null);
-
+  const editorRef = useRef<FroalaEditorInstance | null>(null)
   const [deleteConfirmed, setDeleteConfirmed] = useState<((confirm: boolean) => void) | null>(null)
   const [contentImageIds, setContentImageIds] = useState<imgContent[]>([])
   const [checkExistImage, setCheckExistImage] = useState<string | undefined>()
@@ -138,10 +139,12 @@ const ChiTietBaiDang = () => {
         setCheckExistImage,
         setOpenDialog,
         setDeleteConfirmed,
+        editorRef,
       ),
     [setContentImageIds],
   )
-
+  console.log('froalaConfig', froalaConfig)
+  // console.log("FroalaEditorComponent",FroalaEditorComponent.propTypes?.onManualControllerReady)
   function confirmDeleteImg() {
     if (deleteConfirmed) {
       deleteConfirmed(true)
@@ -160,6 +163,9 @@ const ChiTietBaiDang = () => {
   function denyDeleteImg() {
     if (deleteConfirmed) {
       deleteConfirmed(false)
+    }
+    if (editorRef.current) {
+      editorRef.current.commands.undo() // Lấy nội dung HTML từ editor
     }
     setConfirmDelete(false)
     setCheckExistImage(undefined)
@@ -630,12 +636,14 @@ const ChiTietBaiDang = () => {
         </div>
 
         <div className='h-auto'>
-          <FroalaEditorComponent
-            tag='textarea'
-            config={froalaConfig}
-            model={content}
-            onModelChange={(e: string) => setContent(e)}
-          />
+          <div id='editor'>
+            <FroalaEditorComponent
+              tag='textarea'
+              config={froalaConfig}
+              model={content}
+              onModelChange={(e: string) => setContent(e)}
+            />
+          </div>
           <Dialog open={openDialog} onOpenChange={() => setOpenDialog(!openDialog)}>
             <DialogContent>
               <DialogHeader className='flex flex-row items-center justify-center w-full'>
