@@ -49,6 +49,7 @@ import Image from 'next/image'
 import { FiEdit } from 'react-icons/fi'
 import { toast } from 'react-toastify'
 import { log } from 'console'
+import { AiFillPicture } from 'react-icons/ai'
 
 const FroalaEditorComponent = dynamic(() => import('@/components/shared/FroalaEditorComponent'), {
   ssr: false,
@@ -97,7 +98,7 @@ type FroalaEditorInstance = any
 const ChiTietBaiDang = () => {
   const { id: postId } = useParams<{ id: string }>()
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: queryKeys.post.gen(postId),
     queryFn: () => postApi.getPostById(postId),
     refetchOnMount: 'always',
@@ -143,8 +144,7 @@ const ChiTietBaiDang = () => {
       ),
     [setContentImageIds],
   )
-  console.log('froalaConfig', froalaConfig)
-  // console.log("FroalaEditorComponent",FroalaEditorComponent.propTypes?.onManualControllerReady)
+
   function confirmDeleteImg() {
     if (deleteConfirmed) {
       deleteConfirmed(true)
@@ -608,22 +608,31 @@ const ChiTietBaiDang = () => {
               </label>
             </div>
             <div className='mt-3'>
-              {imageReview && imageReview[0] ? (
-                <img
-                  src={
-                    URL.createObjectURL(imageReview[0]) || '/assets/images/picture-placeholder.png'
-                  }
-                  alt=''
-                  className='h-[150px] w-[300px] object-contain'
-                />
-              ) : (
-                <img
-                  src={titleImg}
-                  alt=''
-                  className='h-[150px] w-[300px] object-contain'
-                  onError={() => setTitleImg('/assets/images/picture-placeholder.png')}
-                />
+              {isLoading && (
+                <div
+                  className={`h-[150px] w-[300px] rounded-md bg-gray-200 animate-pulse flex items-center`}
+                >
+                  <AiFillPicture className='m-auto text-2xl text-gray-300' />
+                </div>
               )}
+              {!isLoading &&
+                (imageReview && imageReview[0] ? (
+                  <img
+                    src={
+                      URL.createObjectURL(imageReview[0]) ||
+                      '/assets/images/picture-placeholder.png'
+                    }
+                    alt=''
+                    className='h-[150px] w-[300px] object-contain'
+                  />
+                ) : (
+                  <img
+                    src={titleImg}
+                    alt=''
+                    className='h-[150px] w-[300px] object-contain'
+                    onError={() => setTitleImg('/assets/images/picture-placeholder.png')}
+                  />
+                ))}
             </div>
             <input
               id='titleimg'
