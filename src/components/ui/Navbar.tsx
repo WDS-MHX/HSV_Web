@@ -257,7 +257,7 @@ const Navbar = ({ isAuth = false }: NavbarPropType) => {
                 </Link>
               </li>
               <li>
-                {isLoggin ? (
+                {isAuth ? (
                   <Link
                     href={AUTH_PATH_NAME.DANG_NHAP}
                     type='button'

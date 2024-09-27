@@ -9,7 +9,7 @@ import { PostReviewType } from '@/types/post'
 import { POST_CATEGORY } from '@/configs/enum'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect, useCallback } from 'react'
-import { PATH_NAME } from '@/configs'
+import { PATH_NAME, timeoutMsg } from '@/configs'
 
 export default function HoTroSinhVien() {
   const router = useRouter()
@@ -26,6 +26,8 @@ export default function HoTroSinhVien() {
       const actualPage = Number(lastPage?.pagination.currentPage ?? 0)
       return actualPage < totalPages ? actualPage + 1 : undefined
     },
+    retry: (failureCount, error) => failureCount < 3 && error.message === timeoutMsg,
+    retryDelay: 1000,
   })
 
   const postResult: PostReviewType[] = []

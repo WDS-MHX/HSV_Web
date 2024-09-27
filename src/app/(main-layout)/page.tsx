@@ -8,7 +8,7 @@ import postApi from '@/apis/post'
 import { PostReviewType } from '@/types/post'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect, useCallback } from 'react'
-import { PATH_NAME } from '@/configs'
+import { PATH_NAME, timeoutMsg } from '@/configs'
 
 export default function Home() {
   const router = useRouter()
@@ -25,6 +25,8 @@ export default function Home() {
 
       return actualPage < totalPages ? actualPage + 1 : undefined
     },
+    retry: (failureCount, error) => failureCount < 3 && error.message === timeoutMsg,
+    retryDelay: 1000,
   })
 
   const postResult: PostReviewType[] = []

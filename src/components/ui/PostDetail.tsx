@@ -7,7 +7,7 @@ import { getPostCategoryTitle } from '@/helpers'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect, useCallback } from 'react'
 
-import { ADMIN_PATH_NAME, PATH_NAME } from '@/configs'
+import { ADMIN_PATH_NAME, PATH_NAME, timeoutMsg } from '@/configs'
 import '@/configs/froala.config'
 import postApi from '@/apis/post'
 import { notFound } from 'next/navigation'
@@ -31,6 +31,8 @@ const PostDetail = ({ id, isAuth }: PostDetailType) => {
   const { data, isLoading, error, isError } = useQuery({
     queryKey: queryKeys.post.gen(id),
     queryFn: () => postApi.getPostById(id),
+    retry: (failureCount, error) => failureCount < 3 && error.message === timeoutMsg,
+    retryDelay: 1000,
   })
 
   useEffect(() => {

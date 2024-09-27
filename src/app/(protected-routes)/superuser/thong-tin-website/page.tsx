@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react'
 import UploadImg from '@/components/shared/UploadImg'
 import InputForm from '@/components/shared/InputForm'
 import webInfoApi from '@/apis/webinfo'
+import { timeoutMsg } from '@/configs'
 
 interface DataItem {
   _id: string
@@ -24,6 +25,8 @@ const ThongTinWeb = () => {
   const { data } = useQuery({
     queryKey: ['allinfo'],
     queryFn: () => webInfoApi.getAllWebInfo(),
+    retry: (failureCount, error) => failureCount < 3 && error.message === timeoutMsg,
+    retryDelay: 1000,
   })
 
   const updateImgWebInfo = useMutation({
