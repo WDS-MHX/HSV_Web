@@ -10,6 +10,7 @@ import postApi from '@/apis/post'
 import { SearchPostType } from '@/types/post'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCreateQueryString } from '@/hooks'
+import { timeoutMsg } from '@/configs'
 
 const TimKiemPage = () => {
   const router = useRouter()
@@ -50,6 +51,8 @@ const TimKiemPage = () => {
         categrories,
       }),
     placeholderData: (previousData) => previousData,
+    retry: (failureCount, error) => failureCount < 3 && error.message === timeoutMsg,
+    retryDelay: 1000,
   })
 
   const search = (text: string) => {

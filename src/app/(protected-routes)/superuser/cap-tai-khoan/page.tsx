@@ -21,6 +21,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Admin } from '@/models'
 import { adminApi } from '@/apis'
 import { toast } from 'react-toastify'
+import { timeoutMsg } from '@/configs'
 const formSchema = z.object({
   name: z.string().min(1, 'Vui long nhap ho va ten'),
   phoneNumber: z
@@ -55,6 +56,8 @@ const CapTaiKhoan = () => {
       }
       return 300000 // 5 minutes
     },
+    retry: (failureCount, error) => failureCount < 3 && error.message === timeoutMsg,
+    retryDelay: 1000,
   })
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

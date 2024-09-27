@@ -3,6 +3,7 @@ import DocumentsTable from '@/components/shared/DocumentsTable'
 import React from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { documentApi } from '@/apis'
+import { timeoutMsg } from '@/configs'
 const QuanLyTaiLieu = () => {
   const { data: getAllDocmentsQuery, refetch: reloadDocument } = useQuery({
     queryKey: ['documents'],
@@ -14,6 +15,8 @@ const QuanLyTaiLieu = () => {
       }
       return 300000 // 5 minutes
     },
+    retry: (failureCount, error) => failureCount < 3 && error.message === timeoutMsg,
+    retryDelay: 1000,
   })
   return (
     <div className='w-full lg:bg-sky-600 bg-white lg:pt-8 lg:px-2 px-0 pt-0 pb-4 h-fit'>

@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios'
 import _createAuthRefreshInterceptor, { AxiosAuthRefreshRequestConfig } from 'axios-auth-refresh'
 import { authApi } from '@/apis'
+import { timeoutMsg } from '@/configs'
 
 class HttpClient {
   baseUrl: string
@@ -67,7 +68,7 @@ class HttpClient {
 export function handleError(error: any, onError?: (error: AxiosResponse) => void) {
   if (axios.isAxiosError(error)) {
     if (error.code === 'ECONNABORTED') {
-      throw new Error('request/timeout')
+      throw new Error(timeoutMsg)
     }
     if (error.response) {
       if (error.response.status >= 500 && error.response.status < 600) {

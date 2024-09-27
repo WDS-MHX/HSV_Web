@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic'
 import generateFroalaConfig from '@/configs/froala.config'
 import '@/styles/froala-custom.css'
 import { useParams, useRouter } from 'next/navigation'
-import { ADMIN_PATH_NAME } from '@/configs'
+import { ADMIN_PATH_NAME, timeoutMsg } from '@/configs'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from '@/configs/queryKeys'
 import postApi from '@/apis/post'
@@ -100,6 +100,8 @@ const ChiTietBaiDang = () => {
     queryKey: queryKeys.post.gen(postId),
     queryFn: () => postApi.getPostById(postId),
     refetchOnMount: 'always',
+    retry: (failureCount, error) => failureCount < 3 && error.message === timeoutMsg,
+    retryDelay: 1000,
   })
 
   const [SelectedCategories, setSelectedCategories] = useState<POST_CATEGORY>(

@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query'
 import { AiFillPicture } from 'react-icons/ai'
 
 import webInfoApi from '@/apis/webinfo'
+import { timeoutMsg } from '@/configs'
 
 interface HeaderPropType {
   isAuth: boolean
@@ -25,7 +26,7 @@ const Header = ({ isAuth = false }: HeaderPropType) => {
   const { data } = useQuery({
     queryKey: ['webinfo'],
     queryFn: () => webInfoApi.getWebInfoByType('LOGO_BANNER'),
-    retry: (failureCount, error) => failureCount < 3 && error.message === 'request/timeout',
+    retry: (failureCount, error) => failureCount < 3 && error.message === timeoutMsg,
     retryDelay: 1000,
   })
 

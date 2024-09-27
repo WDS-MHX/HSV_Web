@@ -11,7 +11,7 @@ import { Pagination } from '@/types/pagination'
 import postApi from '@/apis/post'
 import { POST_CATEGORY, POST_STATUS } from '@/configs/enum'
 import { SearchPostType } from '@/types/post'
-import { ADMIN_PATH_NAME } from '@/configs'
+import { ADMIN_PATH_NAME, timeoutMsg } from '@/configs'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCreateQueryString } from '@/hooks'
 
@@ -190,6 +190,8 @@ const Quanlybaidang = () => {
       }),
     placeholderData: (previousData) => previousData,
     refetchOnMount: 'always',
+    retry: (failureCount, error) => failureCount < 3 && error.message === timeoutMsg,
+    retryDelay: 1000,
   })
 
   const search = (text: string) => {

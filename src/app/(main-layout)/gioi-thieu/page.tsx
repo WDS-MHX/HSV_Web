@@ -8,7 +8,7 @@ import postApi from '@/apis/post'
 import { PostReviewType } from '@/types/post'
 import { POST_CATEGORY } from '@/configs/enum'
 import { useCallback, useState } from 'react'
-import { PATH_NAME } from '@/configs'
+import { PATH_NAME, timeoutMsg } from '@/configs'
 import { useRouter } from 'next/navigation'
 
 export default function GioiThieu() {
@@ -26,6 +26,8 @@ export default function GioiThieu() {
       const actualPage = Number(lastPage?.pagination.currentPage ?? 0)
       return actualPage < totalPages ? actualPage + 1 : undefined
     },
+    retry: (failureCount, error) => failureCount < 3 && error.message === timeoutMsg,
+    retryDelay: 1000,
   })
 
   const postResult: PostReviewType[] = []
